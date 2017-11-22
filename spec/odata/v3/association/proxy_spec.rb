@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OData::Association::Proxy, vcr: {cassette_name: 'association_proxy_specs'} do
+describe OData::Association::Proxy, vcr: {cassette_name: 'v3/association_proxy_specs'} do
   before :each do
     OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo')
   end

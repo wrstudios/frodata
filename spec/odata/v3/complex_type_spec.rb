@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OData::ComplexType, vcr: {cassette_name: 'complex_type_specs'} do
+describe OData::ComplexType, vcr: {cassette_name: 'v3/complex_type_specs'} do
   before(:example) do
     OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo')
   end

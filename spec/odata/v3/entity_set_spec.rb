@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OData::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
+describe OData::EntitySet, vcr: {cassette_name: 'v3/entity_set_specs'} do
   before(:example) do
     OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo')
   end
@@ -94,7 +94,7 @@ describe OData::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
         Price:            3.5
     } }
 
-    describe 'with an existing entity', vcr: {cassette_name: 'entity_set_specs/existing_entry'} do
+    describe 'with an existing entity', vcr: {cassette_name: 'v3/entity_set_specs/existing_entry'} do
       before(:each) do
         subject << existing_entity
       end
@@ -102,7 +102,7 @@ describe OData::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
       it { expect(existing_entity.any_errors?).to eq(false) }
     end
 
-    describe 'with a new entity', vcr: {cassette_name: 'entity_set_specs/new_entry'} do
+    describe 'with a new entity', vcr: {cassette_name: 'v3/entity_set_specs/new_entry'} do
       it do
         expect(new_entity['ID']).to be_nil
         expect {subject << new_entity}.to_not raise_error
@@ -111,7 +111,7 @@ describe OData::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
       end
     end
 
-    describe 'with a bad entity', vcr: {cassette_name: 'entity_set_specs/bad_entry'} do
+    describe 'with a bad entity', vcr: {cassette_name: 'v3/entity_set_specs/bad_entry'} do
       it { expect{subject << bad_entity}.to raise_error }
     end
   end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OData::Service, vcr: {cassette_name: 'service_specs'} do
+describe OData::Service, vcr: {cassette_name: 'v3/service_specs'} do
   let(:subject) { OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo') }
   let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
   let(:entity_sets) { %w{Products ProductDetails Categories Suppliers Persons PersonDetails Advertisements} }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OData::Query, vcr: {cassette_name: 'query_specs'} do
+describe OData::Query, vcr: {cassette_name: 'v3/query_specs'} do
   before(:example) do
     OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo')
   end
