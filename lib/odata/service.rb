@@ -60,17 +60,6 @@ module OData
       @complex_types ||= metadata.xpath('//ComplexType').collect {|entity| entity.attributes['Name'].value}
     end
 
-    # Returns the associations defined by the service
-    # @return [Hash<OData::Association>]
-    def associations
-      @associations ||= Hash[metadata.xpath('//Association').collect do |association_definition|
-        [
-            association_definition.attributes['Name'].value,
-            build_association(association_definition)
-        ]
-      end]
-    end
-
     # Returns a hash for finding an association through an entity type's defined
     # NavigationProperty elements.
     # @return [Hash<Hash<OData::Association>>]
@@ -80,11 +69,9 @@ module OData
         [
             entity_type_name,
             Hash[entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
-              relationship_name = nav_property_def.attributes['Relationship'].value
-              relationship_name.gsub!(/^#{namespace}\./, '')
               [
                   nav_property_def.attributes['Name'].value,
-                  associations[relationship_name]
+                  build_navigation_property(nav_property_def)
               ]
             end]
         ]
@@ -304,22 +291,11 @@ module OData
       return [property_name, property]
     end
 
-    def build_association(association_definition)
-      options = {
-        name: association_definition.attributes['Name'].value,
-        ends: build_association_ends(association_definition.xpath('./End'))
-      }
-      ::OData::Association.new(options)
-    end
-
-    def build_association_ends(end_definitions)
-      end_definitions.collect do |end_definition|
-        options = {
-          entity_type:  end_definition.attributes['Type'].value,
-          multiplicity: end_definition.attributes['Multiplicity'].value
-        }
-        ::OData::Association::End.new(options)
-      end
+    def build_navigation_property(nav_property_def)
+      options = Hash[nav_property_def.attributes.map do |name, attr|
+        [name.downcase.to_sym, attr.value]
+      end]
+      ::OData::NavigationProperty.new(options)
     end
   end
 end
