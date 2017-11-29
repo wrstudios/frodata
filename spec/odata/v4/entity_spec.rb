@@ -45,6 +45,32 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
     it { expect {subject.associations['NonExistant']}.to raise_error(ArgumentError) }
   end
 
+  describe '.with_properties' do
+    let(:subject) { OData::Entity.with_properties(properties, options) }
+    let(:properties) { {
+      "ID"               => 0,
+      "Name"             => "Bread",
+      "Description"      => "Whole grain bread",
+      "ReleaseDate"      => "1992-01-01T00:00:00Z",
+      "DiscontinuedDate" => nil,
+      "Rating"           => 4,
+      "Price"            => 2.5
+    } }
+    let(:options) { {
+        type:         'ODataDemo.Product',
+        namespace:    'ODataDemo',
+        service_name: 'ODataDemo'
+    } }
+
+    it { expect(subject['ID']).to eq(0) }
+    it { expect(subject['Name']).to eq('Bread') }
+    it { expect(subject['Description']).to eq('Whole grain bread') }
+    it { expect(subject['ReleaseDate']).to eq(DateTime.parse('1992-01-01T00:00:00Z')) }
+    it { expect(subject['DiscontinuedDate']).to eq(nil) }
+    it { expect(subject['Rating']).to eq(4) }
+    it { expect(subject['Price']).to eq(2.5) }
+  end
+
   describe '.from_xml' do
     let(:subject) { OData::Entity.from_xml(product_xml, options) }
     let(:product_xml) {
@@ -93,5 +119,49 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
       it { expect(subject['Address']['Street']).to eq('NE 228th') }
       it { expect(subject['Address']['City']).to eq('Sammamish') }
     end
+  end
+
+  describe '.to_xml' do
+    let(:subject) { OData::Entity.with_properties(properties, options) }
+    let(:properties) { {
+      "ID"               => 0,
+      "Name"             => "Bread",
+      "Description"      => "Whole grain bread",
+      "ReleaseDate"      => "1992-01-01T00:00:00Z",
+      "DiscontinuedDate" => nil,
+      "Rating"           => 4,
+      "Price"            => 2.5
+    } }
+    let(:options) { {
+        type:         'ODataDemo.Product',
+        namespace:    'ODataDemo',
+        service_name: 'ODataDemo'
+    } }
+    let(:product_xml) {
+      <<-END
+      <?xml version="1.0"?>
+      <entry xmlns="http://www.w3.org/2005/Atom" xmlns:data="http://docs.oasis-open.org/odata/ns/data" xmlns:metadata="http://docs.oasis-open.org/odata/ns/metadata" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xml:base="http://services.odata.org/V4/OData/OData.svc">
+        <category term="ODataDemo.ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"/>
+        <author>
+          <name/>
+        </author>
+        <content type="application/xml">
+          <metadata:properties>
+            <data:Name metadata:type="Edm.String">Bread</data:Name>
+            <data:Description metadata:type="Edm.String">Whole grain bread</data:Description>
+            <data:ReleaseDate metadata:type="Edm.DateTimeOffset">1992-01-01T00:00:00+00:00</data:ReleaseDate>
+            <data:DiscontinuedDate metadata:type="Edm.DateTimeOffset" metadata:null="true"/>
+            <data:Rating metadata:type="Edm.Int16">4</data:Rating>
+            <data:Price metadata:type="Edm.Double">2.5</data:Price>
+          </metadata:properties>
+        </content>
+      </entry>
+      END
+      .gsub(/^\s{6}/, '')
+    }
+
+    # TODO: perhaps it's better to parse the XML and veryify property values instead?
+    # TODO: explicitly assert namespace URIs? 
+    it { expect(subject.to_xml).to eq(product_xml) }
   end
 end

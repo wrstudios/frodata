@@ -18,6 +18,14 @@ module OData
 
     PROPERTY_NOT_LOADED = :not_loaded
 
+    XML_NAMESPACES = {
+      'xmlns'           => 'http://www.w3.org/2005/Atom',
+      'xmlns:data'      => 'http://docs.oasis-open.org/odata/ns/data',
+      'xmlns:metadata'  => 'http://docs.oasis-open.org/odata/ns/metadata',
+      'xmlns:georss'    => 'http://www.georss.org/georss',
+      'xmlns:gml'       => 'http://www.opengis.net/gml',
+    }.freeze
+
     # Initializes a bare Entity
     # @param options [Hash]
     def initialize(options = {})
@@ -110,15 +118,11 @@ module OData
     # Converts Entity to its XML representation.
     # @return [String]
     def to_xml
+      namespaces = XML_NAMESPACES.merge('xml:base' => service.service_url)
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.entry('xmlns'           => 'http://www.w3.org/2005/Atom',
-                  'xmlns:data'      => 'http://schemas.microsoft.com/ado/2007/08/dataservices',
-                  'xmlns:metadata'  => 'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata',
-                  'xmlns:georss'    => 'http://www.georss.org/georss',
-                  'xmlns:gml'       => 'http://www.opengis.net/gml',
-                  'xml:base'        => 'http://services.odata.org/OData/OData.svc/') do
+        xml.entry(namespaces) do
           xml.category(term: "#{namespace}.#{type}",
-                       scheme: 'http://schemas.microsoft.com/ado/2007/08/dataservices/scheme')
+                       scheme: 'http://docs.oasis-open.org/odata/ns/scheme')
           xml.author { xml.name }
 
           xml.content(type: 'application/xml') do
