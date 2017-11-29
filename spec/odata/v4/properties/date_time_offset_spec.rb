@@ -14,8 +14,15 @@ describe OData::Properties::DateTimeOffset do
     subject.value
   }.call).to eq(new_datetime) }
 
-  it 'allows nil' do
+  it { expect(lambda {
     subject.value = nil
-    expect(subject.value).to be_nil
+  }).not_to raise_error }
+
+  context 'with allows_nil option set to false' do
+    let(:subject) { OData::Properties::DateTimeOffset.new('DateTime', '2000-01-01T16:00:00Z-09:00', allows_nil: false) }
+
+    it { expect(lambda {
+      subject.value = nil
+    }).to raise_error(ArgumentError) }
   end
 end
