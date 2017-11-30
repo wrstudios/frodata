@@ -71,7 +71,7 @@ module OData
     # Not supported in Microsoft CRM2011
     # @return [Integer]
     def count
-      service.execute("#{name}/$count").body.to_i
+      service.execute("#{name}/$count", format: :plain).body.to_i
     end
 
     # Create a new Entity for this set with the given properties.
