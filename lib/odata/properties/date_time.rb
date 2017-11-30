@@ -9,9 +9,9 @@ module OData
           nil
         else
           begin
-            ::DateTime.strptime(@value, datetime_format)
+            date_class.strptime(@value, strptime_format)
           rescue ArgumentError
-            ::DateTime.parse(@value)
+            date_class.parse(@value)
           end
         end
       end
@@ -36,15 +36,21 @@ module OData
 
       protected
 
-      def datetime_format
+      # Specifies date/time implementation to use
+      def date_class
+        ::DateTime
+      end
+
+      # Specifies the date/time format string used for `strptime`
+      def strptime_format
         '%Y-%m-%dT%H:%M:%S.%L'
       end
 
       def validate(value)
         begin
           return if value.nil? && allows_nil?
-          return if value.is_a?(::DateTime)
-          ::DateTime.strptime(value, datetime_format)
+          return if value.is_a?(date_class)
+          date_class.strptime(value, strptime_format)
         rescue
           raise ArgumentError, 'Value is not a date time format that can be parsed'
         end
@@ -53,8 +59,8 @@ module OData
       def parse_value(value)
         return value if value.nil? && allows_nil?
         parsed_value = value
-        parsed_value = ::DateTime.parse(value) unless value.is_a?(::DateTime)
-        parsed_value.strftime(datetime_format)
+        parsed_value = date_class.parse(value) unless value.is_a?(date_class)
+        parsed_value.strftime(strptime_format)
       end
     end
   end

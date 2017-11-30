@@ -8,9 +8,9 @@ This is a non-complete list of things that need to be done in order to achieve O
 [x] Atom: update namespace URIs
 [ ] Implement JSON data format
 [ ] Implement missing/new OData V4 types
-  [ ] `Edm.Date` (V4/RESO)
+  [x] `Edm.Date` (V4/RESO)
   [ ] `Edm.Duration` (V4)
-  [ ] `Edm.TimeOfDay` (V4/RESO)
+  [x] `Edm.TimeOfDay` (V4/RESO)
   [ ] `Edm.Geography` subtypes (RESO)
     [ ] `Edm.GeographyLineString`
     [ ] `Edm.GeographyPolygon`
