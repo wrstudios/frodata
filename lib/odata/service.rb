@@ -11,6 +11,12 @@ module OData
 
     METADATA_TIMEOUTS = [20, 60]
 
+    MIME_TYPES = {
+      atom:  'application/atom+xml',
+      json:  'application/json;odata.metadata=full',
+      plain: 'text/plain'
+    }
+
     # Opens the service based on the requested URL and adds the service to
     # {OData::Registry}
     #
@@ -111,11 +117,20 @@ module OData
     # @param additional_options [Hash] options to pass to Typhoeus
     # @return [Typhoeus::Response]
     def execute(url_chunk, additional_options = {})
+      format = additional_options.delete(:format) || :atom
+      accept = MIME_TYPES[format.to_sym] or raise "Invalid format '#{format}'"
+
+      request_options = options[:typhoeus]
+        .merge({ method: :get })
+        .merge(additional_options)
+
+      # Don't overwrite Accept header if already present
+      unless request_options[:headers]['Accept']
+        request_options[:headers] = request_options[:headers].merge('Accept' => accept)
+      end
+
       request = ::Typhoeus::Request.new(
-          URI.escape("#{service_url}/#{url_chunk}"),
-          options[:typhoeus].merge({ method: :get
-                                   })
-                            .merge(additional_options)
+        URI.escape("#{service_url}/#{url_chunk}"), request_options
       )
       request.run
       response = request.response
@@ -224,16 +239,14 @@ module OData
     def default_options
       {
           typhoeus: {
-              headers: { 'DataServiceVersion' => '3.0' },
+              headers: { 'OData-Version' => '4.0' },
               timeout: HTTP_TIMEOUT
           }
       }
     end
 
     def metadata
-      @metadata ||= lambda {
-        read_metadata
-      }.call
+      @metadata ||= lambda { read_metadata }.call
     end
 
     def read_metadata
