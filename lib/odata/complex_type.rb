@@ -78,7 +78,9 @@ module OData
     end
 
     def validate_options(options)
-
+      raise ArgumentError, 'Name is required' unless options[:name]
+      raise ArgumentError, 'Service is required' unless options[:service]
+      raise ArgumentError, 'Not a ComplexType' unless options[:service].complex_types.include? options[:name]
     end
 
     def collect_properties

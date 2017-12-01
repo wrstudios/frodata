@@ -1,12 +1,32 @@
 require 'spec_helper'
 
-describe OData::ComplexType, vcr: {cassette_name: 'v3/complex_type_specs'} do
+describe OData::ComplexType, vcr: {cassette_name: 'v4/complex_type_specs'} do
   before(:example) do
-    OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo')
+    OData::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
   end
 
   let(:subject) { OData::ComplexType.new(name: 'Address', service: service) }
   let(:service) { OData::ServiceRegistry['ODataDemo'] }
+
+  describe '.new' do
+    it 'requires type name' do
+      expect {
+        OData::ComplexType.new(service: service)
+      }.to raise_error(ArgumentError)
+    end
+
+    it 'requires service instance' do
+      expect {
+        OData::ComplexType.new(name: 'Address')
+      }.to raise_error(ArgumentError)
+    end
+
+    it 'requires name to refer to a valid complex type' do
+      expect {
+        OData::ComplexType.new(name: 'NotAType', service: service)
+      }.to raise_error(ArgumentError)
+    end
+  end
 
   it { expect(subject).to respond_to(:name) }
   it { expect(subject).to respond_to(:namespace) }
@@ -37,9 +57,11 @@ describe OData::ComplexType, vcr: {cassette_name: 'v3/complex_type_specs'} do
   describe '#to_xml' do
     let(:builder) do
       Nokogiri::XML::Builder.new do |xml|
-        xml.entry('xmlns'           => 'http://www.w3.org/2005/Atom',
-                  'xmlns:data'      => 'http://schemas.microsoft.com/ado/2007/08/dataservices',
-                  'xmlns:metadata'  => 'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata') do
+        xml.entry(
+          'xmlns'           => 'http://www.w3.org/2005/Atom',
+          'xmlns:data'      => 'http://docs.oasis-open.org/odata/ns/data',
+          'xmlns:metadata'  => 'http://docs.oasis-open.org/odata/ns/metadata',
+        ) do
           subject.to_xml(xml)
         end
       end
