@@ -27,7 +27,7 @@ module OData
       @service_url = service_url
       @options = default_options.merge(options)
       OData::ServiceRegistry.add(self)
-      self
+      register_custom_types
     end
 
     # Opens the service based on the requested URL and adds the service to
@@ -309,6 +309,13 @@ module OData
         [name.downcase.to_sym, attr.value]
       end]
       ::OData::NavigationProperty.new(options)
+    end
+
+    def register_custom_types
+      complex_types.each do |type_name|
+        property = ::OData::ComplexType.new(name: type_name, service: self)
+        ::OData::PropertyRegistry.add(property.type, property.property_class)
+      end
     end
   end
 end

@@ -46,7 +46,7 @@ module OData
     # @param property_name [to_s]
     # @return [*]
     def [](property_name)
-      if get_property(property_name).is_a?(::OData::ComplexType)
+      if get_property(property_name).is_a?(::OData::ComplexType::Property)
         get_property(property_name)
       else
         get_property(property_name).value
@@ -95,7 +95,7 @@ module OData
         end
 
         new_properties.each do |property_name, property_value|
-          self[property_name.to_s] = property_value
+          self[property_name] = property_value
         end
       end
       entity
@@ -154,22 +154,14 @@ module OData
 
     private
 
-    def instantiate_property(property_name, value)
+    def instantiate_property(property_name, value_xml)
       value_type = service.get_property_type(name, property_name)
       klass = ::OData::PropertyRegistry[value_type]
 
-      if klass.nil? && value_type =~ /^#{namespace}\./
-        type_name = value_type.gsub(/^#{namespace}\./, '')
-        property = ::OData::ComplexType.new(name: type_name, service: service)
-        value.element_children.each do |node|
-          property[node.name] = node.content
-        end
-        property
-      elsif klass.nil?
+      if klass.nil?
         raise RuntimeError, "Unknown property type: #{value_type}"
       else
-        value_content = value.content unless value.nil?
-        klass.new(property_name, value_content)
+        klass.from_xml(value_xml)
       end
     end
 
@@ -197,15 +189,8 @@ module OData
     def self.process_properties(entity, xml_doc)
       entity.instance_eval do
         xml_doc.xpath('./content/properties/*').each do |property_xml|
-          property_name = property_xml.name
-          if property_xml.attributes['null'] &&
-              property_xml.attributes['null'].value == 'true'
-            xml_value = nil
-          else
-            xml_value = property_xml
-          end
           # Doing lazy loading here because instantiating each object takes a long time
-          set_property_lazy_load(property_name, xml_value)
+          set_property_lazy_load(property_xml.name, property_xml)
         end
       end
     end

@@ -1,3 +1,5 @@
+require 'odata/complex_type/property'
+
 module OData
   # ComplexTypes are used in OData to either encapsulate richer data types for
   # use as Entity properties. ComplexTypes are composed of properties the same
@@ -34,37 +36,18 @@ module OData
     # Returns a list of this ComplexType's property names.
     # @return [Array<String>]
     def property_names
-      @property_names ||= properties.collect {|name, property| name}
+      @property_names ||= properties.keys
     end
 
-    # Returns the value of the requested property.
-    # @param property_name [to_s]
-    # @return [*]
-    def [](property_name)
-      properties[property_name.to_s].value
-    end
-
-    # Sets the value of the named property.
-    # @param property_name [to_s]
-    # @param value [*]
-    # @return [*]
-    def []=(property_name, value)
-      properties[property_name.to_s].value = value
-    end
-
-    # Returns the XML representation of the property to the supplied XML
-    # builder.
-    # @param xml_builder [Nokogiri::XML::Builder]
-    def to_xml(xml_builder)
-      attributes = {
-          'metadata:type' => type,
-      }
-
-      xml_builder['data'].send(name.to_sym, attributes) do
-        properties.each do |name, property|
-          property.to_xml(xml_builder)
-        end
-      end
+    # Returns the property class that implements this `ComplexType`.
+    # @return [Class < OData::ComplexType::Property]
+    def property_class
+      @property_class ||= lambda { |type, service|
+        klass = Class.new ::OData::ComplexType::Property
+        klass.send(:define_method, :type) { type }
+        klass.send(:define_method, :service) { service }
+        klass
+      }.call(type, service)
     end
 
     private

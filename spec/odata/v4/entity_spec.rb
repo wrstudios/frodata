@@ -62,6 +62,16 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
         service_name: 'ODataDemo'
     } }
 
+    # Check property types
+    it { expect(subject.get_property('ID')).to be_a(OData::Properties::Integer) }
+    it { expect(subject.get_property('Name')).to be_a(OData::Properties::String) }
+    it { expect(subject.get_property('Description')).to be_a(OData::Properties::String) }
+    it { expect(subject.get_property('ReleaseDate')).to be_a(OData::Properties::DateTimeOffset) }
+    it { expect(subject.get_property('DiscontinuedDate')).to be_a(OData::Properties::DateTimeOffset) }
+    it { expect(subject.get_property('Rating')).to be_a(OData::Properties::Integer) }
+    it { expect(subject.get_property('Price')).to be_a(OData::Properties::Double) }
+
+    # Check property values
     it { expect(subject['ID']).to eq(0) }
     it { expect(subject['Name']).to eq('Bread') }
     it { expect(subject['Description']).to eq('Whole grain bread') }
@@ -115,9 +125,12 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
       it { expect(subject.name).to eq('Supplier') }
       it { expect(subject.type).to eq('ODataDemo.Supplier') }
 
-      it { expect(subject['Address']).to be_a(OData::ComplexType) }
-      it { expect(subject['Address']['Street']).to eq('NE 228th') }
-      it { expect(subject['Address']['City']).to eq('Sammamish') }
+      it { expect(subject['Address']).to be_a(OData::ComplexType::Property) }
+      it { expect(subject['Address'][ 'Street']).to eq('NE 228th') }
+      it { expect(subject['Address'][   'City']).to eq('Sammamish') }
+      it { expect(subject['Address'][  'State']).to eq('WA') }
+      it { expect(subject['Address']['ZipCode']).to eq('98074') }
+      it { expect(subject['Address']['Country']).to eq('USA') }
     end
   end
 
@@ -161,7 +174,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
     }
 
     # TODO: perhaps it's better to parse the XML and veryify property values instead?
-    # TODO: explicitly assert namespace URIs? 
+    # TODO: explicitly assert namespace URIs?
     it { expect(subject.to_xml).to eq(product_xml) }
   end
 end

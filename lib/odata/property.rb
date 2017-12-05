@@ -73,6 +73,19 @@ module OData
       end
     end
 
+    # Creates a new property instance from an XML element
+    # @param property_xml [Nokogiri::XML::Element]
+    # @return [OData::Property]
+    def self.from_xml(property_xml)
+      if property_xml.attributes['null'].andand.value == 'true'
+        content = nil
+      else
+        content = property_xml.content
+      end
+
+      new(property_xml.name, content)
+    end
+
     private
 
     def default_options
