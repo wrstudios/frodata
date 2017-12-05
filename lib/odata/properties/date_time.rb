@@ -52,7 +52,7 @@ module OData
           return if value.is_a?(date_class)
           date_class.strptime(value, strptime_format)
         rescue
-          raise ArgumentError, 'Value is not a date time format that can be parsed'
+          raise ArgumentError, "Value '#{value}' is not a date time format that can be parsed"
         end
       end
 

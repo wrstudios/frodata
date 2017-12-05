@@ -13,7 +13,7 @@ module OData
 
       protected
 
-      def datetime_format
+      def strptime_format
         '%Y-%m-%dT%H:%M:%S%:z'
       end
     end
