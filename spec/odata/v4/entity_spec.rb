@@ -22,7 +22,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
   describe '#links' do
     let(:subject) { OData::Entity.from_xml(product_xml, options) }
     let(:product_xml) {
-      document = ::Nokogiri::XML(File.open('spec/fixtures/sample_service/v4/product_0.xml'))
+      document = ::Nokogiri::XML(File.open('spec/fixtures/files/v4/product_0.xml'))
       document.remove_namespaces!
       document.xpath('//entry').first
     }
@@ -84,7 +84,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
   describe '.from_xml' do
     let(:subject) { OData::Entity.from_xml(product_xml, options) }
     let(:product_xml) {
-      document = ::Nokogiri::XML(File.open('spec/fixtures/sample_service/v4/product_0.xml'))
+      document = ::Nokogiri::XML(File.open('spec/fixtures/files/v4/product_0.xml'))
       document.remove_namespaces!
       document.xpath('//entry').first
     }
@@ -117,7 +117,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
 
       let(:subject) { OData::Entity.from_xml(supplier_xml, options) }
       let(:supplier_xml) {
-        document = ::Nokogiri::XML(File.open('spec/fixtures/sample_service/v4/supplier_0.xml'))
+        document = ::Nokogiri::XML(File.open('spec/fixtures/files/v4/supplier_0.xml'))
         document.remove_namespaces!
         document.xpath('//entry').first
       }
@@ -151,26 +151,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
         service_name: 'ODataDemo'
     } }
     let(:product_xml) {
-      <<-END
-      <?xml version="1.0"?>
-      <entry xmlns="http://www.w3.org/2005/Atom" xmlns:data="http://docs.oasis-open.org/odata/ns/data" xmlns:metadata="http://docs.oasis-open.org/odata/ns/metadata" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xml:base="http://services.odata.org/V4/OData/OData.svc">
-        <category term="ODataDemo.ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"/>
-        <author>
-          <name/>
-        </author>
-        <content type="application/xml">
-          <metadata:properties>
-            <data:Name metadata:type="Edm.String">Bread</data:Name>
-            <data:Description metadata:type="Edm.String">Whole grain bread</data:Description>
-            <data:ReleaseDate metadata:type="Edm.DateTimeOffset">1992-01-01T00:00:00+00:00</data:ReleaseDate>
-            <data:DiscontinuedDate metadata:type="Edm.DateTimeOffset" metadata:null="true"/>
-            <data:Rating metadata:type="Edm.Int16">4</data:Rating>
-            <data:Price metadata:type="Edm.Double">2.5</data:Price>
-          </metadata:properties>
-        </content>
-      </entry>
-      END
-      .gsub(/^\s{6}/, '')
+      File.read('spec/fixtures/files/v4/entity_to_xml.xml')
     }
 
     # TODO: perhaps it's better to parse the XML and veryify property values instead?

@@ -5,7 +5,7 @@ describe OData::EnumType, vcr: {cassette_name: 'v4/enum_type_specs'} do
     OData::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo', metadata_file: metadata_file)
   end
 
-  let(:metadata_file) { 'spec/fixtures/sample_service/v4/metadata.xml' }
+  let(:metadata_file) { 'spec/fixtures/files/v4/metadata.xml' }
   let(:service) { OData::ServiceRegistry['ODataDemo'] }
 
   describe '.new' do

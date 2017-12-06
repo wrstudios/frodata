@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe OData::Service, vcr: {cassette_name: 'v4/service_specs'} do
   let(:service_url) { 'http://services.odata.org/V4/OData/OData.svc' }
-  let(:metadata_file) { 'spec/fixtures/sample_service/v4/metadata.xml' }
+  let(:metadata_file) { 'spec/fixtures/files/v4/metadata.xml' }
   let(:subject) { OData::Service.open(service_url, name: 'ODataDemo', metadata_file: metadata_file) }
   let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
   let(:entity_sets) { %w{Products ProductDetails Categories Suppliers Persons PersonDetails Advertisements} }
