@@ -1,0 +1,26 @@
+{
+    "@odata.context": "http://services.odata.org/V4/OData/OData.svc/$metadata#Suppliers/$entity",
+    "ID": 0,
+    "Name": "Exotic Liquids",
+    "Address": {
+        "Street": "NE 228th",
+        "City": "Sammamish",
+        "State": "WA",
+        "ZipCode": "98074",
+        "Country": "USA"
+    },
+    "Location": {
+        "type": "Point",
+        "coordinates": [
+            -122.03547668457,
+            47.6316604614258
+        ],
+        "crs": {
+            "type": "name",
+            "properties": {
+                "name": "EPSG:4326"
+            }
+        }
+    },
+    "Concurrency": 0
+}

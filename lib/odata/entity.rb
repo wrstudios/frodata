@@ -115,6 +115,17 @@ module OData
       entity
     end
 
+    # Create Entity from JSON document with provided options.
+    # @param json [Hash|to_s]
+    # @param options [Hash]
+    # @return [OData::Entity]
+    def self.from_json(json, options = {})
+      return nil if json.nil?
+      json = JSON.parse(json.to_s) unless json.is_a?(Hash)
+      json.delete_if { |key, val| key =~ /^@odata/ }
+      with_properties(json, options)
+    end
+
     # Converts Entity to its XML representation.
     # @return [String]
     def to_xml

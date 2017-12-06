@@ -134,7 +134,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
     end
   end
 
-  describe '.to_xml' do
+  describe '#to_xml' do
     let(:subject) { OData::Entity.with_properties(properties, options) }
     let(:properties) { {
       "ID"               => 0,
@@ -154,8 +154,57 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
       File.read('spec/fixtures/files/v4/entity_to_xml.xml')
     }
 
-    # TODO: perhaps it's better to parse the XML and veryify property values instead?
+    # TODO: parse the XML and veryify property values instead?
     # TODO: explicitly assert namespace URIs?
     it { expect(subject.to_xml).to eq(product_xml) }
+  end
+
+  describe '.from_json' do
+    let(:subject) { OData::Entity.from_json(product_json, options) }
+    let(:product_json) {
+      File.read('spec/fixtures/files/v4/product_0.json')
+    }
+
+    it { expect(OData::Entity).to respond_to(:from_xml) }
+    it { expect(subject).to be_a(OData::Entity) }
+
+    it { expect(subject.name).to eq('Product') }
+    it { expect(subject.type).to eq('ODataDemo.Product') }
+    it { expect(subject.namespace).to eq('ODataDemo') }
+    it { expect(subject.service_name).to eq('ODataDemo') }
+
+    it { expect(subject['ID']).to eq(0) }
+    it { expect(subject['Name']).to eq('Bread') }
+    it { expect(subject['Description']).to eq('Whole grain bread') }
+    it { expect(subject['ReleaseDate']).to eq(DateTime.new(1992,1,1,0,0,0,0)) }
+    it { expect(subject['DiscontinuedDate']).to be_nil }
+    it { expect(subject['Rating']).to eq(4) }
+    it { expect(subject['Price']).to eq(2.5) }
+
+    it { expect {subject['NonExistant']}.to raise_error(ArgumentError) }
+    it { expect {subject['NonExistant'] = 5}.to raise_error(ArgumentError) }
+
+    context 'with a complex type property' do
+      let(:options) { {
+          type:         'ODataDemo.Supplier',
+          namespace:    'ODataDemo',
+          service_name: 'ODataDemo'
+      } }
+
+      let(:subject) { OData::Entity.from_json(supplier_json, options) }
+      let(:supplier_json) {
+        File.read('spec/fixtures/files/v4/supplier_0.json')
+      }
+
+      it { expect(subject.name).to eq('Supplier') }
+      it { expect(subject.type).to eq('ODataDemo.Supplier') }
+
+      it { expect(subject['Address']).to be_a(OData::ComplexType::Property) }
+      it { expect(subject['Address'][ 'Street']).to eq('NE 228th') }
+      it { expect(subject['Address'][   'City']).to eq('Sammamish') }
+      it { expect(subject['Address'][  'State']).to eq('WA') }
+      it { expect(subject['Address']['ZipCode']).to eq('98074') }
+      it { expect(subject['Address']['Country']).to eq('USA') }
+    end
   end
 end
