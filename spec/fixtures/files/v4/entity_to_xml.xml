@@ -8,7 +8,7 @@
     <metadata:properties>
       <data:Name metadata:type="Edm.String">Bread</data:Name>
       <data:Description metadata:type="Edm.String">Whole grain bread</data:Description>
-      <data:ReleaseDate metadata:type="Edm.DateTimeOffset">1992-01-01T00:00:00+00:00</data:ReleaseDate>
+      <data:ReleaseDate metadata:type="Edm.DateTimeOffset">1992-01-01T00:00:00Z</data:ReleaseDate>
       <data:DiscontinuedDate metadata:type="Edm.DateTimeOffset" metadata:null="true"/>
       <data:Rating metadata:type="Edm.Int16">4</data:Rating>
       <data:Price metadata:type="Edm.Double">2.5</data:Price>

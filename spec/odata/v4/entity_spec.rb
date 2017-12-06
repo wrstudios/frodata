@@ -207,4 +207,24 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
       it { expect(subject['Address']['Country']).to eq('USA') }
     end
   end
+
+  describe '#to_json' do
+    let(:subject) { OData::Entity.with_properties(properties, options) }
+    let(:properties) { {
+      "ID"               => 0,
+      "Name"             => "Bread",
+      "Description"      => "Whole grain bread",
+      "ReleaseDate"      => "1992-01-01T00:00:00Z",
+      "DiscontinuedDate" => nil,
+      "Rating"           => 4,
+      "Price"            => 2.5
+    } }
+    let(:options) { {
+        type:         'ODataDemo.Product',
+        namespace:    'ODataDemo',
+        service_name: 'ODataDemo'
+    } }
+
+    it { expect(subject.to_json).to eq(properties.to_json) }
+  end
 end

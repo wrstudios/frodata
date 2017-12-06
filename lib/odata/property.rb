@@ -51,6 +51,12 @@ module OData
       @value
     end
 
+    # Value to be used in JSON.
+    # @return [*]
+    def json_value
+      value
+    end
+
     # Value to be used in URLs.
     # @return [String]
     def url_value

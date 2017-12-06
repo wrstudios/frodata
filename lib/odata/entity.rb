@@ -138,7 +138,7 @@ module OData
 
           xml.content(type: 'application/xml') do
             xml['metadata'].properties do
-              properties.keys.each do |name|
+              property_names.each do |name|
                 next if name == primary_key
                 get_property(name).to_xml(xml)
               end
@@ -147,6 +147,15 @@ module OData
         end
       end
       builder.to_xml
+    end
+
+    # Converts Entity to its JSON representation.
+    # @return [String]
+    def to_json
+      # TODO: add @odata.context
+      Hash[property_names.map do |name|
+        [name, get_property(name).json_value]
+      end].to_json
     end
 
     # Returns the primary key for the Entity.

@@ -28,6 +28,18 @@ module OData
         'Edm.DateTime'
       end
 
+      # Value to be used in JSON.
+      # @return [String]
+      def xml_value
+        @value.andand.sub(/[\+\-]00:00$/, 'Z')
+      end
+
+      # Value to be used in JSON.
+      # @return [String]
+      def json_value
+        xml_value
+      end
+
       # Value to be used in URLs.
       # @return [String]
       def url_value

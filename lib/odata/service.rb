@@ -46,6 +46,12 @@ module OData
       @name ||= options[:name] || service_url
     end
 
+    # Returns the service's metadata URL.
+    # @return [String]
+    def metadata_url
+      "#{service_url}/$metadata"
+    end
+
     # Returns a list of entities exposed by the service
     def entity_types
       @entity_types ||= metadata.xpath('//EntityType').collect {|entity| entity.attributes['Name'].value}
@@ -258,7 +264,7 @@ module OData
         ::Nokogiri::XML(data).remove_namespaces!
       else # From a URL
         METADATA_TIMEOUTS.each do |timeout|
-          response = ::Typhoeus::Request.get(URI.escape("#{service_url}/$metadata"),
+          response = ::Typhoeus::Request.get(URI.escape(metadata_url),
                                              options[:typhoeus].merge(timeout: timeout))
           break unless response.timed_out?
         end

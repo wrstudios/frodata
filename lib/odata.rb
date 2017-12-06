@@ -4,6 +4,7 @@ require 'bigdecimal'
 require 'nokogiri'
 require 'typhoeus'
 require 'andand'
+require 'json'
 
 # require 'active_support'
 # require 'active_support/core_ext'
