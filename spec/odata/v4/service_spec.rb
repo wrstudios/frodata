@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe OData::Service, vcr: {cassette_name: 'v4/service_specs'} do
   let(:service_url) { 'http://services.odata.org/V4/OData/OData.svc' }
-  let(:subject) { OData::Service.open(service_url, name: 'ODataDemo') }
+  let(:metadata_file) { 'spec/fixtures/sample_service/v4/metadata.xml' }
+  let(:subject) { OData::Service.open(service_url, name: 'ODataDemo', metadata_file: metadata_file) }
   let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
   let(:entity_sets) { %w{Products ProductDetails Categories Suppliers Persons PersonDetails Advertisements} }
   let(:entity_set_types) { %w{Product ProductDetail Category Supplier Person PersonDetail Advertisement} }
   let(:complex_types) { %w{Address} }
+  let(:enum_types) { %w{ProductStatus} }
   let(:associations) { %w{Product_Categories_Category_Products
                           Product_Supplier_Supplier_Products
                           Product_ProductDetail_ProductDetail_Product
@@ -32,6 +34,7 @@ describe OData::Service, vcr: {cassette_name: 'v4/service_specs'} do
     it { expect(subject).to respond_to(:entity_types) }
     it { expect(subject).to respond_to(:entity_sets) }
     it { expect(subject).to respond_to(:complex_types) }
+    it { expect(subject).to respond_to(:enum_types) }
     it { expect(subject).to respond_to(:namespace) }
   end
 
@@ -56,7 +59,8 @@ describe OData::Service, vcr: {cassette_name: 'v4/service_specs'} do
   end
 
   describe '#enum_types' do
-    pending 'needs implementation'
+    it { expect(subject.enum_types.size).to eq(1) }
+    it { expect(subject.enum_types).to eq(enum_types)}
   end
 
   describe '#navigation_properties' do

@@ -62,8 +62,15 @@ module OData
     end
 
     # Returns a list of ComplexTypes used by the service
+    # @return [Array<String>]
     def complex_types
       @complex_types ||= metadata.xpath('//ComplexType').collect {|entity| entity.attributes['Name'].value}
+    end
+
+    # Returns a list of EnumTypes used by the service
+    # @return [Array<String>]
+    def enum_types
+      @enum_types ||= metadata.xpath('//EnumType').collect {|entity| entity.attributes['Name'].value}
     end
 
     # Returns a hash for finding an association through an entity type's defined
@@ -226,6 +233,23 @@ module OData
       properties_to_return
     end
 
+    # Get list of properties and their various options
+    # for the supplied EnumType name.
+    # @param type_name [to_s]
+    # @return [Hash]
+    # @api private
+    def members_for_enum_type(type_name)
+      type_definition = metadata.xpath("//EnumType[@Name='#{type_name}']").first
+      raise ArgumentError, "Unknown EnumType: #{type_name}" if type_definition.nil?
+      members_to_return = {}
+      type_definition.xpath('./Member').each do |member_xml, index|
+        member_name  = member_xml.attributes['Name'].value
+        member_value = member_xml.attributes['Value'].andand.value.to_i
+        members_to_return[member_name] = member_value || index
+      end
+      members_to_return
+    end
+
     def logger
       @logger ||= defined?(Rails) ? Rails.logger : Logger.new(STDOUT)
     end
@@ -314,6 +338,11 @@ module OData
     def register_custom_types
       complex_types.each do |type_name|
         property = ::OData::ComplexType.new(name: type_name, service: self)
+        ::OData::PropertyRegistry.add(property.type, property.property_class)
+      end
+
+      enum_types.each do |type_name|
+        property = ::OData::EnumType.new(name: type_name, service: self)
         ::OData::PropertyRegistry.add(property.type, property.property_class)
       end
     end

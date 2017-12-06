@@ -13,10 +13,17 @@
         <Property Name="DiscontinuedDate" Type="Edm.DateTimeOffset" />
         <Property Name="Rating" Type="Edm.Int16" Nullable="false" />
         <Property Name="Price" Type="Edm.Double" Nullable="false" />
+        <Property Name="ProductStatus" Type="ODataDemo.ProductStatus" Nullable="false" />
         <NavigationProperty Name="Categories" Type="Collection(ODataDemo.Category)" Partner="Products" />
         <NavigationProperty Name="Supplier" Type="ODataDemo.Supplier" Partner="Products" />
         <NavigationProperty Name="ProductDetail" Type="ODataDemo.ProductDetail" Partner="Product" />
       </EntityType>
+      <EnumType Name="ProductStatus">
+        <Member Name="Available" />
+        <Member Name="LowStock" />
+        <Member Name="Backordered" />
+        <Member Name="Discontinued" />
+      </EnumType>
       <EntityType Name="FeaturedProduct" BaseType="ODataDemo.Product">
         <NavigationProperty Name="Advertisement" Type="ODataDemo.Advertisement" Partner="FeaturedProduct" />
       </EntityType>
