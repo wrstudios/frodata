@@ -28,7 +28,7 @@ describe OData::EnumType, vcr: {cassette_name: 'v4/enum_type_specs'} do
     end
   end
 
-  let(:enum_type) { OData::EnumType.new(name: 'ProductStatus', service: service) }
+  let(:enum_type) { service.enum_types['ProductStatus'] }
   let(:subject) { enum_type.property_class.new('ProductStatus', nil) }
 
   describe 'is properly parsed from service metadata' do

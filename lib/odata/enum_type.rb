@@ -4,19 +4,19 @@ module OData
   # Enumeration types are nominal types that represent a series of related values.
   # Enumeration types expose these related values as members of the enumeration.
   class EnumType
-    # The name of the EnumType
-    attr_reader :name
-
     # Creates a new EnumType based on the supplied options.
-    # @param options [Hash]
+    # @param type_xml [Nokogiri::XML::Element]
+    # @param service [OData::Service]
     # @return [self]
-    def initialize(options = {})
-      validate_options(options)
+    def initialize(type_definition, service)
+      @type_definition = type_definition
+      @service         = service
+    end
 
-      @name = options[:name].to_s
-      @service = options[:service]
-
-      collect_members
+    # The name of the EnumType
+    # @return [String]
+    def name
+      @name ||= type_definition.attributes['Name'].value
     end
 
     # Returns the namespaced type for the EnumType.
@@ -34,7 +34,7 @@ module OData
     # Returns the members of this EnumType and their values.
     # @return [Hash]
     def members
-      @members
+      @members ||= collect_members
     end
 
     # Returns the property class that implements this `EnumType`.
@@ -61,14 +61,16 @@ module OData
       @service
     end
 
-    def validate_options(options)
-      raise ArgumentError, 'Name is required' unless options[:name]
-      raise ArgumentError, 'Service is required' unless options[:service]
-      raise ArgumentError, 'Not an EnumType' unless options[:service].enum_types.include? options[:name]
+    def type_definition
+      @type_definition
     end
 
     def collect_members
-      @members = service.members_for_enum_type(name)
+      Hash[type_definition.xpath('./Member').map.with_index do |member_xml, index|
+        member_name  = member_xml.attributes['Name'].value
+        member_value = member_xml.attributes['Value'].andand.value.to_i
+        [member_name, member_value || index]
+      end]
     end
   end
 end

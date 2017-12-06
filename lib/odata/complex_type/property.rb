@@ -5,7 +5,6 @@ module OData
     class Property < OData::Property
       def initialize(name, value, options = {})
         super(name, value, options)
-        collect_properties
         init_properties
       end
 
@@ -68,33 +67,31 @@ module OData
 
       # Creates a new property instance from an XML element
       # @param property_xml [Nokogiri::XML::Element]
+      # @param options [Hash]
       # @return [OData::Property]
-      def self.from_xml(property_xml)
+      def self.from_xml(property_xml, options = {})
         nodes = property_xml.element_children
         props = Hash[nodes.map { |el| [el.name, el.content] }]
-        new(property_xml.name, props.to_json)
+        new(property_xml.name, props.to_json, options)
       end
 
       private
 
-      def service
+      def complex_type
         raise NotImplementedError, 'Subclass must override'
       end
 
-      def collect_properties
-        @properties = service.properties_for_complex_type(name)
+      def properties
+        @properties
       end
 
       def init_properties
+        @properties = complex_type.send(:collect_properties)
         set_properties(JSON.parse(@value)) unless @value.nil?
       end
 
       def set_properties(new_properties)
         new_properties.each { |key, value| self[key] = value }
-      end
-
-      def properties
-        @properties
       end
 
       def validate(value)

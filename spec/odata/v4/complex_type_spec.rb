@@ -35,7 +35,7 @@ describe OData::ComplexType, vcr: {cassette_name: 'v4/complex_type_specs'} do
       'Country' => 'USA'
   } }
 
-  let(:complex_type) { OData::ComplexType.new(name: 'Address', service: service) }
+  let(:complex_type) { service.complex_types['Address'] }
   let(:subject) { complex_type.property_class.new('Address', nil) }
 
   describe 'is properly parsed from service metadata' do

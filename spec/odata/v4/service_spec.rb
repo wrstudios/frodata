@@ -55,12 +55,12 @@ describe OData::Service, vcr: {cassette_name: 'v4/service_specs'} do
 
   describe '#complex_types' do
     it { expect(subject.complex_types.size).to eq(1) }
-    it { expect(subject.complex_types).to eq(complex_types) }
+    it { expect(subject.complex_types.keys).to eq(complex_types) }
   end
 
   describe '#enum_types' do
     it { expect(subject.enum_types.size).to eq(1) }
-    it { expect(subject.enum_types).to eq(enum_types)}
+    it { expect(subject.enum_types.keys).to eq(enum_types)}
   end
 
   describe '#navigation_properties' do
