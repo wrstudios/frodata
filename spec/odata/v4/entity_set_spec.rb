@@ -40,13 +40,32 @@ describe OData::EntitySet, vcr: {cassette_name: 'v4/entity_set_specs'} do
     }.call.shuffle.first).to be_a(OData::Entity) }
   end
 
-  it { expect(subject).to respond_to(:count) }
+  describe '#first' do
+    it { expect(subject).to respond_to(:first) }
+
+    describe 'retrieving a single entity' do
+      it { expect(subject.first).to be_a(OData::Entity) }
+      it { expect(subject.first['ID']).to eq(0) }
+    end
+
+    describe 'retrieving multiple entities' do
+      it { expect(subject.first(5)).to be_a(Array) }
+      it { expect(subject.first(5).length).to eq(5) }
+      it do
+        subject.first(5).each do |entity|
+          expect(entity).to be_a(OData::Entity) 
+        end
+      end
+    end
+  end
+
   describe '#count' do
+    it { expect(subject).to respond_to(:count) }
     it { expect(subject.count).to eq(11) }
   end
 
-  it { expect(subject).to respond_to(:query) }
   describe '#query' do
+    it { expect(subject).to respond_to(:query) }
     it { expect(subject.query).to be_a(OData::Query) }
   end
 

@@ -637,4 +637,204 @@ http_interactions:
     adapter_metadata:
       effective_url: http://services.odata.org/V4/OData/OData.svc/Products(99)
   recorded_at: Wed, 29 Nov 2017 01:44:58 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products?$top=1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Typhoeus - https://github.com/typhoeus/typhoeus
+      OData-Version:
+      - '4.0'
+      Accept:
+      - application/atom+xml
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '2179'
+      Content-Type:
+      - application/atom+xml;type=feed;charset=utf-8
+      Server:
+      - Microsoft-IIS/8.0
+      X-Content-Type-Options:
+      - nosniff
+      OData-Version:
+      - 4.0;
+      X-AspNet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      Access-Control-Expose-Headers:
+      - DataServiceVersion
+      Date:
+      - Thu, 07 Dec 2017 21:23:22 GMT
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="utf-8"?><feed xml:base="http://services.odata.org/V4/OData/OData.svc/"
+        xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://docs.oasis-open.org/odata/ns/data"
+        xmlns:m="http://docs.oasis-open.org/odata/ns/metadata" xmlns:georss="http://www.georss.org/georss"
+        xmlns:gml="http://www.opengis.net/gml" m:context="http://services.odata.org/V4/OData/OData.svc/$metadata#Products"><id>http://services.odata.org/V4/OData/OData.svc/Products</id><title
+        type="text">Products</title><updated>2017-12-07T21:23:22Z</updated><link rel="self"
+        title="Products" href="Products" /><entry><id>http://services.odata.org/V4/OData/OData.svc/Products(0)</id><category
+        term="#ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"
+        /><link rel="edit" title="Product" href="Products(0)" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Categories"
+        type="application/xml" title="Categories" href="Products(0)/Categories/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/Categories" type="application/atom+xml;type=feed"
+        title="Categories" href="Products(0)/Categories" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Supplier"
+        type="application/xml" title="Supplier" href="Products(0)/Supplier/$ref" /><link
+        rel="http://docs.oasis-open.org/odata/ns/related/Supplier" type="application/atom+xml;type=entry"
+        title="Supplier" href="Products(0)/Supplier" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/ProductDetail"
+        type="application/xml" title="ProductDetail" href="Products(0)/ProductDetail/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/ProductDetail" type="application/atom+xml;type=entry"
+        title="ProductDetail" href="Products(0)/ProductDetail" /><title /><updated>2017-12-07T21:23:22Z</updated><author><name
+        /></author><content type="application/xml"><m:properties><d:ID m:type="Int32">0</d:ID><d:Name>Bread</d:Name><d:Description>Whole
+        grain bread</d:Description><d:ReleaseDate m:type="DateTimeOffset">1992-01-01T00:00:00Z</d:ReleaseDate><d:DiscontinuedDate
+        m:null="true" /><d:Rating m:type="Int16">4</d:Rating><d:Price m:type="Double">2.5</d:Price></m:properties></content></entry></feed>
+    http_version: '1.1'
+    adapter_metadata:
+      effective_url: http://services.odata.org/V4/OData/OData.svc/Products?$top=1
+  recorded_at: Thu, 07 Dec 2017 21:23:23 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products?$top=5
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Typhoeus - https://github.com/typhoeus/typhoeus
+      OData-Version:
+      - '4.0'
+      Accept:
+      - application/atom+xml
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '8622'
+      Content-Type:
+      - application/atom+xml;type=feed;charset=utf-8
+      Server:
+      - Microsoft-IIS/8.0
+      X-Content-Type-Options:
+      - nosniff
+      OData-Version:
+      - 4.0;
+      X-AspNet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      Access-Control-Expose-Headers:
+      - DataServiceVersion
+      Date:
+      - Thu, 07 Dec 2017 21:28:35 GMT
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="utf-8"?><feed xml:base="http://services.odata.org/V4/OData/OData.svc/"
+        xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://docs.oasis-open.org/odata/ns/data"
+        xmlns:m="http://docs.oasis-open.org/odata/ns/metadata" xmlns:georss="http://www.georss.org/georss"
+        xmlns:gml="http://www.opengis.net/gml" m:context="http://services.odata.org/V4/OData/OData.svc/$metadata#Products"><id>http://services.odata.org/V4/OData/OData.svc/Products</id><title
+        type="text">Products</title><updated>2017-12-07T21:28:34Z</updated><link rel="self"
+        title="Products" href="Products" /><entry><id>http://services.odata.org/V4/OData/OData.svc/Products(0)</id><category
+        term="#ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"
+        /><link rel="edit" title="Product" href="Products(0)" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Categories"
+        type="application/xml" title="Categories" href="Products(0)/Categories/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/Categories" type="application/atom+xml;type=feed"
+        title="Categories" href="Products(0)/Categories" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Supplier"
+        type="application/xml" title="Supplier" href="Products(0)/Supplier/$ref" /><link
+        rel="http://docs.oasis-open.org/odata/ns/related/Supplier" type="application/atom+xml;type=entry"
+        title="Supplier" href="Products(0)/Supplier" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/ProductDetail"
+        type="application/xml" title="ProductDetail" href="Products(0)/ProductDetail/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/ProductDetail" type="application/atom+xml;type=entry"
+        title="ProductDetail" href="Products(0)/ProductDetail" /><title /><updated>2017-12-07T21:28:34Z</updated><author><name
+        /></author><content type="application/xml"><m:properties><d:ID m:type="Int32">0</d:ID><d:Name>Bread</d:Name><d:Description>Whole
+        grain bread</d:Description><d:ReleaseDate m:type="DateTimeOffset">1992-01-01T00:00:00Z</d:ReleaseDate><d:DiscontinuedDate
+        m:null="true" /><d:Rating m:type="Int16">4</d:Rating><d:Price m:type="Double">2.5</d:Price></m:properties></content></entry><entry><id>http://services.odata.org/V4/OData/OData.svc/Products(1)</id><category
+        term="#ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"
+        /><link rel="edit" title="Product" href="Products(1)" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Categories"
+        type="application/xml" title="Categories" href="Products(1)/Categories/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/Categories" type="application/atom+xml;type=feed"
+        title="Categories" href="Products(1)/Categories" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Supplier"
+        type="application/xml" title="Supplier" href="Products(1)/Supplier/$ref" /><link
+        rel="http://docs.oasis-open.org/odata/ns/related/Supplier" type="application/atom+xml;type=entry"
+        title="Supplier" href="Products(1)/Supplier" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/ProductDetail"
+        type="application/xml" title="ProductDetail" href="Products(1)/ProductDetail/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/ProductDetail" type="application/atom+xml;type=entry"
+        title="ProductDetail" href="Products(1)/ProductDetail" /><title /><updated>2017-12-07T21:28:34Z</updated><author><name
+        /></author><content type="application/xml"><m:properties><d:ID m:type="Int32">1</d:ID><d:Name>Milk</d:Name><d:Description>Low
+        fat milk</d:Description><d:ReleaseDate m:type="DateTimeOffset">1995-10-01T00:00:00Z</d:ReleaseDate><d:DiscontinuedDate
+        m:null="true" /><d:Rating m:type="Int16">3</d:Rating><d:Price m:type="Double">3.5</d:Price></m:properties></content></entry><entry><id>http://services.odata.org/V4/OData/OData.svc/Products(2)</id><category
+        term="#ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"
+        /><link rel="edit" title="Product" href="Products(2)" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Categories"
+        type="application/xml" title="Categories" href="Products(2)/Categories/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/Categories" type="application/atom+xml;type=feed"
+        title="Categories" href="Products(2)/Categories" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Supplier"
+        type="application/xml" title="Supplier" href="Products(2)/Supplier/$ref" /><link
+        rel="http://docs.oasis-open.org/odata/ns/related/Supplier" type="application/atom+xml;type=entry"
+        title="Supplier" href="Products(2)/Supplier" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/ProductDetail"
+        type="application/xml" title="ProductDetail" href="Products(2)/ProductDetail/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/ProductDetail" type="application/atom+xml;type=entry"
+        title="ProductDetail" href="Products(2)/ProductDetail" /><title /><updated>2017-12-07T21:28:34Z</updated><author><name
+        /></author><content type="application/xml"><m:properties><d:ID m:type="Int32">2</d:ID><d:Name>Vint
+        soda</d:Name><d:Description>Americana Variety - Mix of 6 flavors</d:Description><d:ReleaseDate
+        m:type="DateTimeOffset">2000-10-01T00:00:00Z</d:ReleaseDate><d:DiscontinuedDate
+        m:null="true" /><d:Rating m:type="Int16">3</d:Rating><d:Price m:type="Double">20.9</d:Price></m:properties></content></entry><entry><id>http://services.odata.org/V4/OData/OData.svc/Products(3)</id><category
+        term="#ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"
+        /><link rel="edit" title="Product" href="Products(3)" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Categories"
+        type="application/xml" title="Categories" href="Products(3)/Categories/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/Categories" type="application/atom+xml;type=feed"
+        title="Categories" href="Products(3)/Categories" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Supplier"
+        type="application/xml" title="Supplier" href="Products(3)/Supplier/$ref" /><link
+        rel="http://docs.oasis-open.org/odata/ns/related/Supplier" type="application/atom+xml;type=entry"
+        title="Supplier" href="Products(3)/Supplier" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/ProductDetail"
+        type="application/xml" title="ProductDetail" href="Products(3)/ProductDetail/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/ProductDetail" type="application/atom+xml;type=entry"
+        title="ProductDetail" href="Products(3)/ProductDetail" /><title /><updated>2017-12-07T21:28:34Z</updated><author><name
+        /></author><content type="application/xml"><m:properties><d:ID m:type="Int32">3</d:ID><d:Name>Havina
+        Cola</d:Name><d:Description>The Original Key Lime Cola</d:Description><d:ReleaseDate
+        m:type="DateTimeOffset">2005-10-01T00:00:00Z</d:ReleaseDate><d:DiscontinuedDate
+        m:type="DateTimeOffset">2006-10-01T00:00:00Z</d:DiscontinuedDate><d:Rating
+        m:type="Int16">3</d:Rating><d:Price m:type="Double">19.9</d:Price></m:properties></content></entry><entry><id>http://services.odata.org/V4/OData/OData.svc/Products(4)</id><category
+        term="#ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"
+        /><link rel="edit" title="Product" href="Products(4)" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Categories"
+        type="application/xml" title="Categories" href="Products(4)/Categories/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/Categories" type="application/atom+xml;type=feed"
+        title="Categories" href="Products(4)/Categories" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/Supplier"
+        type="application/xml" title="Supplier" href="Products(4)/Supplier/$ref" /><link
+        rel="http://docs.oasis-open.org/odata/ns/related/Supplier" type="application/atom+xml;type=entry"
+        title="Supplier" href="Products(4)/Supplier" /><link rel="http://docs.oasis-open.org/odata/ns/relatedlinks/ProductDetail"
+        type="application/xml" title="ProductDetail" href="Products(4)/ProductDetail/$ref"
+        /><link rel="http://docs.oasis-open.org/odata/ns/related/ProductDetail" type="application/atom+xml;type=entry"
+        title="ProductDetail" href="Products(4)/ProductDetail" /><title /><updated>2017-12-07T21:28:34Z</updated><author><name
+        /></author><content type="application/xml"><m:properties><d:ID m:type="Int32">4</d:ID><d:Name>Fruit
+        Punch</d:Name><d:Description>Mango flavor, 8.3 Ounce Cans (Pack of 24)</d:Description><d:ReleaseDate
+        m:type="DateTimeOffset">2003-01-05T00:00:00Z</d:ReleaseDate><d:DiscontinuedDate
+        m:null="true" /><d:Rating m:type="Int16">3</d:Rating><d:Price m:type="Double">22.99</d:Price></m:properties></content></entry></feed>
+    http_version: '1.1'
+    adapter_metadata:
+      effective_url: http://services.odata.org/V4/OData/OData.svc/Products?$top=5
+  recorded_at: Thu, 07 Dec 2017 21:28:34 GMT
 recorded_with: VCR 2.9.3
