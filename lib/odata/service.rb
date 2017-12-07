@@ -13,7 +13,7 @@ module OData
 
     MIME_TYPES = {
       atom:  'application/atom+xml',
-      json:  'application/json;odata.metadata=full',
+      json:  'application/json',
       plain: 'text/plain'
     }
 
@@ -59,52 +59,52 @@ module OData
 
     # Returns a hash of EntitySet names keyed to their respective EntityType name
     def entity_sets
-      @entity_sets ||= Hash[metadata.xpath('//EntityContainer/EntitySet').collect {|entity|
+      @entity_sets ||= metadata.xpath('//EntityContainer/EntitySet').collect {|entity|
         [
           entity.attributes['EntityType'].value.gsub("#{namespace}.", ''),
           entity.attributes['Name'].value
         ]
-      }]
+      }.to_h
     end
 
     # Returns a list of ComplexTypes used by the service
     # @return [Hash<String, OData::ComplexType>]
     def complex_types
-      @complex_types ||= Hash[metadata.xpath('//ComplexType').map do |entity|
+      @complex_types ||= metadata.xpath('//ComplexType').map do |entity|
         [
           entity.attributes['Name'].value,
           ::OData::ComplexType.new(entity, self)
         ]
-      end]
+      end.to_h
     end
 
     # Returns a list of EnumTypes used by the service
     # @return [Hash<String, OData::EnumType>]
     def enum_types
-      @enum_types ||= Hash[metadata.xpath('//EnumType').map do |entity|
+      @enum_types ||= metadata.xpath('//EnumType').map do |entity|
         [
           entity.attributes['Name'].value,
           ::OData::EnumType.new(entity, self)
         ]
-      end]
+      end.to_h
     end
 
     # Returns a hash for finding an association through an entity type's defined
     # NavigationProperty elements.
     # @return [Hash<Hash<OData::Association>>]
     def navigation_properties
-      @navigation_properties ||= Hash[metadata.xpath('//EntityType').collect do |entity_type_def|
+      @navigation_properties ||= metadata.xpath('//EntityType').collect do |entity_type_def|
         entity_type_name = entity_type_def.attributes['Name'].value
         [
             entity_type_name,
-            Hash[entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
+            entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
               [
                   nav_property_def.attributes['Name'].value,
                   build_navigation_property(nav_property_def)
               ]
-            end]
+            end.to_h
         ]
-      end]
+      end.to_h
     end
 
     # Returns the namespace defined on the service's schema
@@ -278,7 +278,7 @@ module OData
       raise "Bad Request. #{error_message(response)}" if response.code == 400
       raise "Access Denied" if response.code == 401
       raise "Forbidden" if response.code == 403
-      raise "Invalid URL" if [0,404].include?(response.code)
+      raise "Not Found" if [0,404].include?(response.code)
       raise "Method Not Allowed" if response.code == 405
       raise "Not Acceptable" if response.code == 406
       raise "Request Entity Too Large" if response.code == 413
@@ -309,9 +309,9 @@ module OData
     end
 
     def build_navigation_property(nav_property_def)
-      options = Hash[nav_property_def.attributes.map do |name, attr|
+      options = nav_property_def.attributes.map do |name, attr|
         [name.downcase.to_sym, attr.value]
-      end]
+      end.to_h
       ::OData::NavigationProperty.new(options)
     end
 
