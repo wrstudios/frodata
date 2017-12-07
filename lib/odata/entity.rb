@@ -153,9 +153,15 @@ module OData
     # @return [String]
     def to_json
       # TODO: add @odata.context
-      Hash[property_names.map do |name|
+      to_hash.to_json
+    end
+
+    # Converts Entity to a hash.
+    # @return [Hash]
+    def to_hash
+      property_names.map do |name|
         [name, get_property(name).json_value]
-      end].to_json
+      end.to_h
     end
 
     # Returns the primary key for the Entity.
