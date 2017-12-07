@@ -30,6 +30,10 @@ module OData
 
       attr_accessor :result
 
+      def result_xml
+        @result_xml ||= ::Nokogiri::XML(result.body).remove_namespaces!
+      end
+
       def service
         query.entity_set.service
       end
@@ -39,16 +43,22 @@ module OData
       end
 
       def process_results(&block)
-        service.find_entities(result).each do |entity_xml|
+        find_entities(result).each do |entity_xml|
           entity = OData::Entity.from_xml(entity_xml, entity_options)
           block_given? ? block.call(entity) : yield(entity)
         end
       end
 
+      # Find entity entries in a result set
+      #
+      # @param results [Typhoeus::Response]
+      # @return [Nokogiri::XML::NodeSet]
+      def find_entities(results)
+        result_xml.xpath('//entry')
+      end
+
       def next_page
-        doc = ::Nokogiri::XML(result.body)
-        doc.remove_namespaces!
-        doc.xpath("/feed/link[@rel='next']").first
+        result_xml.xpath("/feed/link[@rel='next']").first
       end
 
       def next_page_url
