@@ -19,6 +19,17 @@ module OData
       OData::Query::Criteria.new(property: property_instance)
     end
 
+    # Find the Entity with the supplied key value.
+    # @param key [to_s] primary key to lookup
+    # @return [OData::Entity,nil]
+    def find(key)
+      entity = @entity_set.new_entity
+      key_property = entity.get_property(entity.primary_key)
+      key_property.value = key
+
+      execute("#{entity_set.name}(#{key_property.url_value})").first
+    end
+
     # Adds a filter criteria to the query.
     # For filter syntax see https://msdn.microsoft.com/en-us/library/gg309461.aspx
     # Syntax:
@@ -107,8 +118,8 @@ module OData
 
     # Execute the query.
     # @return [OData::Query::Result]
-    def execute
-      response = entity_set.service.execute(self.to_s)
+    def execute(query = self.to_s)
+      response = entity_set.service.execute(query)
       OData::Query::Result.new(self, response)
     end
 
