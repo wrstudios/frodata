@@ -59,7 +59,7 @@ module OData
     # @param property_name [to_s]
     # @param value [*]
     def []=(property_name, value)
-      properties[property_name.to_s].value = value
+      get_property(property_name).value = value
     rescue NoMethodError
       raise ArgumentError, "Unknown property: #{property_name}"
     end
