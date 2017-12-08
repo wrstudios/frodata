@@ -165,7 +165,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
       File.read('spec/fixtures/files/v4/product_0.json')
     }
 
-    it { expect(OData::Entity).to respond_to(:from_xml) }
+    it { expect(OData::Entity).to respond_to(:from_json) }
     it { expect(subject).to be_a(OData::Entity) }
 
     it { expect(subject.name).to eq('Product') }
