@@ -36,6 +36,21 @@ describe OData::Query, vcr: {cassette_name: 'v4/query_specs'} do
     it { expect(subject.where(criteria).to_s).to eq(query_string) }
   end
 
+  it { expect(subject).to respond_to(:search) }
+  describe '#search' do
+    let(:term) { '"mountain bike"' }
+    let(:query_string) { 'Products?$search="mountain bike"' }
+
+    it { expect(subject.search(term)).to eq(subject) }
+    it { expect(subject.search(term).to_s).to eq(query_string) }
+
+    describe 'with multiple terms' do
+      let(:query_string) { 'Products?$search="mountain bike" AND NOT clothing' }
+
+      it { expect(subject.search(term).search('NOT clothing').to_s).to eq(query_string) }
+    end
+  end
+
   #it { expect(subject).to respond_to(:and) }
   describe '#and' do
     it { pending; fail }

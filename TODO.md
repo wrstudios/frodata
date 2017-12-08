@@ -29,7 +29,7 @@ This is a non-complete list of things that need to be done in order to achieve O
 
 [ ] Changes to querying
   [x] `$count=true` replaces `$inlinecount=allpages`
-  [ ] ~New `$search` param for fulltext search (not needed for RESO)~
+  [x] New `$search` param for fulltext search
 
 [ ] Logging
 

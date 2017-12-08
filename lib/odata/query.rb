@@ -52,6 +52,13 @@ module OData
       self
     end
 
+    # Adds a fulltext search term to the query
+    # @param term [String]
+    def search(term)
+      criteria_set[:search] << term
+      self
+    end
+
     # Adds a filter criteria to the query with 'and' logical operator.
     # @param criteria
     #def and(criteria)
@@ -154,19 +161,21 @@ module OData
 
     def setup_empty_criteria_set
       @criteria_set = {
-          filter:       [],
-          select:       [],
-          expand:       [],
-          orderby:      [],
-          skip:         0,
-          top:          0,
-          inline_count: false
+        filter:       [],
+        search:       [],
+        select:       [],
+        expand:       [],
+        orderby:      [],
+        skip:         0,
+        top:          0,
+        inline_count: false
       }
     end
 
     def assemble_criteria
       criteria = [
         filter_criteria,
+        search_criteria,
         list_criteria(:orderby),
         list_criteria(:expand),
         list_criteria(:select),
@@ -180,8 +189,14 @@ module OData
 
     def filter_criteria
       return nil if criteria_set[:filter].empty?
-      filters = criteria_set[:filter].collect {|criteria| criteria.to_s}
+      filters = criteria_set[:filter].collect(&:to_s)
       "$filter=#{filters.join(' and ')}"
+    end
+
+    def search_criteria
+      return nil if criteria_set[:search].empty?
+      filters = criteria_set[:search].collect(&:to_s)
+      "$search=#{filters.join(' AND ')}"
     end
 
     def list_criteria(name)
