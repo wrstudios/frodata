@@ -51,8 +51,6 @@ module OData
       else
         get_property(property_name).value
       end
-    rescue NoMethodError
-      raise ArgumentError, "Unknown property: #{property_name}"
     end
 
     # Set property value
@@ -60,8 +58,6 @@ module OData
     # @param value [*]
     def []=(property_name, value)
       get_property(property_name).value = value
-    rescue NoMethodError
-      raise ArgumentError, "Unknown property: #{property_name}"
     end
 
     def get_property(property_name)
@@ -72,7 +68,7 @@ module OData
         set_property(prop_name, property.dup)
         properties_xml_value.delete(prop_name)
       end
-      properties[prop_name]
+      properties[prop_name] or raise ArgumentError, "Unknown property: #{property_name}"
     end
 
     def property_names
