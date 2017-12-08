@@ -4,10 +4,13 @@ module OData
   # instantiated directly, but can be. Normally you will access a Query by
   # first asking for one from the OData::EntitySet you want to query.
   class Query
+    attr_reader :options
+
     # Create a new Query for the provided EntitySet
     # @param entity_set [OData::EntitySet]
-    def initialize(entity_set)
+    def initialize(entity_set, options = {})
       @entity_set = entity_set
+      @options    = options
       setup_empty_criteria_set
     end
 
@@ -127,7 +130,7 @@ module OData
     # @return [Integer]
     def count
       url_chunk = ["#{entity_set.name}/$count", assemble_criteria].compact.join('?')
-      entity_set.service.execute(url_chunk, format: :plain).body.to_i
+      entity_set.service.execute(url_chunk).body.to_i
     end
 
     # Checks whether a query will return any results by calling #count

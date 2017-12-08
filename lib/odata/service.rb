@@ -140,8 +140,7 @@ module OData
     # @param additional_options [Hash] options to pass to Typhoeus
     # @return [Typhoeus::Response]
     def execute(url_chunk, additional_options = {})
-      format = additional_options.delete(:format) || :atom
-      accept = MIME_TYPES[format.to_sym] or raise "Invalid format '#{format}'"
+      accept_header = {'Accept' => MIME_TYPES.values.join(',')}
 
       request_options = options[:typhoeus]
         .merge({ method: :get })
@@ -149,7 +148,7 @@ module OData
 
       # Don't overwrite Accept header if already present
       unless request_options[:headers]['Accept']
-        request_options[:headers] = request_options[:headers].merge('Accept' => accept)
+        request_options[:headers] = request_options[:headers].merge(accept_header)
       end
 
       request = ::Typhoeus::Request.new(
