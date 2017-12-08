@@ -13,6 +13,7 @@ module OData
       def initialize(query, result)
         @query      = query
         @result     = result
+        check_result_type
       end
 
       # Provided for Enumerable functionality
@@ -30,8 +31,28 @@ module OData
 
       attr_accessor :result
 
-      def result_xml
-        @result_xml ||= ::Nokogiri::XML(result.body).remove_namespaces!
+      def check_result_type
+        # Dynamically extend instance with methods for
+        # processing the current result type
+        if is_atom_result?
+          extend OData::Query::Result::Atom
+        elsif is_json_result?
+          extend OData::Query::Result::JSON
+        else
+          raise ArgumentError, "Invalid result type '#{content_type}'"
+        end
+      end
+
+      def is_atom_result?
+        content_type =~ /#{Regexp.escape OData::Service::MIME_TYPES[:atom]}/
+      end
+
+      def is_json_result?
+        content_type =~ /#{Regexp.escape OData::Service::MIME_TYPES[:json]}/
+      end
+
+      def content_type
+        result.headers['Content-Type'] || ''
       end
 
       def service
@@ -41,29 +62,9 @@ module OData
       def entity_options
         query.entity_set.entity_options
       end
-
-      def process_results(&block)
-        find_entities(result).each do |entity_xml|
-          entity = OData::Entity.from_xml(entity_xml, entity_options)
-          block_given? ? block.call(entity) : yield(entity)
-        end
-      end
-
-      # Find entity entries in a result set
-      #
-      # @param results [Typhoeus::Response]
-      # @return [Nokogiri::XML::NodeSet]
-      def find_entities(results)
-        result_xml.xpath('//entry')
-      end
-
-      def next_page
-        result_xml.xpath("/feed/link[@rel='next']").first
-      end
-
-      def next_page_url
-        next_page.attributes['href'].value.gsub(service.service_url, '')
-      end
     end
   end
 end
+
+require 'odata/query/result/atom'
+require 'odata/query/result/json'
