@@ -27,6 +27,7 @@ module OData
       private
 
       def validate(value)
+        return if value.nil? && allows_nil?
         unless [0,1,'0','1','true','false',true,false].include?(value)
           raise ArgumentError, 'Value is outside accepted range: true or false'
         end

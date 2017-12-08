@@ -59,4 +59,14 @@ describe OData::Properties::Boolean do
       subject.value
     }.call).to eq(true) }
   end
+
+  describe 'setting to null' do
+    let(:subject) { OData::Properties::Boolean.new('Truthy', 'true') }
+
+    it { expect(subject.allows_nil?).to eq(true) }
+    it { expect(lambda {
+      subject.value = nil
+      subject.value
+    }.call).to eq(nil) }
+  end
 end
