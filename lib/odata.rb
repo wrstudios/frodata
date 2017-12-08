@@ -1,5 +1,6 @@
 require 'uri'
 require 'date'
+require 'time'
 require 'bigdecimal'
 require 'nokogiri'
 require 'typhoeus'

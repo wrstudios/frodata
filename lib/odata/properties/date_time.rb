@@ -62,7 +62,7 @@ module OData
         begin
           return if value.nil? && allows_nil?
           return if value.is_a?(date_class)
-          date_class.strptime(value, strptime_format)
+          date_class.parse(value)
         rescue
           raise ArgumentError, "Value '#{value}' is not a date time format that can be parsed"
         end
@@ -70,8 +70,11 @@ module OData
 
       def parse_value(value)
         return value if value.nil? && allows_nil?
-        parsed_value = value
-        parsed_value = date_class.parse(value) unless value.is_a?(date_class)
+        if value.is_a?(date_class)
+          parsed_value = value
+        else
+          parsed_value = date_class.parse(value)
+        end
         parsed_value.strftime(strptime_format)
       end
     end
