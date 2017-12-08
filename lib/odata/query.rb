@@ -190,7 +190,7 @@ module OData
 
     # inlinecount not supported by Microsoft CRM 2011
     def inline_count_criteria
-      criteria_set[:inline_count] ? '$inlinecount=allpages' : nil
+      criteria_set[:inline_count] ? '$count=true' : nil
     end
 
     def paging_criteria(name)

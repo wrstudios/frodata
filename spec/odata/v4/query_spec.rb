@@ -70,7 +70,7 @@ describe OData::Query, vcr: {cassette_name: 'v4/query_specs'} do
     it { expect(subject.include_count).to eq(subject) }
     it 'properly formats query with include_count specified' do
       subject.include_count
-      expect(subject.to_s).to eq('Products?$inlinecount=allpages')
+      expect(subject.to_s).to eq('Products?$count=true')
     end
   end
 

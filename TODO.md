@@ -28,7 +28,7 @@ This is a non-complete list of things that need to be done in order to achieve O
   [ ] New `ContainsTarget` property
 
 [ ] Changes to querying
-  [ ] ~`$count=true` replaces `$inlinecount=allpages`~
+  [x] `$count=true` replaces `$inlinecount=allpages`
   [ ] ~New `$search` param for fulltext search (not needed for RESO)~
 
 [ ] Logging
