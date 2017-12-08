@@ -35,6 +35,8 @@ describe OData::EnumType, vcr: {cassette_name: 'v4/enum_type_specs'} do
     it { expect(enum_type.name).to eq('ProductStatus') }
     it { expect(enum_type.namespace).to eq('ODataDemo') }
     it { expect(enum_type.type).to eq('ODataDemo.ProductStatus') }
+    it { expect(enum_type.is_flags?).to eq(false) }
+    it { expect(enum_type.underlying_type).to eq('Edm.Byte') }
     it { expect(enum_type.members.keys).to eq(%w{Available LowStock Backordered Discontinued}) }
   end
 
@@ -56,6 +58,33 @@ describe OData::EnumType, vcr: {cassette_name: 'v4/enum_type_specs'} do
       expect {
         subject.value = 'Invalid'
       }.to raise_error(ArgumentError)
+    end
+
+    context 'with multiple values' do
+      context 'when is_flags=false' do
+        it 'does not allow setting valid values' do
+          expect {
+            subject.value = 'Available, Backordered'
+          }.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'when is_flags=true' do
+        before do
+          subject.define_singleton_method(:is_flags?) { true }
+        end
+
+        it 'allows setting valid values' do
+          subject.value = 'Available, Backordered'
+          expect(subject.value).to eq('Available,Backordered')
+        end
+
+        it 'does not allow setting an invalid value' do
+          expect {
+            subject.value = 'Available, Invalid'
+          }.to raise_error(ArgumentError)
+        end
+      end
     end
   end
 end

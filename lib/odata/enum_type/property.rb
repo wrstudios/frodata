@@ -17,7 +17,7 @@ module OData
       # @params new_value [String]
       def value=(new_value)
         validate(new_value)
-        @value = new_value.to_s
+        @value = parse_value(new_value).andand.join(',')
       end
 
       # Value to be used in URLs.
@@ -34,13 +34,18 @@ module OData
 
       def validate(value)
         return if value.nil? && allows_nil?
-        unless members.keys.include?(value)
-          raise ArgumentError, "Value must be one of #{members.keys}, but was: '#{value}'"
+        values = parse_value(value)
+        raise ArgumentError, 'Multiple values are not allowed for this property' if values.length > 1 && !is_flags?
+        values.each do |value|
+          unless members.keys.include?(value)
+            raise ArgumentError, "Value must be one of #{members.keys}, but was: '#{value}'"
+          end
         end
       end
 
-      def validate_options(options)
-        raise ArgumentError, 'Type is required' unless options[:type]
+      def parse_value(value)
+        return nil if value.nil?
+        value.split(',').map(&:strip)
       end
     end
   end

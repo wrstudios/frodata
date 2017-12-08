@@ -18,7 +18,7 @@
         <NavigationProperty Name="Supplier" Type="ODataDemo.Supplier" Partner="Products" />
         <NavigationProperty Name="ProductDetail" Type="ODataDemo.ProductDetail" Partner="Product" />
       </EntityType>
-      <EnumType Name="ProductStatus">
+      <EnumType Name="ProductStatus" UnderlyingType="Edm.Byte">
         <Member Name="Available" />
         <Member Name="LowStock" />
         <Member Name="Backordered" />

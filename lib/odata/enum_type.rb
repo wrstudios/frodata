@@ -16,13 +16,25 @@ module OData
     # The name of the EnumType
     # @return [String]
     def name
-      @name ||= type_definition.attributes['Name'].value
+      options['Name']
     end
 
     # Returns the namespaced type for the EnumType.
     # @return [String]
     def type
       "#{namespace}.#{name}"
+    end
+
+    # Whether this EnumType supports setting multiple values.
+    # @return [Boolean]
+    def is_flags?
+      options['IsFlags'] == 'true'
+    end
+
+    # The underlying type of this EnumType.
+    # @return [String]
+    def underlying_type
+      options['UnderlyingType'] || 'Edm.Int32'
     end
 
     # Returns the namespace this EnumType belongs to.
@@ -40,12 +52,13 @@ module OData
     # Returns the property class that implements this `EnumType`.
     # @return [Class < OData::EnumType::Property]
     def property_class
-      @property_class ||= lambda { |type, members|
+      @property_class ||= lambda { |type, members, is_flags|
         klass = Class.new ::OData::EnumType::Property
         klass.send(:define_method, :type) { type }
         klass.send(:define_method, :members) { members }
+        klass.send(:define_method, :is_flags?) { is_flags }
         klass
-      }.call(type, members)
+      }.call(type, members, is_flags?)
     end
 
     # Returns the value of the requested member.
@@ -63,6 +76,12 @@ module OData
 
     def type_definition
       @type_definition
+    end
+
+    def options
+      @options = type_definition.attributes.map do |name, attr|
+        [name, attr.value]
+      end.to_h
     end
 
     def collect_members
