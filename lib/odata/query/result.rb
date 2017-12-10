@@ -27,6 +27,12 @@ module OData
         end
       end
 
+      # Checks whether the result set contains any results
+      # @return [Boolean]
+      def empty?
+        find_entities.empty?
+      end
+
       private
 
       attr_accessor :result
