@@ -22,6 +22,7 @@ module OData
       def each(&block)
         process_results(&block)
         until next_page.nil?
+          # ensure query gets executed with the same options
           result = query.execute(next_page_url)
           process_results(&block)
         end

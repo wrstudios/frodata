@@ -6,6 +6,8 @@ module OData
   class Query
     attr_reader :options
 
+    include InBatches
+
     # Create a new Query for the provided EntitySet
     # @param entity_set [OData::EntitySet]
     def initialize(entity_set, options = {})

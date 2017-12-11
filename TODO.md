@@ -7,6 +7,7 @@ This is a non-complete list of things that need to be done in order to achieve O
 [x] `DataServiceVersion` headers changes to `OData-Version`
 [x] Atom: update namespace URIs
 [x] Implement JSON data format
+  [x] with batch processing
 [ ] Implement missing/new OData V4 types
   [x] `Edm.Date` (V4/RESO)
   [ ] `Edm.Duration` (V4)

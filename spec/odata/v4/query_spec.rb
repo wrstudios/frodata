@@ -145,4 +145,41 @@ describe OData::Query, vcr: {cassette_name: 'v4/query_specs'} do
       it { expect(subject.where(empty_criteria).empty?).to eq(true) }
     end
   end
+
+  describe '#in_batches' do
+    it { expect(subject).to respond_to(:in_batches) }
+    it 'returns OData::Entities in batches of specified size' do
+      batch_count = entity_count = 0
+
+      subject.in_batches(of: 5) do |batch|
+        expect(batch).to be_a(OData::Query::Result)
+        expect(batch.count).to eq(5) unless batch_count == 2
+
+        batch.each do |entity|
+          expect(entity).to be_a(OData::Entity)
+          expect(entity.type).to eq('Product')
+          entity_count += 1
+        end
+
+        batch_count += 1
+      end
+
+      expect(batch_count).to eq(3)
+      expect(entity_count).to eq(11)
+    end
+
+    describe '#each' do
+      it 'returns OData::Entities' do
+        entity_count = 0
+
+        subject.in_batches(of: 5).each do |entity|
+          expect(entity).to be_a(OData::Entity)
+          expect(entity.type).to eq('Product')
+          entity_count += 1
+        end
+
+        expect(entity_count).to eq(11)
+      end
+    end
+  end
 end
