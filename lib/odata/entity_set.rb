@@ -64,9 +64,10 @@ module OData
     end
 
     # Returns a query targetted at the current EntitySet.
+    # @param options [Hash] query options
     # @return [OData::Query]
-    def query
-      OData::Query.new(self)
+    def query(options = {})
+      OData::Query.new(self, options)
     end
 
     # Find the Entity with the supplied key value.

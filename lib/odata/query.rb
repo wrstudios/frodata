@@ -129,7 +129,7 @@ module OData
     # Execute the query.
     # @return [OData::Query::Result]
     def execute(query = self.to_s)
-      response = entity_set.service.execute(query)
+      response = entity_set.service.execute(query, options)
       OData::Query::Result.new(self, response)
     end
 

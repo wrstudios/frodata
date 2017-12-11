@@ -140,7 +140,8 @@ module OData
     # @param additional_options [Hash] options to pass to Typhoeus
     # @return [Typhoeus::Response]
     def execute(url_chunk, additional_options = {})
-      accept_header = {'Accept' => MIME_TYPES.values.join(',')}
+      accept = content_type(additional_options.delete(:format) || :auto)
+      accept_header = {'Accept' => accept }
 
       request_options = options[:typhoeus]
         .merge({ method: :get })
@@ -249,6 +250,16 @@ module OData
               timeout: HTTP_TIMEOUT
           }
       }
+    end
+
+    def content_type(format)
+      if format == :auto
+        MIME_TYPES.values.join(',')
+      elsif MIME_TYPES.has_key? format
+        MIME_TYPES[format]
+      else
+        raise ArgumentError, "Unknown format '#{format}'"
+      end
     end
 
     def metadata
