@@ -23,17 +23,19 @@ This is a non-complete list of things that need to be done in order to achieve O
 
 [ ] Changes to `NavigationProperty`
   [x] No more associations (but we probably still need a proxy class)
-  [ ] New `Type` property
-  [ ] New `Nullable` property
-  [ ] New `Partner` property
+  [x] New `Type` property
+  [x] New `Nullable` property
+  [x] New `Partner` property
   [ ] New `ContainsTarget` property
 
 [ ] Changes to querying
   [x] `$count=true` replaces `$inlinecount=allpages`
   [x] New `$search` param for fulltext search
+  [ ] [Lambda operators][1]
 
 [ ] Logging
 
+[1]: http://docs.oasis-open.org/odata/odata/v4.0/errata02/os/complete/part2-url-conventions/odata-v4.0-errata02-os-part2-url-conventions-complete.html#_Toc406398149
 
 ## Questions / Thoughts
 
