@@ -100,7 +100,7 @@ module OData
             entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
               [
                   nav_property_def.attributes['Name'].value,
-                  build_navigation_property(nav_property_def)
+                  ::OData::NavigationProperty.build(nav_property_def)
               ]
             end.to_h
         ]
@@ -316,13 +316,6 @@ module OData
       end
 
       return [property_name, property]
-    end
-
-    def build_navigation_property(nav_property_def)
-      options = nav_property_def.attributes.map do |name, attr|
-        [name.downcase.to_sym, attr.value]
-      end.to_h
-      ::OData::NavigationProperty.new(options)
     end
 
     def register_custom_types
