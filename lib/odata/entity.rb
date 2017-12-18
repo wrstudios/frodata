@@ -91,7 +91,6 @@ module OData
         end
 
         new_properties.each do |property_name, property_value|
-          next if property_name =~ /^@odata/
           self[property_name] = property_value
         end
       end
@@ -119,6 +118,7 @@ module OData
     def self.from_json(json, options = {})
       return nil if json.nil?
       json = JSON.parse(json.to_s) unless json.is_a?(Hash)
+      json.delete_if { |key, value| key =~ /^@odata/ }
       with_properties(json, options)
     end
 

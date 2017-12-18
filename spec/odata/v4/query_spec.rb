@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe OData::Query, vcr: {cassette_name: 'v4/query_specs'} do
   before(:example) do
-    OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo')
+    OData::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
   end
 
   let(:subject) { OData::Query.new(entity_set) }
@@ -18,7 +18,7 @@ describe OData::Query, vcr: {cassette_name: 'v4/query_specs'} do
   it { expect(subject).to respond_to(:[]) }
   describe '#[]' do
     it { expect(subject[:Name]).to be_a(OData::Query::Criteria) }
-    it { puts "Subject[:Name].property=#{subject[:Name].property} class=#{subject[:Name].property.class}"; puts "Subject=#{subject.inspect}"; expect(subject[:Name].property).to be_a(OData::Property) }
+    it {  expect(subject[:Name].property).to be_a(OData::Property) }
   end
 
   it { expect(subject).to respond_to(:find) }

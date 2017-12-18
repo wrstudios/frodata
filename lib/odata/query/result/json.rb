@@ -25,8 +25,12 @@ module OData
           @result_json ||= ::JSON.parse(result.body)
         end
 
+        def single_entity?
+          result_json['@odata.context'] =~ /\$entity$/
+        end
+
         def find_entities
-          result_json['value']
+          single_entity? ? [result_json] : result_json['value']
         end
       end
     end
