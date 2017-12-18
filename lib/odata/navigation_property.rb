@@ -3,9 +3,9 @@ module OData
     attr_reader :name, :type, :nullable, :partner
 
     def initialize(options)
-      @name     = options[:name]
-      @type     = options[:type]
-      @nullable = options[:nullable] || false
+      @name     = options[:name] or raise ArgumentError, 'Name is required'
+      @type     = options[:type] or raise ArgumentError, 'Type is required'
+      @nullable = options[:nullable] || true
       @partner  = options[:partner]
     end
 
