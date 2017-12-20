@@ -1,5 +1,6 @@
 require 'odata/query/criteria/comparison_operators'
 require 'odata/query/criteria/string_functions'
+require 'odata/query/criteria/date_functions'
 
 module OData
   class Query
@@ -29,6 +30,7 @@ module OData
 
       include ComparisonOperators
       include StringFunctions
+      include DateFunctions
 
       # Returns criteria as query-ready string.
       def to_s
@@ -50,8 +52,10 @@ module OData
       end
 
       def url_value(value)
-        property.value = value if property.respond_to?(:value)
-        property.respond_to?(:url_value) ? property.url_value : value
+        property.value = value
+        property.url_value
+      rescue
+        value
       end
 
       def set_operator_and_value(operator, value)

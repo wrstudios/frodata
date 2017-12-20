@@ -32,6 +32,7 @@ This is a non-complete list of things that need to be done in order to achieve O
   [x] `$count=true` replaces `$inlinecount=allpages`
   [x] New `$search` param for fulltext search
   [x] String functions
+  [x] Date/time functions
   [ ] [Lambda operators][1]
 
 [ ] Logging

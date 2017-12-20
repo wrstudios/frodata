@@ -25,6 +25,7 @@ end
 describe OData::Query::Criteria do
   let(:string_property) { OData::Properties::String.new(:Name, nil) }
   let(:integer_property) { OData::Properties::Integer.new(:Age, nil) }
+  let(:datetime_property) { OData::Properties::DateTime.new(:BirthDate, nil) }
   let(:subject) { OData::Query::Criteria.new(property: string_property) }
 
   it { expect(subject).to respond_to(:property) }
@@ -116,6 +117,73 @@ describe OData::Query::Criteria do
 
       it { expect(subject).to respond_to(:toupper) }
       it_behaves_like 'an operator-function criterium', :toupper, :eq, 'ALFREDS FUTTERKISTE', "toupper(Name) eq 'ALFREDS FUTTERKISTE'"
+    end
+  end
+
+  describe 'date functions' do
+    let(:subject) { OData::Query::Criteria.new(property: datetime_property) }
+
+    describe '#year' do
+      let(:criteria) { subject.year.eq(1981) }
+
+      it { expect(subject).to respond_to(:year) }
+      it_behaves_like 'an operator-function criterium', :year, :eq, 1981, 'year(BirthDate) eq 1981'
+    end
+
+    describe '#month' do
+      let(:criteria) { subject.month.eq(8) }
+
+      it { expect(subject).to respond_to(:month) }
+      it_behaves_like 'an operator-function criterium', :month, :eq, 8, 'month(BirthDate) eq 8'
+    end
+
+    describe '#day' do
+      let(:criteria) { subject.day.eq(27) }
+
+      it { expect(subject).to respond_to(:day) }
+      it_behaves_like 'an operator-function criterium', :day, :eq, 27, 'day(BirthDate) eq 27'
+    end
+
+    describe '#hour' do
+      let(:criteria) { subject.hour.eq(9) }
+
+      it { expect(subject).to respond_to(:hour) }
+      it_behaves_like 'an operator-function criterium', :hour, :eq, 9, 'hour(BirthDate) eq 9'
+    end
+
+    describe '#minute' do
+      let(:criteria) { subject.minute.eq(35) }
+
+      it { expect(subject).to respond_to(:minute) }
+      it_behaves_like 'an operator-function criterium', :minute, :eq, 35, 'minute(BirthDate) eq 35'
+    end
+
+    describe '#second' do
+      let(:criteria) { subject.second.eq(11) }
+
+      it { expect(subject).to respond_to(:second) }
+      it_behaves_like 'an operator-function criterium', :second, :eq, 11, 'second(BirthDate) eq 11'
+    end
+
+    describe '#fractionalseconds' do
+      let(:criteria) { subject.fractionalseconds.eq(0) }
+
+      it { expect(subject).to respond_to(:fractionalseconds) }
+      it_behaves_like 'an operator-function criterium', :fractionalseconds, :eq, 0, 'fractionalseconds(BirthDate) eq 0'
+    end
+
+    describe '#date' do
+      let(:criteria) { subject.date.ne('date(EndTime)') }
+
+      it { expect(subject).to respond_to(:date) }
+      it_behaves_like 'an operator-function criterium', :date, :ne, 'date(EndTime)', 'date(BirthDate) ne date(EndTime)'
+    end
+
+    describe '#time' do
+      let(:criteria) { subject.time.le('StartOfDay') }
+
+      it { expect(subject).to respond_to(:time) }
+      it_behaves_like 'an operator-function criterium', :time, :le, 'StartOfDay', 'time(BirthDate) le StartOfDay'
     end
   end
 end
