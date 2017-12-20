@@ -1,3 +1,6 @@
+require 'odata/query/criteria/comparison_operators'
+require 'odata/query/criteria/string_functions'
+
 module OData
   class Query
     # Represents a discreet criteria within an OData::Query. Should not,
@@ -9,60 +12,33 @@ module OData
       attr_reader :operator
       # The value of the criteria.
       attr_reader :value
+      # A function to apply to the property.
+      attr_reader :function
+      # An optional argument to the function.
+      attr_reader :argument
 
       # Initializes a new criteria with provided options.
       # @param options [Hash]
       def initialize(options = {})
         @property = options[:property]
         @operator = options[:operator]
+        @function = options[:function]
+        @argument = options[:argument]
         @value    = options[:value]
       end
 
-      # Sets up equality operator.
-      # @param value [to_s]
-      # @return [self]
-      def eq(value)
-        set_operator_and_value(:eq, value)
-      end
-
-      # Sets up non-equality operator.
-      # @param value [to_s]
-      # @return [self]
-      def ne(value)
-        set_operator_and_value(:ne, value)
-      end
-
-      # Sets up greater-than operator.
-      # @param value [to_s]
-      # @return [self]
-      def gt(value)
-        set_operator_and_value(:gt, value)
-      end
-
-      # Sets up greater-than-or-equal operator.
-      # @param value [to_s]
-      # @return [self]
-      def ge(value)
-        set_operator_and_value(:ge, value)
-      end
-
-      # Sets up less-than operator.
-      # @param value [to_s]
-      # @return [self]
-      def lt(value)
-        set_operator_and_value(:lt, value)
-      end
-
-      # Sets up less-than-or-equal operator.
-      # @param value [to_s]
-      # @return [self]
-      def le(value)
-        set_operator_and_value(:le, value)
-      end
+      include ComparisonOperators
+      include StringFunctions
 
       # Returns criteria as query-ready string.
       def to_s
-        "#{property_name} #{operator} #{url_value}"
+        if function && operator
+          "#{function}(#{property_name}) #{operator} #{url_value(value)}"
+        elsif function
+          "#{function}(#{property_name},#{url_value(argument)})"
+        else
+          "#{property_name} #{operator} #{url_value(value)}"
+        end
       end
 
       private
@@ -73,15 +49,20 @@ module OData
         property.to_s
       end
 
-      def url_value
+      def url_value(value)
+        property.value = value if property.respond_to?(:value)
         property.respond_to?(:url_value) ? property.url_value : value
       end
 
       def set_operator_and_value(operator, value)
-        property.value = value if property.respond_to?(:value)
-
         @operator = operator
         @value = value
+        self
+      end
+
+      def set_function_and_argument(function, argument)
+        @function = function
+        @argument = argument
         self
       end
     end
