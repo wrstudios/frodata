@@ -33,6 +33,7 @@ This is a non-complete list of things that need to be done in order to achieve O
   [x] New `$search` param for fulltext search
   [x] String functions
   [x] Date/time functions
+  [x] Geospatial functions
   [ ] [Lambda operators][1]
 
 [ ] Logging

@@ -1,6 +1,7 @@
 require 'odata/query/criteria/comparison_operators'
 require 'odata/query/criteria/string_functions'
 require 'odata/query/criteria/date_functions'
+require 'odata/query/criteria/geography_functions'
 
 module OData
   class Query
@@ -31,15 +32,16 @@ module OData
       include ComparisonOperators
       include StringFunctions
       include DateFunctions
+      include GeographyFunctions
 
       # Returns criteria as query-ready string.
       def to_s
-        if function && operator
-          "#{function}(#{property_name}) #{operator} #{url_value(value)}"
-        elsif function
-          "#{function}(#{property_name},#{url_value(argument)})"
+        query = function ? function_expression : property_name
+
+        if operator
+          "#{query} #{operator} #{url_value(value)}"
         else
-          "#{property_name} #{operator} #{url_value(value)}"
+          query
         end
       end
 
@@ -49,6 +51,14 @@ module OData
         property.name
       rescue NoMethodError
         property.to_s
+      end
+
+      def function_expression
+        if argument
+          "#{function}(#{property_name},#{url_value(argument)})"
+        else
+          "#{function}(#{property_name})"
+        end
       end
 
       def url_value(value)

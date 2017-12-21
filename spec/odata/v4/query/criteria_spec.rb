@@ -26,6 +26,8 @@ describe OData::Query::Criteria do
   let(:string_property) { OData::Properties::String.new(:Name, nil) }
   let(:integer_property) { OData::Properties::Integer.new(:Age, nil) }
   let(:datetime_property) { OData::Properties::DateTime.new(:BirthDate, nil) }
+  let(:geo_property) { OData::Properties::GeographyPoint.new(:Position, nil) }
+
   let(:subject) { OData::Query::Criteria.new(property: string_property) }
 
   it { expect(subject).to respond_to(:property) }
@@ -184,6 +186,24 @@ describe OData::Query::Criteria do
 
       it { expect(subject).to respond_to(:time) }
       it_behaves_like 'an operator-function criterium', :time, :le, 'StartOfDay', 'time(BirthDate) le StartOfDay'
+    end
+  end
+
+  describe 'geospatial functions' do
+    let(:subject) { OData::Query::Criteria.new(property: geo_property) }
+
+    describe '#distance' do
+      let(:criteria) { subject.distance('TargetPosition').le(42) }
+
+      it { expect(subject).to respond_to(:distance) }
+      it_behaves_like 'an operator-function criterium', :'geo.distance', :le, 42, 'geo.distance(Position,TargetPosition) le 42'
+    end
+
+    describe '#intersects' do
+      let(:criteria) { subject.intersects('TargetArea') }
+
+      it { expect(subject).to respond_to(:intersects) }
+      it_behaves_like 'a function criterium', :'geo.intersects', 'TargetArea', 'geo.intersects(Position,TargetArea)'
     end
   end
 end
