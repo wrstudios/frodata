@@ -27,6 +27,8 @@ describe OData::Query::Criteria do
   let(:integer_property) { OData::Properties::Integer.new(:Age, nil) }
   let(:datetime_property) { OData::Properties::DateTime.new(:BirthDate, nil) }
   let(:geo_property) { OData::Properties::GeographyPoint.new(:Position, nil) }
+  # TODO: use actual `NavigationProperty` class here
+  let(:navigation_property) { OData::Property.new(:Items, nil) }
 
   let(:subject) { OData::Query::Criteria.new(property: string_property) }
 
@@ -204,6 +206,24 @@ describe OData::Query::Criteria do
 
       it { expect(subject).to respond_to(:intersects) }
       it_behaves_like 'a function criterium', :'geo.intersects', 'TargetArea', 'geo.intersects(Position,TargetArea)'
+    end
+  end
+
+  describe 'lambda operators' do
+    let(:subject) { OData::Query::Criteria.new(property: navigation_property) }
+
+    describe '#any' do
+      let(:criteria) { subject.any('Quantity').gt(100) }
+
+      it { expect(subject).to respond_to(:any) }
+      it_behaves_like 'an operator-function criterium', :any, :gt, 100, 'Items/any(d:d/Quantity gt 100)'
+    end
+
+    describe '#all' do
+      let(:criteria) { subject.all('Quantity').gt(100) }
+
+      it { expect(subject).to respond_to(:all) }
+      it_behaves_like 'an operator-function criterium', :all, :gt, 100, 'Items/all(d:d/Quantity gt 100)'
     end
   end
 end

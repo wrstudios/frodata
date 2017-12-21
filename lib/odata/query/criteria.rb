@@ -2,6 +2,7 @@ require 'odata/query/criteria/comparison_operators'
 require 'odata/query/criteria/string_functions'
 require 'odata/query/criteria/date_functions'
 require 'odata/query/criteria/geography_functions'
+require 'odata/query/criteria/lambda_operators'
 
 module OData
   class Query
@@ -33,12 +34,13 @@ module OData
       include StringFunctions
       include DateFunctions
       include GeographyFunctions
+      include LambdaOperators
 
       # Returns criteria as query-ready string.
       def to_s
         query = function ? function_expression : property_name
 
-        if operator
+        if operator && !lambda_operator?
           "#{query} #{operator} #{url_value(value)}"
         else
           query
@@ -54,11 +56,17 @@ module OData
       end
 
       def function_expression
+        return lambda_expression if lambda_operator?
+
         if argument
           "#{function}(#{property_name},#{url_value(argument)})"
         else
           "#{function}(#{property_name})"
         end
+      end
+
+      def lambda_expression
+        "#{property_name}/#{function}(d:d/#{argument} #{operator} #{url_value(value)})"
       end
 
       def url_value(value)
