@@ -14,7 +14,7 @@ This is a non-complete list of things that need to be done in order to achieve O
   [x] `Edm.TimeOfDay` (V4/RESO)
   [x] `Edm.EnumType` (V4/RESO)
   [ ] `Edm.Geography` subtypes (RESO)
-    [ ] `Edm.GeographyPoint`
+    [x] `Edm.GeographyPoint`
     [ ] `Edm.GeographyMultiPoint`
     [ ] `Edm.GeographyLineString`
     [ ] `Edm.GeographyMultiLineString`

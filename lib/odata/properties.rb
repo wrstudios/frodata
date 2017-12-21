@@ -9,12 +9,12 @@ require 'odata/properties/date_time'
 require 'odata/properties/date_time_offset'
 require 'odata/properties/decimal'
 require 'odata/properties/float'
+require 'odata/properties/geography'
 require 'odata/properties/guid'
 require 'odata/properties/integer'
 require 'odata/properties/string'
 require 'odata/properties/time'
 require 'odata/properties/time_of_day'
-require 'odata/properties/geography_point'
 
 OData::Properties.constants.each do |property_name|
   klass = OData::Properties.const_get(property_name)

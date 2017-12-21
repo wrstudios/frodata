@@ -37,9 +37,7 @@ describe OData::ComplexType, vcr: {cassette_name: 'v3/complex_type_specs'} do
   describe '#to_xml' do
     let(:builder) do
       Nokogiri::XML::Builder.new do |xml|
-        xml.entry('xmlns'           => 'http://www.w3.org/2005/Atom',
-                  'xmlns:data'      => 'http://schemas.microsoft.com/ado/2007/08/dataservices',
-                  'xmlns:metadata'  => 'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata') do
+        xml.entry(OData::Entity::XML_NAMESPACES) do
           subject.to_xml(xml)
         end
       end

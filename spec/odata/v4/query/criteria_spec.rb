@@ -26,7 +26,7 @@ describe OData::Query::Criteria do
   let(:string_property) { OData::Properties::String.new(:Name, nil) }
   let(:integer_property) { OData::Properties::Integer.new(:Age, nil) }
   let(:datetime_property) { OData::Properties::DateTime.new(:BirthDate, nil) }
-  let(:geo_property) { OData::Properties::GeographyPoint.new(:Position, nil) }
+  let(:geo_property) { OData::Properties::Geography::Point.new(:Position, nil) }
   # TODO: use actual `NavigationProperty` class here
   let(:navigation_property) { OData::Property.new(:Items, nil) }
 
