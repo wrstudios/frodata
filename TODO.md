@@ -18,8 +18,17 @@ This is a non-complete list of things that need to be done in order to achieve O
     [ ] `Edm.GeographyMultiPoint`
     [x] `Edm.GeographyLineString`
     [ ] `Edm.GeographyMultiLineString`
-    [ ] `Edm.GeographyPolygon`
+    [x] `Edm.GeographyPolygon` (see note below)
+        [ ] Support for holes
+        [ ] Support for other serialization formats
     [ ] `Edm.GeopgrahyMultiPolygon`
+
+##### NOTE
+
+Due to the lack of library support for GeoXML/GML in Ruby, Geography support is somewhat limited. For instance, [there are more than 3 different ways to represent a polygon in GML][gml-madness], all of which are equivalent and interchangeable. However, due to the lack of GML libraries, we currently only support a single serialization format (`<gml:LinearRing>` with `<gml:pos>` elements, see [polygon_spec.rb][polygon_spec]).
+
+[gml-madness]: http://erouault.blogspot.com/2014/04/gml-madness.html
+[polygon_spec]: spec/odata/v4/properties/geography/polygon_spec.rb
 
 [ ] Changes to `NavigationProperty`
   [x] No more associations (but we probably still need a proxy class)

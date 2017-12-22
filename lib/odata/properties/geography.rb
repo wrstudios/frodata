@@ -1,6 +1,7 @@
 require 'odata/properties/geography/base'
 require 'odata/properties/geography/point'
 require 'odata/properties/geography/line_string'
+require 'odata/properties/geography/polygon'
 
 OData::Properties::Geography.constants.each do |property_name|
   next if property_name =~ /Base$/

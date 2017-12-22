@@ -48,13 +48,7 @@ module OData
 
           xml_builder['data'].send(name.to_sym, attributes) do
             xml_builder['gml'].send(type_name) do
-              if xml_value.is_a?(Array)
-                xml_value.each do |pos|
-                  xml_builder['gml'].pos(nil, pos)
-                end
-              else
-                xml_builder['gml'].pos(nil, xml_value)
-              end
+              value_to_xml(xml_value, xml_builder)
             end
           end
         end
@@ -85,6 +79,23 @@ module OData
             from_s($3)
           else
             raise ArgumentError, "Invalid geography value '#{value}'"
+          end
+        end
+
+        # Recursively turn a JSON-like data structure into XML
+        def value_to_xml(value, xml_builder)
+          if value.is_a?(Hash)
+            value.each do |key, val|
+              xml_builder['gml'].send(key) do
+                value_to_xml(val, xml_builder)
+              end
+            end
+          elsif value.is_a?(Array)
+            value.each do |pos|
+              xml_builder['gml'].pos(nil, pos)
+            end
+          else
+            xml_builder['gml'].pos(nil, value)
           end
         end
       end
