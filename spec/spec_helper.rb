@@ -1,4 +1,6 @@
 require 'odata'
+require 'rspec/matchers' # required for 'equivalent-xml'
+require 'equivalent-xml'
 require 'securerandom'
 require 'timecop'
 
