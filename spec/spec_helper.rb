@@ -1,26 +1,9 @@
-if ENV['CI']
-  require 'codeclimate-test-reporter'
-  CodeClimate::TestReporter.start
-else
-  require 'simplecov'
-  SimpleCov.start do
-    add_filter '/spec/'
-  end
-end
-
 require 'odata'
-
 require 'securerandom'
 require 'timecop'
-require 'vcr'
 
-VCR.configure do |c|
-  c.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
-  c.hook_into :typhoeus
-  c.default_cassette_options = { record: :new_episodes }
-  c.debug_logger = File.open(ENV['VCR_LOG'], 'w') if ENV['VCR_LOG']
-  c.configure_rspec_metadata!
-end
+# Load all files from `spec/support`
+Dir["support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
   if config.files_to_run.one?
