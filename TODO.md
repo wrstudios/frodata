@@ -16,7 +16,7 @@ This is a non-complete list of things that need to be done in order to achieve O
   [ ] `Edm.Geography` subtypes (RESO)
     [x] `Edm.GeographyPoint`
     [ ] `Edm.GeographyMultiPoint`
-    [ ] `Edm.GeographyLineString`
+    [x] `Edm.GeographyLineString`
     [ ] `Edm.GeographyMultiLineString`
     [ ] `Edm.GeographyPolygon`
     [ ] `Edm.GeopgrahyMultiPolygon`

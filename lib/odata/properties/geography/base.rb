@@ -28,7 +28,7 @@ module OData
         # Value to be used in URLs.
         # @return [String]
         def url_value
-          "geography'SRID=0;#{type_name}(#{value.join(' ')})'"
+          "geography'SRID=0;#{type_name}(#{to_s})'"
         end
 
         # Value to be used in JSON.
@@ -40,10 +40,6 @@ module OData
           }
         end
 
-        def xml_value
-          @value.join(' ')
-        end
-
         # Returns the XML representation of the property to the supplied XML
         # builder.
         # @param xml_builder [Nokogiri::XML::Builder]
@@ -52,7 +48,13 @@ module OData
 
           xml_builder['data'].send(name.to_sym, attributes) do
             xml_builder['gml'].send(type_name) do
-              xml_builder['gml'].pos(nil, xml_value)
+              if xml_value.is_a?(Array)
+                xml_value.each do |pos|
+                  xml_builder['gml'].pos(nil, pos)
+                end
+              else
+                xml_builder['gml'].pos(nil, xml_value)
+              end
             end
           end
         end
@@ -71,7 +73,7 @@ module OData
           new(property_xml.name, content, options)
         end
 
-        private
+        protected
 
         def type_name
           self.class.name.split('::').last
@@ -80,16 +82,10 @@ module OData
         def parse_value(value)
           if value =~ /^geography'SRID=(\d+);(\w+)\((.+)\)'$/
             $2 == type_name or raise ArgumentError, "Invalid geography type '#{$2}'"
-            $3.split(' ').map(&:to_f)
+            from_s($3)
           else
             raise ArgumentError, "Invalid geography value '#{value}'"
           end
-        end
-
-        def self.parse_xml(property_xml)
-          property_xml.xpath('//pos').map do |el|
-            el.content.split(' ').map(&:to_f)
-          end.flatten
         end
       end
     end
