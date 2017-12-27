@@ -16,6 +16,7 @@ describe OData::Properties::Geography::Polygon do
       [200.0, 11.0],
       [200.0, 10.0]
   ] }
+  let(:property_as_text) { "geography'SRID=4326;Polygon((100.0 0.0,101.0 0.0,101.0 1.0,100.0 1.0,100.0 0.0))'" }
   let(:property_as_json) { {
     type: 'Polygon',
     coordinates: [
@@ -24,11 +25,15 @@ describe OData::Properties::Geography::Polygon do
       [101.0, 1.0],
       [100.0, 1.0],
       [100.0, 0.0]
-    ]
+    ],
+    crs: {
+      type: 'name',
+      properties: { name: 'EPSG:4326' }
+    }
   } }
   let(:property_as_xml) { <<-END }
     <data:Area metadata:type="Edm.GeographyPolygon">
-      <gml:Polygon>
+      <gml:Polygon gml:srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
         <gml:exterior>
           <gml:LinearRing>
             <gml:pos>100.0 0.0</gml:pos>
@@ -46,6 +51,10 @@ describe OData::Properties::Geography::Polygon do
     it { expect(subject.type).to eq('Edm.GeographyPolygon') }
   end
 
+  describe '#srid' do
+    it { expect(subject.srid).to eq(4326) }
+  end
+
   describe '#value' do
     it { expect(subject.value).to eq(coordinates) }
   end
@@ -53,19 +62,21 @@ describe OData::Properties::Geography::Polygon do
   describe '#value=' do
     it { expect { subject.value = 'invalid' }.to raise_error(ArgumentError) }
 
-    it { expect(lambda {
+    it {
       subject.value = "geography'SRID=0;Polygon((200.0 10.0,201.0 10.0,201.0 11.0,200.0 11.0,200.0 10.0))'"
-      subject.value
-    }.call).to eq(new_coordinates) }
+      expect(subject.value).to eq(new_coordinates)
+      expect(subject.srid).to eq(0)
+    }
 
-    it { expect(lambda {
+    it {
       subject.value = new_coordinates
-      subject.value
-    }.call).to eq(new_coordinates) }
+      expect(subject.value).to eq(new_coordinates)
+      expect(subject.srid).to eq(4326)
+    }
   end
 
   describe '#url_value' do
-    it { expect(subject.url_value).to eq("geography'SRID=0;Polygon((100.0 0.0,101.0 0.0,101.0 1.0,100.0 1.0,100.0 0.0))'") }
+    it { expect(subject.url_value).to eq(property_as_text) }
   end
 
   describe '#json_value' do
@@ -102,5 +113,6 @@ describe OData::Properties::Geography::Polygon do
     end
 
     it { expect(subject.value).to eq(coordinates) }
+    it { expect(subject.srid).to eq(4326) }
   end
 end

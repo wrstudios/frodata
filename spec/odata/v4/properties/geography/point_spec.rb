@@ -4,13 +4,18 @@ describe OData::Properties::Geography::Point do
   let(:subject) { OData::Properties::Geography::Point.new('Location', coordinates) }
   let(:coordinates)    { [ 142.1, 64.1 ]}
   let(:new_coordinates) { [ 100.0, 0.0 ]}
+  let(:property_as_text) { "geography'SRID=4326;Point(142.1 64.1)'" }
   let(:property_as_json) { {
     type: 'Point',
-    coordinates: [142.1, 64.1]
+    coordinates: [142.1, 64.1],
+    crs: {
+      type: 'name',
+      properties: { name: 'EPSG:4326' }
+    }
   } }
   let(:property_as_xml) { <<-END }
     <data:Location metadata:type="Edm.GeographyPoint">
-      <gml:Point>
+      <gml:Point gml:srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
         <gml:pos>142.1 64.1</gml:pos>
       </gml:Point>
     </data:Location>
@@ -20,6 +25,10 @@ describe OData::Properties::Geography::Point do
     it { expect(subject.type).to eq('Edm.GeographyPoint') }
   end
 
+  describe '#srid' do
+    it { expect(subject.srid).to eq(4326) }
+  end
+
   describe '#value' do
     it { expect(subject.value).to eq(coordinates) }
   end
@@ -27,19 +36,21 @@ describe OData::Properties::Geography::Point do
   describe '#value=' do
     it { expect { subject.value = 'invalid' }.to raise_error(ArgumentError) }
 
-    it { expect(lambda {
+    it {
       subject.value = "geography'SRID=0;Point(100.0 0.0)'"
-      subject.value
-    }.call).to eq(new_coordinates) }
+      expect(subject.value).to eq(new_coordinates)
+      expect(subject.srid).to eq(0)
+    }
 
-    it { expect(lambda {
+    it {
       subject.value = new_coordinates
-      subject.value
-    }.call).to eq(new_coordinates) }
+      expect(subject.value).to eq(new_coordinates)
+      expect(subject.srid).to eq(4326)
+    }
   end
 
   describe '#url_value' do
-    it { expect(subject.url_value).to eq("geography'SRID=0;Point(142.1 64.1)'") }
+    it { expect(subject.url_value).to eq(property_as_text) }
   end
 
   describe '#json_value' do
@@ -76,5 +87,6 @@ describe OData::Properties::Geography::Point do
     end
 
     it { expect(subject.value).to eq(coordinates) }
+    it { expect(subject.srid).to eq(4326) }
   end
 end

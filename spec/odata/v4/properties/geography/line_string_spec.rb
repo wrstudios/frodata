@@ -4,16 +4,21 @@ describe OData::Properties::Geography::LineString do
   let(:subject) { OData::Properties::Geography::LineString.new('Boundary', coordinates) }
   let(:coordinates)     { [[100.0, 0.0], [101.0, 1.0]] }
   let(:new_coordinates) { [[0.0, 100.0], [1.0, 101.0]] }
+  let(:property_as_text) { "geography'SRID=4326;LineString(100.0 0.0,101.0 1.0)'" }
   let(:property_as_json) { {
     type: 'LineString',
     coordinates: [
       [100.0, 0.0],
       [101.0, 1.0]
-    ]
+    ],
+    crs: {
+      type: 'name',
+      properties: { name: 'EPSG:4326' }
+    }
   } }
   let(:property_as_xml) { <<-END }
     <data:Boundary metadata:type="Edm.GeographyLineString">
-      <gml:LineString>
+      <gml:LineString gml:srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
         <gml:pos>100.0 0.0</gml:pos>
         <gml:pos>101.0 1.0</gml:pos>
       </gml:LineString>
@@ -24,6 +29,10 @@ describe OData::Properties::Geography::LineString do
     it { expect(subject.type).to eq('Edm.GeographyLineString') }
   end
 
+  describe '#srid' do
+    it { expect(subject.srid).to eq(4326) }
+  end
+
   describe '#value' do
     it { expect(subject.value).to eq(coordinates) }
   end
@@ -31,19 +40,21 @@ describe OData::Properties::Geography::LineString do
   describe '#value=' do
     it { expect { subject.value = 'invalid' }.to raise_error(ArgumentError) }
 
-    it { expect(lambda {
+    it {
       subject.value = "geography'SRID=0;LineString(0.0 100.0,1.0 101.0)'"
-      subject.value
-    }.call).to eq(new_coordinates) }
+      expect(subject.value).to eq(new_coordinates)
+      expect(subject.srid).to eq(0)
+    }
 
-    it { expect(lambda {
+    it {
       subject.value = new_coordinates
-      subject.value
-    }.call).to eq(new_coordinates) }
+      expect(subject.value).to eq(new_coordinates)
+      expect(subject.srid).to eq(4326)
+    }
   end
 
   describe '#url_value' do
-    it { expect(subject.url_value).to eq("geography'SRID=0;LineString(100.0 0.0,101.0 1.0)'") }
+    it { expect(subject.url_value).to eq(property_as_text) }
   end
 
   describe '#json_value' do
@@ -80,5 +91,6 @@ describe OData::Properties::Geography::LineString do
     end
 
     it { expect(subject.value).to eq(coordinates) }
+    it { expect(subject.srid).to eq(4326) }
   end
 end
