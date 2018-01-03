@@ -6,14 +6,6 @@ module OData
           'Edm.GeographyPolygon'
         end
 
-        def xml_value
-          {
-            exterior: {
-              LinearRing: value.map { |pos| pos.join(' ') }
-            }
-          }
-        end
-
         def to_s
           '(' + value.map { |pos| pos.join(' ') }.join(',') + ')'
         end
@@ -21,6 +13,16 @@ module OData
         def from_s(str)
           str.gsub(/[()]/, '')
              .split(',').map { |pos| pos.split(' ').map(&:to_f) }
+        end
+
+        def xml_value
+          {
+            exterior: {
+              LinearRing: value.map do |coords|
+                { pos: coords.join(' ') }
+              end
+            }
+          }
         end
 
         private

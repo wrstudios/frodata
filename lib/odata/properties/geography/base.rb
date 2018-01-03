@@ -140,11 +140,11 @@ module OData
               end
             end
           elsif value.is_a?(Array)
-            value.each do |pos|
-              xml_builder['gml'].pos(nil, pos)
+            value.each do |val|
+              value_to_xml(val, xml_builder)
             end
           else
-            xml_builder['gml'].pos(nil, value)
+            xml_builder.text(value)
           end
         end
 

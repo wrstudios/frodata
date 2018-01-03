@@ -6,16 +6,16 @@ module OData
           'Edm.GeographyPoint'
         end
 
-        def xml_value
-          to_s
-        end
-
         def to_s
           value.join(' ')
         end
 
         def from_s(str)
           str.split(' ').map(&:to_f)
+        end
+
+        def xml_value
+          { pos: to_s }
         end
 
         private

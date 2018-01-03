@@ -6,16 +6,18 @@ module OData
           'Edm.GeographyLineString'
         end
 
-        def xml_value
-          value.map { |pos| pos.join(' ') }
-        end
-
         def to_s
           value.map { |pos| pos.join(' ') }.join(',')
         end
 
         def from_s(str)
           str.split(',').map { |pos| pos.split(' ').map(&:to_f) }
+        end
+
+        def xml_value
+          value.map do |coords|
+            { pos: coords.join(' ') }
+          end
         end
 
         private
