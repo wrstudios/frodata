@@ -35,8 +35,24 @@ module OData
           elsif value.is_a?(Array)
             @value = value
           else
-            @value = parse_value(value.to_s)
+            @value = parse_wkt(value.to_s)
           end
+        end
+
+        # Value to be used in URLs.
+        # @return [String]
+        def url_value
+          "geography'SRID=#{srid};#{type_name}(#{coords_to_s})'"
+        end
+
+        # Value to be used in JSON.
+        # @return [Hash]
+        def json_value
+          {
+            type: type_name,
+            coordinates: value,
+            crs: crs
+          }
         end
 
         # The name of the SRS (Spatial Reference System) used.
@@ -67,22 +83,6 @@ module OData
           {
             type: 'name',
             properties: { name: crs_name }
-          }
-        end
-
-        # Value to be used in URLs.
-        # @return [String]
-        def url_value
-          "geography'SRID=#{srid};#{type_name}(#{to_s})'"
-        end
-
-        # Value to be used in JSON.
-        # @return [Hash]
-        def json_value
-          {
-            type: type_name,
-            coordinates: value,
-            crs: crs
           }
         end
 
@@ -121,11 +121,11 @@ module OData
           self.class.name.split('::').last
         end
 
-        def parse_value(value)
+        def parse_wkt(value)
           if value =~ /^geography'(SRID=(\d+);)+(\w+)\((.+)\)'$/
             $3 == type_name or raise ArgumentError, "Invalid geography type '#{$3}'"
             self.srid = $1 ? $2.to_i : DEFAULT_SRID
-            from_s($4)
+            coords_from_s($4)
           else
             raise ArgumentError, "Invalid geography value '#{value}'"
           end

@@ -6,11 +6,11 @@ module OData
           'Edm.GeographyPolygon'
         end
 
-        def to_s
+        def coords_to_s
           '(' + value.map { |pos| pos.join(' ') }.join(',') + ')'
         end
 
-        def from_s(str)
+        def coords_from_s(str)
           str.gsub(/[()]/, '')
              .split(',').map { |pos| pos.split(' ').map(&:to_f) }
         end
