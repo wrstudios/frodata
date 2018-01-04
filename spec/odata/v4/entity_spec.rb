@@ -1,4 +1,5 @@
 require 'spec_helper'
+require_relative 'entity/shared_examples'
 
 describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
   before(:example) do
@@ -62,23 +63,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
         service_name: 'ODataDemo'
     } }
 
-    # Check property types
-    it { expect(subject.get_property('ID')).to be_a(OData::Properties::Integer) }
-    it { expect(subject.get_property('Name')).to be_a(OData::Properties::String) }
-    it { expect(subject.get_property('Description')).to be_a(OData::Properties::String) }
-    it { expect(subject.get_property('ReleaseDate')).to be_a(OData::Properties::DateTimeOffset) }
-    it { expect(subject.get_property('DiscontinuedDate')).to be_a(OData::Properties::DateTimeOffset) }
-    it { expect(subject.get_property('Rating')).to be_a(OData::Properties::Integer) }
-    it { expect(subject.get_property('Price')).to be_a(OData::Properties::Double) }
-
-    # Check property values
-    it { expect(subject['ID']).to eq(0) }
-    it { expect(subject['Name']).to eq('Bread') }
-    it { expect(subject['Description']).to eq('Whole grain bread') }
-    it { expect(subject['ReleaseDate']).to eq(DateTime.parse('1992-01-01T00:00:00Z')) }
-    it { expect(subject['DiscontinuedDate']).to eq(nil) }
-    it { expect(subject['Rating']).to eq(4) }
-    it { expect(subject['Price']).to eq(2.5) }
+    it_behaves_like 'a valid product'
   end
 
   describe '.from_xml' do
@@ -90,23 +75,8 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
     }
 
     it { expect(OData::Entity).to respond_to(:from_xml) }
-    it { expect(subject).to be_a(OData::Entity) }
 
-    it { expect(subject.name).to eq('Product') }
-    it { expect(subject.type).to eq('ODataDemo.Product') }
-    it { expect(subject.namespace).to eq('ODataDemo') }
-    it { expect(subject.service_name).to eq('ODataDemo') }
-
-    it { expect(subject['ID']).to eq(0) }
-    it { expect(subject['Name']).to eq('Bread') }
-    it { expect(subject['Description']).to eq('Whole grain bread') }
-    it { expect(subject['ReleaseDate']).to eq(DateTime.new(1992,1,1,0,0,0,0)) }
-    it { expect(subject['DiscontinuedDate']).to be_nil }
-    it { expect(subject['Rating']).to eq(4) }
-    it { expect(subject['Price']).to eq(2.5) }
-
-    it { expect {subject['NonExistant']}.to raise_error(ArgumentError) }
-    it { expect {subject['NonExistant'] = 5}.to raise_error(ArgumentError) }
+    it_behaves_like 'a valid product'
 
     context 'with a complex type property' do
       let(:options) { {
@@ -122,15 +92,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
         document.xpath('//entry').first
       }
 
-      it { expect(subject.name).to eq('Supplier') }
-      it { expect(subject.type).to eq('ODataDemo.Supplier') }
-
-      it { expect(subject['Address']).to be_a(OData::ComplexType::Property) }
-      it { expect(subject['Address'][ 'Street']).to eq('NE 228th') }
-      it { expect(subject['Address'][   'City']).to eq('Sammamish') }
-      it { expect(subject['Address'][  'State']).to eq('WA') }
-      it { expect(subject['Address']['ZipCode']).to eq('98074') }
-      it { expect(subject['Address']['Country']).to eq('USA') }
+      it_behaves_like 'a valid supplier'
     end
   end
 
@@ -166,23 +128,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
     }
 
     it { expect(OData::Entity).to respond_to(:from_json) }
-    it { expect(subject).to be_a(OData::Entity) }
-
-    it { expect(subject.name).to eq('Product') }
-    it { expect(subject.type).to eq('ODataDemo.Product') }
-    it { expect(subject.namespace).to eq('ODataDemo') }
-    it { expect(subject.service_name).to eq('ODataDemo') }
-
-    it { expect(subject['ID']).to eq(0) }
-    it { expect(subject['Name']).to eq('Bread') }
-    it { expect(subject['Description']).to eq('Whole grain bread') }
-    it { expect(subject['ReleaseDate']).to eq(DateTime.new(1992,1,1,0,0,0,0)) }
-    it { expect(subject['DiscontinuedDate']).to be_nil }
-    it { expect(subject['Rating']).to eq(4) }
-    it { expect(subject['Price']).to eq(2.5) }
-
-    it { expect {subject['NonExistant']}.to raise_error(ArgumentError) }
-    it { expect {subject['NonExistant'] = 5}.to raise_error(ArgumentError) }
+    it_behaves_like 'a valid product'
 
     context 'with a complex type property' do
       let(:options) { {
@@ -196,15 +142,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
         File.read('spec/fixtures/files/v4/supplier_0.json')
       }
 
-      it { expect(subject.name).to eq('Supplier') }
-      it { expect(subject.type).to eq('ODataDemo.Supplier') }
-
-      it { expect(subject['Address']).to be_a(OData::ComplexType::Property) }
-      it { expect(subject['Address'][ 'Street']).to eq('NE 228th') }
-      it { expect(subject['Address'][   'City']).to eq('Sammamish') }
-      it { expect(subject['Address'][  'State']).to eq('WA') }
-      it { expect(subject['Address']['ZipCode']).to eq('98074') }
-      it { expect(subject['Address']['Country']).to eq('USA') }
+      it_behaves_like 'a valid supplier'
     end
   end
 
