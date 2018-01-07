@@ -9,6 +9,10 @@ module OData
       @partner  = options[:partner]
     end
 
+    def nav_type
+      type =~ /^Collection/ ? :collection : :entity
+    end
+
     def self.build(nav_property_xml)
       options = nav_property_xml.attributes.map do |name, attr|
         [name.downcase.to_sym, attr.value]

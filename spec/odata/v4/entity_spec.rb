@@ -20,32 +20,6 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
   it { expect(subject.namespace).to eq('ODataDemo') }
   it { expect(subject.service_name).to eq('ODataDemo') }
 
-  describe '#links' do
-    let(:subject) { OData::Entity.from_xml(product_xml, options) }
-    let(:product_xml) {
-      document = ::Nokogiri::XML(File.open('spec/fixtures/files/v4/product_0.xml'))
-      document.remove_namespaces!
-      document.xpath('//entry').first
-    }
-    let(:links) do
-      {
-          'Categories'    => {type: :feed, href: 'Products(0)/Categories'},
-          'Supplier'      => {type: :entry, href: 'Products(0)/Supplier'},
-          'ProductDetail' => {type: :entry, href: 'Products(0)/ProductDetail'}
-      }
-    end
-
-    it { expect(subject).to respond_to(:links) }
-    it { expect(subject.links.size).to eq(3) }
-    it { expect(subject.links).to eq(links) }
-  end
-
-  describe '#associations' do
-    it { expect(subject).to respond_to(:associations) }
-    it { expect(subject.associations.size).to eq(3) }
-    it { expect {subject.associations['NonExistant']}.to raise_error(ArgumentError) }
-  end
-
   describe '.with_properties' do
     let(:subject) { OData::Entity.with_properties(properties, options) }
     let(:properties) { {
@@ -57,10 +31,19 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
       "Rating"           => 4,
       "Price"            => 2.5
     } }
+    let(:entity_set) {
+      OData::EntitySet.new(
+        container: 'DemoService',
+        namespace: 'ODataDemo',
+        name: 'Products',
+        type: 'Product',
+        service_name: 'ODataDemo')
+    }
     let(:options) { {
         type:         'ODataDemo.Product',
         namespace:    'ODataDemo',
-        service_name: 'ODataDemo'
+        service_name: 'ODataDemo',
+        entity_set:   entity_set
     } }
 
     it_behaves_like 'a valid product'

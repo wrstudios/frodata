@@ -11,8 +11,8 @@ module OData
     attr_reader :namespace
     # The OData::Service's identifying name
     attr_reader :service_name
-    # Links to other OData entitites
-    attr_reader :links
+    # The entity set this entity belongs to
+    attr_reader :entity_set
     # List of errors on entity
     attr_reader :errors
 
@@ -29,10 +29,13 @@ module OData
     # Initializes a bare Entity
     # @param options [Hash]
     def initialize(options = {})
+      @id = options[:id]
       @type = options[:type]
       @namespace = options[:namespace]
       @service_name = options[:service_name]
-      @links = options[:links] || {}
+      @entity_set = options[:entity_set]
+      @context = options[:context]
+      @links = options[:links]
       @errors = []
     end
 
@@ -40,6 +43,12 @@ module OData
     # @return [String]
     def name
       @name ||= type.gsub(/#{namespace}\./, '')
+    end
+
+    # Returns context URL for this entity
+    # @return [String]
+    def context
+      @context ||= context_url
     end
 
     # Get property value
@@ -76,7 +85,18 @@ module OData
     end
 
     def associations
-      @associations ||= OData::Association::Proxy.new(self)
+      @associations ||= OData::NavigationProperty::Proxy.new(self)
+    end
+
+    # Links to other OData entitites
+    # @return [Hash]
+    def links
+      @links ||= service.navigation_properties[name].map do |nav_name, details|
+        [
+          nav_name,
+          { type: details.nav_type, href: "#{id}/#{nav_name}" }
+        ]
+      end.to_h
     end
 
     # Create Entity with provided properties and options.
@@ -97,6 +117,20 @@ module OData
       entity
     end
 
+    # Create Entity from JSON document with provided options.
+    # @param json [Hash|to_s]
+    # @param options [Hash]
+    # @return [OData::Entity]
+    def self.from_json(json, options = {})
+      return nil if json.nil?
+      json = JSON.parse(json.to_s) unless json.is_a?(Hash)
+      metadata = extract_metadata(json)
+      options.merge!(context: metadata['@odata.context'])
+      entity = with_properties(json, options)
+      process_metadata(entity, metadata)
+      entity
+    end
+
     # Create Entity from XML document with provided options.
     # @param xml_doc [Nokogiri::XML]
     # @param options [Hash]
@@ -105,21 +139,8 @@ module OData
       return nil if xml_doc.nil?
       entity = OData::Entity.new(options)
       process_properties(entity, xml_doc)
-      process_feed_property(entity, xml_doc, 'title')
-      process_feed_property(entity, xml_doc, 'summary')
       process_links(entity, xml_doc)
       entity
-    end
-
-    # Create Entity from JSON document with provided options.
-    # @param json [Hash|to_s]
-    # @param options [Hash]
-    # @return [OData::Entity]
-    def self.from_json(json, options = {})
-      return nil if json.nil?
-      json = JSON.parse(json.to_s) unless json.is_a?(Hash)
-      json.delete_if { |key, value| key =~ /^@odata/ }
-      with_properties(json, options)
     end
 
     # Converts Entity to its XML representation.
@@ -158,6 +179,16 @@ module OData
       property_names.map do |name|
         [name, get_property(name).json_value]
       end.to_h
+    end
+
+    # Returns the canonical URL for this entity
+    # @return [String]
+    def id
+      @id ||= lambda {
+        entity_set = self.entity_set.andand.name
+        entity_set ||= context.split('#').last.split('/').first
+        "#{entity_set}(#{self[primary_key]})"
+      }.call
     end
 
     # Returns the primary key for the Entity.
@@ -199,6 +230,11 @@ module OData
       @service ||= OData::ServiceRegistry[service_name]
     end
 
+    # Computes the entity's canonical context URL
+    def context_url
+      "#{service.service_url}/$metadata##{entity_set.name}/$entity"
+    end
+
     def set_property(name, property)
       properties[name.to_s] = property
     end
@@ -210,6 +246,11 @@ module OData
 
     def self.process_properties(entity, xml_doc)
       entity.instance_eval do
+        unless instance_variable_get(:@context)
+          context = xml_doc.xpath('/entry').first.andand['context']
+          instance_variable_set(:@context, context)
+        end
+
         xml_doc.xpath('./content/properties/*').each do |property_xml|
           # Doing lazy loading here because instantiating each object takes a long time
           set_property_lazy_load(property_xml.name, property_xml)
@@ -217,31 +258,41 @@ module OData
       end
     end
 
-    def self.process_feed_property(entity, xml_doc, property_name)
-      entity.instance_eval do
-        xml_value = xml_doc.xpath("./#{property_name}").first
-        property_name = service.send("get_#{property_name}_property_name", name)
-        return if property_name.nil?
-        # Doing lazy loading here because instantiating each object takes a long time
-        set_property_lazy_load(property_name, xml_value)
-      end
-    end
-
     def self.process_links(entity, xml_doc)
       entity.instance_eval do
+        new_links = instance_variable_get(:@links) || {}
         service.navigation_properties[name].each do |nav_name, details|
           xml_doc.xpath("./link[@title='#{nav_name}']").each do |node|
             next if node.attributes['type'].nil?
             next unless node.attributes['type'].value =~ /^application\/atom\+xml;type=(feed|entry)$/i
-            link_type = node.attributes['type'].value =~ /type=entry$/i ? :entry : :feed
-            new_links = instance_variable_get(:@links)
+            link_type = node.attributes['type'].value =~ /type=entry$/i ? :entity : :collection
             new_links[nav_name] = {
-                type: link_type,
-                href: node.attributes['href'].value
+              type: link_type,
+              href: node.attributes['href'].value
             }
-            instance_variable_set(:@links, new_links)
           end
         end
+        instance_variable_set(:@links, new_links)
+      end
+    end
+
+    def self.extract_metadata(json)
+      metadata = json.select { |key, val| key =~ /@odata/ }
+      json.delete_if { |key, val| key =~ /@odata/ }
+      metadata
+    end
+
+    def self.process_metadata(entity, metadata)
+      entity.instance_eval do
+        new_links = instance_variable_get(:@links) || {}
+        service.navigation_properties[name].each do |nav_name, details|
+          href = metadata["#{nav_name}@odata.navigationLink"]
+          new_links[nav_name] = {
+            type: details.nav_type,
+            href: href || "#{id}/#{nav_name}"
+          }
+        end
+        instance_variable_set(:@links, new_links)
       end
     end
   end

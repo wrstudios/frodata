@@ -91,14 +91,18 @@ module OData
       end
 
       def set_properties(new_properties)
-        new_properties.each { |key, value| self[key] = value }
+        property_names.each do |prop_name|
+          self[prop_name] = new_properties[prop_name]
+        end
       end
 
       def validate(value)
         return if value.nil? && allows_nil?
         raise ArgumentError, 'Value must be a Hash' unless value.is_a?(Hash)
         value.keys.each do |name|
-          raise ArgumentError, "Invalid property #{name}" unless property_names.include?(name)
+          unless property_names.include?(name) || name =~ /@odata/
+            raise ArgumentError, "Invalid property #{name}"
+          end
         end
       end
 

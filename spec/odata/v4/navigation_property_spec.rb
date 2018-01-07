@@ -16,6 +16,9 @@ describe OData::NavigationProperty do
   it { expect(subject).to respond_to(:type) }
   it { expect(subject.type).to eq('Collection(ODataDemo.Category)') }
 
+  it { expect(subject).to respond_to(:nav_type) }
+  it { expect(subject.nav_type).to eq(:collection) }
+
   it { expect(subject).to respond_to(:nullable) }
 
   it { expect(subject).to respond_to(:partner) }
@@ -47,5 +50,6 @@ describe OData::NavigationProperty do
     it { expect(subject.type).to eq('Collection(ODataDemo.Category)') }
     it { expect(subject.partner).to eq('Products') }
     it { expect(subject.nullable).to eq(true) }
+    it { expect(subject.nav_type).to eq(:collection) }
   end
 end

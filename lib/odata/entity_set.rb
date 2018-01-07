@@ -109,9 +109,10 @@ module OData
     # @api private
     def entity_options
       {
-          namespace:    namespace,
-          service_name: service_name,
-          type:         type
+        namespace:    namespace,
+        service_name: service_name,
+        type:         type,
+        entity_set:   self
       }
     end
 

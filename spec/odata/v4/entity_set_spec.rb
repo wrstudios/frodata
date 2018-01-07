@@ -53,7 +53,7 @@ describe OData::EntitySet, vcr: {cassette_name: 'v4/entity_set_specs'} do
       it { expect(subject.first(5).length).to eq(5) }
       it do
         subject.first(5).each do |entity|
-          expect(entity).to be_a(OData::Entity) 
+          expect(entity).to be_a(OData::Entity)
         end
       end
     end
@@ -81,6 +81,7 @@ describe OData::EntitySet, vcr: {cassette_name: 'v4/entity_set_specs'} do
         Price:            3.5
     } }
 
+    it { expect(new_entity.entity_set).to eq(subject) }
     it { expect(new_entity['ID']).to be_nil }
     it { expect(new_entity['Name']).to eq('Widget') }
     it { expect(new_entity['Description']).to eq('Just a simple widget') }

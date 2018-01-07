@@ -5,6 +5,8 @@ shared_examples 'a valid product' do
   it { expect(subject.type).to eq('ODataDemo.Product') }
   it { expect(subject.namespace).to eq('ODataDemo') }
   it { expect(subject.service_name).to eq('ODataDemo') }
+  it { expect(subject.context).to eq('http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity') }
+  it { expect(subject.id).to eq('Products(0)') }
 
   # Check property types
   it { expect(subject.get_property('ID')).to be_a(OData::Properties::Integer) }
@@ -15,6 +17,11 @@ shared_examples 'a valid product' do
   it { expect(subject.get_property('Rating')).to be_a(OData::Properties::Integer) }
   it { expect(subject.get_property('Price')).to be_a(OData::Properties::Double) }
 
+  # Navigation property proxies
+  # it { expect(subject.get_property('Categories')).to be_a(OData::NavigationProperty::Proxy)}
+  # it { expect(subject.get_property('ProductDetail')).to be_a(OData::NavigationProperty::Proxy)}
+  # it { expect(subject.get_property('Supplier')).to be_a(OData::NavigationProperty::Proxy)}
+
   # Check property values
   it { expect(subject['ID']).to eq(0) }
   it { expect(subject['Name']).to eq('Bread') }
@@ -24,8 +31,27 @@ shared_examples 'a valid product' do
   it { expect(subject['Rating']).to eq(4) }
   it { expect(subject['Price']).to eq(2.5) }
 
+  # Navigation properties
+  # xit { expect(subject['Categories']).to be_a(OData::Entity) }
+  # it { expect(subject['ProductDetail']).to be_a(OData::Entity) }
+  # it { expect(subject['Supplier']).to be_a(OData::Entity) }
+
   it { expect {subject['NonExistant']}.to raise_error(ArgumentError) }
   it { expect {subject['NonExistant'] = 5}.to raise_error(ArgumentError) }
+
+  describe '#links' do
+    let(:links) do
+      {
+        'Categories'    => {type: :collection, href: 'Products(0)/Categories'},
+        'Supplier'      => {type: :entity, href: 'Products(0)/Supplier'},
+        'ProductDetail' => {type: :entity, href: 'Products(0)/ProductDetail'}
+      }
+    end
+
+    it { expect(subject).to respond_to(:links) }
+    it { expect(subject.links.size).to eq(3) }
+    it { expect(subject.links).to eq(links) }
+  end
 end
 
 shared_examples 'a valid supplier' do
@@ -33,12 +59,15 @@ shared_examples 'a valid supplier' do
   it { expect(subject.type).to eq('ODataDemo.Supplier') }
   it { expect(subject.namespace).to eq('ODataDemo') }
   it { expect(subject.service_name).to eq('ODataDemo') }
+  it { expect(subject.context).to eq('http://services.odata.org/V4/OData/OData.svc/$metadata#Suppliers/$entity') }
+  it { expect(subject.id).to eq('Suppliers(0)') }
 
   # Check property types
   it { expect(subject.get_property('ID')).to be_a(OData::Properties::Integer) }
   it { expect(subject.get_property('Name')).to be_a(OData::Properties::String) }
   it { expect(subject.get_property('Address')).to be_a(OData::ComplexType::Property) }
   it { expect(subject.get_property('Location')).to be_a(OData::Properties::Geography::Point) }
+  # it { expect(subject.get_property('Products')).to be_a(OData::NavigationProperty::Proxy)}
 
   # Check property values
   it { expect(subject['ID']).to eq(0) }
@@ -49,4 +78,5 @@ shared_examples 'a valid supplier' do
   it { expect(subject['Address']['ZipCode']).to eq('98074') }
   it { expect(subject['Address']['Country']).to eq('USA') }
   xit { expect(subject['Location']).to eq([47.6316604614258, -122.03547668457]) }
+  xit { expect(subject['Products']).to be_a(OData::Entity) }
 end
