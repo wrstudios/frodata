@@ -205,6 +205,10 @@ module OData
       !errors.empty?
     end
 
+    def service
+      @service ||= OData::ServiceRegistry[service_name]
+    end
+
     private
 
     def instantiate_property(property_name, value_xml)
@@ -224,10 +228,6 @@ module OData
 
     def properties_xml_value
       @properties_xml_value ||= {}
-    end
-
-    def service
-      @service ||= OData::ServiceRegistry[service_name]
     end
 
     # Computes the entity's canonical context URL
@@ -287,12 +287,13 @@ module OData
         new_links = instance_variable_get(:@links) || {}
         service.navigation_properties[name].each do |nav_name, details|
           href = metadata["#{nav_name}@odata.navigationLink"]
+          next if href.nil?
           new_links[nav_name] = {
             type: details.nav_type,
-            href: href || "#{id}/#{nav_name}"
+            href: href
           }
         end
-        instance_variable_set(:@links, new_links)
+        instance_variable_set(:@links, new_links) unless new_links.empty?
       end
     end
   end

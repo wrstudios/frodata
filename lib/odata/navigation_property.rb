@@ -1,3 +1,5 @@
+require 'odata/navigation_property/proxy'
+
 module OData
   class NavigationProperty
     attr_reader :name, :type, :nullable, :partner
@@ -10,7 +12,11 @@ module OData
     end
 
     def nav_type
-      type =~ /^Collection/ ? :collection : :entity
+      @nav_type ||= type =~ /^Collection/ ? :collection : :entity
+    end
+
+    def entity_type
+      @entity_type ||= type.split(/[()]/).last
     end
 
     def self.build(nav_property_xml)

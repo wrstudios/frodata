@@ -1,5 +1,5 @@
 module OData
-  class Association
+  class NavigationProperty
     class Proxy
       def initialize(entity)
         @entity = entity
@@ -10,9 +10,7 @@ module OData
           raise ArgumentError, "unknown association: #{association_name}"
         elsif entity.links[association_name].nil?
           association = associations[association_name]
-          association_end = association.ends.select {|details| details.entity_type != "#{namespace}.#{entity_type}"}.first
-          raise RuntimeError, 'association ends undefined' if association_end.nil?
-          if association_end.multiplicity == :many
+          if association.nav_type == :collection
             []
           else
             nil
@@ -49,25 +47,24 @@ module OData
       def association_results(association_name)
         association = associations[association_name]
         link = entity.links[association_name]
-        association_end = association.ends.select {|details| details.entity_type != "#{namespace}.#{entity_type}"}.first
-        raise RuntimeError, 'association ends undefined' if association_end.nil?
 
-        results = service.execute(link[:href])
+        raise "Invalid navigation link for #{association_name}" unless link[:href]
+
         options = {
-            type:         association_end.entity_type,
-            namespace:    namespace,
-            service_name: entity.service_name
+          type:         association.entity_type,
+          namespace:    namespace,
+          service_name: entity.service_name
         }
+        entity_set = Struct.new(:service, :entity_options)
+                           .new(entity.service, options)
 
-        if association_end.multiplicity == :many
-          service.find_entities(results).collect do |entity_xml|
-            OData::Entity.from_xml(entity_xml, options)
-            #block_given? ? block.call(entity) : yield(entity)
-          end
+        query = OData::Query.new(entity_set)
+        result = query.execute(link[:href])
+
+        if association.nav_type == :collection
+          result
         else
-          document = ::Nokogiri::XML(results.body)
-          document.remove_namespaces!
-          OData::Entity.from_xml(document.xpath('//entry'), options)
+          result.first
         end
       end
     end

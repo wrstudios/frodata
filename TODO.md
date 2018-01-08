@@ -30,7 +30,7 @@ Due to the lack of library support for GeoXML/GML in Ruby, Geography support is 
 [gml-madness]: http://erouault.blogspot.com/2014/04/gml-madness.html
 [polygon_spec]: spec/odata/v4/properties/geography/polygon_spec.rb
 
-[ ] Changes to `NavigationProperty`
+[x] Changes to `NavigationProperty`
   [x] No more associations (but we probably still need a proxy class)
   [x] New `Type` property
   [x] New `Nullable` property

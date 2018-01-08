@@ -10,6 +10,7 @@ module OData
 
     # Create a new Query for the provided EntitySet
     # @param entity_set [OData::EntitySet]
+    # @param options [Hash] Query options
     def initialize(entity_set, options = {})
       @entity_set = entity_set
       @options    = options
@@ -131,7 +132,7 @@ module OData
     # Execute the query.
     # @return [OData::Query::Result]
     def execute(query = self.to_s)
-      response = entity_set.service.execute(query, options)
+      response = service.execute(query, options)
       OData::Query::Result.new(self, response)
     end
 
@@ -139,7 +140,7 @@ module OData
     # @return [Integer]
     def count
       url_chunk = ["#{entity_set.name}/$count", assemble_criteria].compact.join('?')
-      entity_set.service.execute(url_chunk).body.to_i
+      service.execute(url_chunk).body.to_i
     end
 
     # Checks whether a query will return any results by calling #count
@@ -153,6 +154,13 @@ module OData
     # @api private
     def entity_set
       @entity_set
+    end
+
+    # The service for this query
+    # @return [OData::Service]
+    # @api private
+    def service
+      @service ||= entity_set.service
     end
 
     private
