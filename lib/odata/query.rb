@@ -140,7 +140,10 @@ module OData
     # @return [Integer]
     def count
       url_chunk = ["#{entity_set.name}/$count", assemble_criteria].compact.join('?')
-      service.execute(url_chunk).body.to_i
+      response = service.execute(url_chunk)
+      # Some servers (*cough* Microsoft *cough*) seem to
+      # return extraneous characters in the response.
+      response.body.scan(/\d+/).first.to_i
     end
 
     # Checks whether a query will return any results by calling #count
