@@ -19,7 +19,7 @@ shared_examples 'valid result' do
   end
 end
 
-describe OData::Query::Result, vcr: {cassette_name: 'v4/query/result_specs'} do
+describe OData::Query::Result, vcr: {cassette_name: 'query/result_specs'} do
   before(:example) do
     OData::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
   end
@@ -39,14 +39,14 @@ describe OData::Query::Result, vcr: {cassette_name: 'v4/query/result_specs'} do
 
   context 'with Atom Result' do
     let(:content_type) { 'application/atom+xml' }
-    let(:response_body) { File.read('spec/fixtures/files/v4/products.xml') }
+    let(:response_body) { File.read('spec/fixtures/files/products.xml') }
 
     it_behaves_like 'valid result'
   end
 
   context 'with JSON Result' do
     let(:content_type) { 'application/json' }
-    let(:response_body) { File.read('spec/fixtures/files/v4/products.json') }
+    let(:response_body) { File.read('spec/fixtures/files/products.json') }
 
     it_behaves_like 'valid result'
   end

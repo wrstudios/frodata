@@ -39,7 +39,7 @@ describe OData::NavigationProperty do
   end
 
   describe '#build' do
-    let(:metadata_file) { File.read 'spec/fixtures/files/v4/metadata.xml' }
+    let(:metadata_file) { File.read 'spec/fixtures/files/metadata.xml' }
     let(:metadata_xml)  { Nokogiri::XML(metadata_file).remove_namespaces! }
     let(:navigation_properties) { metadata_xml.xpath('//NavigationProperty') }
     let(:subject) {

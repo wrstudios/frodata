@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe OData::ServiceRegistry, vcr: {cassette_name: 'v3/service_registry_specs'} do
+describe OData::ServiceRegistry, vcr: {cassette_name: 'service_registry_specs'} do
   let(:subject) { OData::ServiceRegistry }
-  let(:sample_service) { OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'demoService') }
+  let(:sample_service) { OData::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'demoService') }
 
   it { expect(subject).to respond_to(:add) }
   it { expect(subject).to respond_to(:[]) }
@@ -13,6 +13,6 @@ describe OData::ServiceRegistry, vcr: {cassette_name: 'v3/service_registry_specs
     end
 
     it { expect(subject['demoService']).to eq(sample_service) }
-    it { expect(subject['http://services.odata.org/OData/OData.svc']).to eq(sample_service) }
+    it { expect(subject['http://services.odata.org/V4/OData/OData.svc']).to eq(sample_service) }
   end
 end

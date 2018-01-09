@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe OData::Association::Proxy, vcr: {cassette_name: 'v3/association_proxy_specs'} do
+describe OData::NavigationProperty::Proxy, vcr: {cassette_name: 'NavigationProperty_proxy_specs'} do
   before :each do
-    OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo')
+    OData::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
   end
 
-  let(:subject) { OData::Association::Proxy.new(entity) }
-  let(:entity) { OData::ServiceRegistry['ODataDemo']['Products'].first }
+  let(:subject) { OData::NavigationProperty::Proxy.new(entity) }
+  let(:entity) { OData::ServiceRegistry['ODataDemo']['Products'][1] }
 
   it { expect(subject).to respond_to(:size)}
 
@@ -23,11 +23,11 @@ describe OData::Association::Proxy, vcr: {cassette_name: 'v3/association_proxy_s
         end
       end
 
-      context 'for a many association' do
+      context 'for a many NavigationProperty' do
         it { expect(subject['Categories']).to eq([]) }
       end
 
-      context 'for a singular association' do
+      context 'for a singular NavigationProperty' do
         it { expect(subject['ProductDetail']).to eq(nil) }
       end
     end

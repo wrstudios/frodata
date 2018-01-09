@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative 'entity/shared_examples'
 
-describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
+describe OData::Entity, vcr: {cassette_name: 'entity_specs'} do
   before(:example) do
     OData::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
   end
@@ -52,7 +52,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
   describe '.from_xml' do
     let(:subject) { OData::Entity.from_xml(product_xml, options) }
     let(:product_xml) {
-      document = ::Nokogiri::XML(File.open('spec/fixtures/files/v4/product_0.xml'))
+      document = ::Nokogiri::XML(File.open('spec/fixtures/files/product_0.xml'))
       document.remove_namespaces!
       document.xpath('//entry').first
     }
@@ -70,7 +70,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
 
       let(:subject) { OData::Entity.from_xml(supplier_xml, options) }
       let(:supplier_xml) {
-        document = ::Nokogiri::XML(File.open('spec/fixtures/files/v4/supplier_0.xml'))
+        document = ::Nokogiri::XML(File.open('spec/fixtures/files/supplier_0.xml'))
         document.remove_namespaces!
         document.xpath('//entry').first
       }
@@ -96,7 +96,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
         service_name: 'ODataDemo'
     } }
     let(:product_xml) {
-      File.read('spec/fixtures/files/v4/entity_to_xml.xml')
+      File.read('spec/fixtures/files/entity_to_xml.xml')
     }
 
     # TODO: parse the XML and veryify property values instead?
@@ -107,7 +107,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
   describe '.from_json' do
     let(:subject) { OData::Entity.from_json(product_json, options) }
     let(:product_json) {
-      File.read('spec/fixtures/files/v4/product_0.json')
+      File.read('spec/fixtures/files/product_0.json')
     }
 
     it { expect(OData::Entity).to respond_to(:from_json) }
@@ -122,7 +122,7 @@ describe OData::Entity, vcr: {cassette_name: 'v4/entity_specs'} do
 
       let(:subject) { OData::Entity.from_json(supplier_json, options) }
       let(:supplier_json) {
-        File.read('spec/fixtures/files/v4/supplier_0.json')
+        File.read('spec/fixtures/files/supplier_0.json')
       }
 
       it_behaves_like 'a valid supplier'
