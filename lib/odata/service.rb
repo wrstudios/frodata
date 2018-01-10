@@ -140,6 +140,7 @@ module OData
     # @param additional_options [Hash] options to pass to Typhoeus
     # @return [Typhoeus::Response]
     def execute(url_chunk, additional_options = {})
+      logger.info "Requesting #{url_chunk}..."
       accept = content_type(additional_options.delete(:format) || :auto)
       accept_header = {'Accept' => accept }
 
@@ -156,7 +157,9 @@ module OData
         URI.escape("#{service_url}/#{url_chunk}"), request_options
       )
       request.run
+
       response = request.response
+      # logger.debug(response.body)
       validate_response(response)
       response
     end
@@ -297,8 +300,7 @@ module OData
     end
 
     def error_message(response)
-      xml = ::Nokogiri::XML(response.body).remove_namespaces!
-      xml.xpath('//error/message').first.andand.text
+      OData::Query::Result.new(nil, response).error_message
     end
 
     def process_property_from_xml(property_xml)

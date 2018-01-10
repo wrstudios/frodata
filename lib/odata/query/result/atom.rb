@@ -19,6 +19,10 @@ module OData
           next_page.attributes['href'].value.gsub(service.service_url, '')
         end
 
+        def error_message
+          result_xml.xpath('//error/message').first.andand.text
+        end
+
         private
 
         def result_xml

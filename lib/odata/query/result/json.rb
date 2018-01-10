@@ -19,6 +19,10 @@ module OData
           next_page.gsub(service.service_url, '')
         end
 
+        def error_message
+          result_json['error'].andand['message']
+        end
+
         private
 
         def result_json
