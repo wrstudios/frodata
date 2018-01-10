@@ -43,7 +43,7 @@ module OData
       # Value to be used in URLs.
       # @return [String]
       def url_value
-        "datetime'#{value}'"
+        "datetime'#{xml_value}'"
       end
 
       protected

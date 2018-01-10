@@ -7,10 +7,6 @@ module OData
         'Edm.DateTimeOffset'
       end
 
-      def url_value
-        value
-      end
-
       protected
 
       def strptime_format
