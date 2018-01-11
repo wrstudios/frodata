@@ -56,6 +56,7 @@ module OData
     end
 
     # Adds a fulltext search term to the query
+    # NOTE: May not be implemented by the service
     # @param term [String]
     def search(term)
       criteria_set[:search] << term
