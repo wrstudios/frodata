@@ -140,7 +140,6 @@ module OData
     # @param additional_options [Hash] options to pass to Typhoeus
     # @return [Typhoeus::Response]
     def execute(url_chunk, additional_options = {})
-      logger.info "Requesting #{url_chunk}..."
       accept = content_type(additional_options.delete(:format) || :auto)
       accept_header = {'Accept' => accept }
 
@@ -156,11 +155,13 @@ module OData
       request = ::Typhoeus::Request.new(
         URI.escape("#{service_url}/#{url_chunk}"), request_options
       )
+      logger.info "Requesting #{request.url}..."
       request.run
 
       response = request.response
-      # logger.debug(response.headers)
-      # logger.debug(response.body)
+      logger.debug(response.headers)
+      logger.debug(response.body)
+
       validate_response(response)
       response
     end
@@ -237,10 +238,37 @@ module OData
       properties_to_return
     end
 
-    def logger
-      @logger ||= defined?(Rails) ? Rails.logger : Logger.new(STDOUT)
+    # Returns the log level set via initial options, or the
+    # default log level (`Logger::WARN`) if none was specified.
+    # @see Logger
+    # @return [Fixnum|Symbol]
+    def log_level
+      options[:log_level] || Logger::WARN
     end
 
+    # Returns the logger instance used by the service.
+    # When Ruby on Rails has been detected, the service will
+    # use `Rails.logger`. The log level will NOT be changed.
+    #
+    # When no Rails has been detected, a default logger will
+    # be used that logs to STDOUT with the log level supplied
+    # via options, or the default log level if none was given.
+    # @see #log_level
+    # @return [Logger]
+    def logger
+      @logger ||= lambda do
+        if defined?(Rails)
+          Rails.logger
+        else
+          logger = Logger.new(STDOUT)
+          logger.level = log_level
+          logger
+        end
+      end.call
+    end
+
+    # Allows the logger to be set to a custom `Logger` instance.
+    # @param custom_logger [Logger]
     def logger=(custom_logger)
       @logger = custom_logger
     end
@@ -249,10 +277,10 @@ module OData
 
     def default_options
       {
-          typhoeus: {
-              headers: { 'OData-Version' => '4.0' },
-              timeout: HTTP_TIMEOUT
-          }
+        typhoeus: {
+          headers: { 'OData-Version' => '4.0' },
+          timeout: HTTP_TIMEOUT
+        }
       }
     end
 
