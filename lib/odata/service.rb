@@ -153,9 +153,10 @@ module OData
       end
 
       request = ::Typhoeus::Request.new(
-        URI.escape("#{service_url}/#{url_chunk}"), request_options
+        URI.join("#{service_url}/", URI.escape(url_chunk)),
+        request_options
       )
-      logger.info "Requesting #{request.url}..."
+      logger.info "Requesting #{URI.unescape(request.url)}..."
       request.run
 
       response = request.response
@@ -195,25 +196,6 @@ module OData
       metadata.xpath("//EntityType[@Name='#{entity_name}']/Property[@Name='#{property_name}']").first.attributes['Type'].value
     end
 
-    # Get the property used as the title for an entity from metadata.
-    #
-    # @param entity_name [to_s] the name of the relevant entity
-    # @return [String] the name of the property used as the entity title
-    def get_title_property_name(entity_name)
-      node = metadata.xpath("//EntityType[@Name='#{entity_name}']/Property[@FC_TargetPath='SyndicationTitle']").first
-      node.nil? ? nil : node.attributes['Name'].value
-    end
-
-    # Get the property used as the summary for an entity from metadata.
-    #
-    # @param entity_name [to_s] the name of the relevant entity
-    # @return [String] the name of the property used as the entity summary
-    def get_summary_property_name(entity_name)
-      metadata.xpath("//EntityType[@Name='#{entity_name}']/Property[@FC_TargetPath='SyndicationSummary']").first.attributes['Name'].value
-    rescue NoMethodError
-      nil
-    end
-
     # Get the primary key for the supplied Entity.
     #
     # @param entity_name [to_s]
@@ -243,7 +225,7 @@ module OData
     # @see Logger
     # @return [Fixnum|Symbol]
     def log_level
-      options[:log_level] || Logger::WARN
+      options[:log_level]
     end
 
     # Returns the logger instance used by the service.
@@ -280,7 +262,8 @@ module OData
         typhoeus: {
           headers: { 'OData-Version' => '4.0' },
           timeout: HTTP_TIMEOUT
-        }
+        },
+        log_level: Logger::WARN
       }
     end
 
