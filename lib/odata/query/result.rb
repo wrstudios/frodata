@@ -20,18 +20,20 @@ module OData
       # @param block [block] a block to evaluate
       # @return [OData::Entity] each entity in turn for the query result
       def each(&block)
-        process_results(&block)
-        until next_page.nil?
-          # ensure query gets executed with the same options
-          result = query.execute(next_page_url)
+        unless empty?
           process_results(&block)
+          until next_page.nil?
+            # ensure query gets executed with the same options
+            result = query.execute(next_page_url)
+            process_results(&block)
+          end
         end
       end
 
       # Checks whether the result set contains any results
       # @return [Boolean]
       def empty?
-        find_entities.empty?
+        @empty_result ||= find_entities.empty?
       end
 
       private
@@ -45,6 +47,11 @@ module OData
           extend OData::Query::Result::Atom
         elsif is_json_result?
           extend OData::Query::Result::JSON
+        elsif result.body.empty?
+          # Some services (*cough* Microsoft *cough*) return
+          # an empty response with no `Content-Type` header set.
+          # We catch that here and bypass content type detection.
+          @empty_result = true
         else
           raise ArgumentError, "Invalid result type '#{content_type}'"
         end
