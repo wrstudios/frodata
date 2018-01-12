@@ -1,32 +1,26 @@
 module OData
   class NavigationProperty
     class Proxy
-      def initialize(entity)
+      def initialize(entity, nav_name)
         @entity = entity
+        @nav_name = nav_name
       end
 
-      def [](association_name)
-        if associations[association_name].nil?
-          raise ArgumentError, "unknown association: #{association_name}"
-        elsif entity.links[association_name].nil?
-          association = associations[association_name]
-          if association.nav_type == :collection
+      def value
+        if link.nil?
+          if nav_property.nav_type == :collection
             []
           else
             nil
           end
         else
-          association_results(association_name)
+          @result ||= fetch_result
         end
-      end
-
-      def size
-        associations.size
       end
 
       private
 
-      attr_reader :entity
+      attr_reader :entity, :nav_name
 
       def service
         @service ||= OData::ServiceRegistry[entity.service_name]
@@ -40,18 +34,19 @@ module OData
         @entity_type ||= entity.name
       end
 
-      def associations
-        @associations ||= service.navigation_properties[entity_type]
+      def link
+        entity.links[nav_name]
       end
 
-      def association_results(association_name)
-        association = associations[association_name]
-        link = entity.links[association_name]
+      def nav_property
+        service.navigation_properties[entity_type][nav_name]
+      end
 
-        raise "Invalid navigation link for #{association_name}" unless link[:href]
+      def fetch_result
+        raise "Invalid navigation link for #{nav_name}" unless link[:href]
 
         options = {
-          type:         association.entity_type,
+          type:         nav_property.entity_type,
           namespace:    namespace,
           service_name: entity.service_name
         }
@@ -61,7 +56,7 @@ module OData
         query = OData::Query.new(entity_set)
         result = query.execute(link[:href])
 
-        if association.nav_type == :collection
+        if nav_property.nav_type == :collection
           result
         else
           result.first

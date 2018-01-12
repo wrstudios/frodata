@@ -159,6 +159,7 @@ module OData
       request.run
 
       response = request.response
+      # logger.debug(response.headers)
       # logger.debug(response.body)
       validate_response(response)
       response

@@ -18,9 +18,9 @@ shared_examples 'a valid product' do
   it { expect(subject.get_property('Price')).to be_a(OData::Properties::Double) }
 
   # Navigation property proxies
-  # it { expect(subject.get_property('Categories')).to be_a(OData::NavigationProperty::Proxy)}
-  # it { expect(subject.get_property('ProductDetail')).to be_a(OData::NavigationProperty::Proxy)}
-  # it { expect(subject.get_property('Supplier')).to be_a(OData::NavigationProperty::Proxy)}
+  it { expect(subject.get_property('Categories')).to be_a(OData::NavigationProperty::Proxy)}
+  it { expect(subject.get_property('ProductDetail')).to be_a(OData::NavigationProperty::Proxy)}
+  it { expect(subject.get_property('Supplier')).to be_a(OData::NavigationProperty::Proxy)}
 
   # Check property values
   it { expect(subject['ID']).to eq(0) }
@@ -32,9 +32,9 @@ shared_examples 'a valid product' do
   it { expect(subject['Price']).to eq(2.5) }
 
   # Navigation properties
-  # xit { expect(subject['Categories']).to be_a(OData::Entity) }
-  # it { expect(subject['ProductDetail']).to be_a(OData::Entity) }
-  # it { expect(subject['Supplier']).to be_a(OData::Entity) }
+  it { expect(subject['Categories']).to be_a(Enumerable) }
+  it { expect(subject['ProductDetail']).to be_nil }
+  it { expect(subject['Supplier']).to be_a(OData::Entity) }
 
   it { expect {subject['NonExistant']}.to raise_error(ArgumentError) }
   it { expect {subject['NonExistant'] = 5}.to raise_error(ArgumentError) }

@@ -77,15 +77,34 @@ module OData
         set_property(prop_name, property.dup)
         properties_xml_value.delete(prop_name)
       end
-      properties[prop_name] or raise ArgumentError, "Unknown property: #{property_name}"
+
+      if properties.has_key? prop_name
+        properties[prop_name]
+      elsif navigation_properties.has_key? prop_name
+        navigation_properties[prop_name]
+      else
+        raise ArgumentError, "Unknown property: #{property_name}"
+      end
     end
 
     def property_names
-      [@properties_xml_value.andand.keys, @properties.andand.keys].compact.flatten
+      [
+        @properties_xml_value.andand.keys,
+        @properties.andand.keys
+      ].compact.flatten
     end
 
-    def associations
-      @associations ||= OData::NavigationProperty::Proxy.new(self)
+    def navigation_property_names
+      navigation_properties.keys
+    end
+
+    def navigation_properties
+      @navigation_properties ||= links.keys.map do |nav_name|
+        [
+          nav_name,
+          OData::NavigationProperty::Proxy.new(self, nav_name)
+        ]
+      end.to_h
     end
 
     # Links to other OData entitites
