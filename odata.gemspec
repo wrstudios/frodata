@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'timecop', '~> 0.7.1'
   spec.add_development_dependency 'equivalent-xml', '~> 0.6.0'
 
-  spec.add_dependency 'nokogiri', '~> 1.6.2'
-  spec.add_dependency 'typhoeus', '~> 0.6.8'
+  spec.add_dependency 'nokogiri', '~> 1.8.1'
+  spec.add_dependency 'typhoeus', '~> 1.3.0'
   spec.add_dependency 'andand',   '~> 1.3.3'
 end
