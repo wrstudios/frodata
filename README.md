@@ -1,27 +1,22 @@
-# OData
+# OData V4
 
+The OData gem provides a simple wrapper around the OData API protocol. 
+It has the ability to automatically inspect compliant APIs and expose the relevant Ruby objects dynamically.
+It also provides a set of code generation tools for quickly bootstrapping more custom service libraries.
 
-**WORK IN PROGRESS - this branch is currently in the middle of being updated to OData V4.0**
+**This gem supports [OData Version 4.0](http://www.odata.org/documentation/). Support for older versions is not a goal.**
 
-For a list of tasks and current progress, see [here](TODOS.md).
+If you need a gem to integration with OData Version 3, you can use James Thompson's [original OData gem][ruby-odata], upon which this gem is based.
 
-**BETA QUALITY, at best — You've been warned**
-
-[![Build Status](https://travis-ci.org/ruby-odata/odata.svg?branch=master)](https://travis-ci.org/ruby-odata/odata)
-[![Code Climate](https://codeclimate.com/github/ruby-odata/odata.png)](https://codeclimate.com/github/ruby-odata/odata)
-[![Coverage](https://codeclimate.com/github/ruby-odata/odata/coverage.png)](https://codeclimate.com/github/ruby-odata/odata)
-[![Gem Version](https://badge.fury.io/rb/odata.svg)](http://badge.fury.io/rb/odata)
-[![Dependency Status](https://gemnasium.com/ruby-odata/odata.svg)](https://gemnasium.com/ruby-odata/odata)
-[![Documentation](http://inch-ci.org/github/ruby-odata/odata.png?branch=master)](http://rubydoc.info/github/ruby-odata/odata/master/frames)
-
-The OData gem provides a simple wrapper around the OData API protocol. It has
-the ability to automatically inspect compliant APIs and expose the relevant
-Ruby objects dynamically. It also provides a set of code generation tools for
-quickly bootstrapping more custom service libraries.
+[![Build Status](https://app.codeship.com/projects/da1eb540-ce3f-0135-2ddc-161d5c3cc5fd/status?branch=master)](https://app.codeship.com/projects/262148)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/3e7b6e3ca35e3b76c898/test_coverage)](https://codeclimate.com/github/wrstudios/odata/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3e7b6e3ca35e3b76c898/maintainability)](https://codeclimate.com/github/wrstudios/odata/maintainability)
+[![Dependency Status](https://gemnasium.com/badges/github.com/wrstudios/odata.svg)](https://gemnasium.com/github.com/wrstudios/odata)
+[![Documentation](http://inch-ci.org/github/wrstudios/odata.png?branch=master)](http://rubydoc.info/github/ruby-odata/odata/master/frames)
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your application's `Gemfile`:
 
     gem 'odata'
 
@@ -48,12 +43,12 @@ necessary.
 To create an `OData::Service` simply provide the location of a service endpoint
 to it like this:
 
-    OData::Service.open('http://services.odata.org/OData/OData.svc')
+    OData::Service.open('http://services.odata.org/V4/OData/OData.svc')
 
 You may also provide an options hash after the URL. It is suggested that you
 supply a name for the service via this hash like so:
 
-    OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo')
+    OData::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
 
 This one call will setup the service and allow for the discovery of everything
 the other parts of the OData gem need to function. The two methods you will
@@ -65,7 +60,7 @@ Using either the service URL or the name provided as an option when creating an
 `OData::Service` will allow for quick lookup in the `OData::ServiceRegistry`
 like such:
 
-    OData::ServiceRegistry['http://services.odata.org/OData/OData.svc']
+    OData::ServiceRegistry['http://services.odata.org/V4/OData/OData.svc']
     OData::ServiceRegistry['ODataDemo']
 
 Both of the above calls would retrieve the same service from the registry. At
@@ -80,7 +75,7 @@ which uses libcurl. Use the **:typhoeus** option to set your authentication.
 
 For example using **ntlm** authentication:
 
-    conn = OData::Service.open('http://services.odata.org/OData/OData.svc', {
+    conn = OData::Service.open('http://services.odata.org/V4/OData/OData.svc', {
         name: 'ODataDemo',
         typhoeus: {
           username: 'username',
@@ -98,7 +93,7 @@ Typically the metadata file of a service can be quite large. You can speed your 
 time by forcing the service to load the metadata from a file rather than a URL.
 This is only recommended for testing purposes, as the metadata file can change.
 
-    conn = OData::Service.open('http://services.odata.org/OData/OData.svc', {
+    conn = OData::Service.open('http://services.odata.org/V4/OData/OData.svc', {
         name: 'ODataDemo',
         metadata_file: "metadata.xml",
     })
@@ -108,11 +103,11 @@ This is only recommended for testing purposes, as the metadata file can change.
 
 You can set the headers with the **:typhoeus** param like so:
 
-    conn = OData::Service.open('http://services.odata.org/OData/OData.svc', {
+    conn = OData::Service.open('http://services.odata.org/V4/OData/OData.svc', {
         name: 'ODataDemo',
         typhoeus: {
           headers: {
-            "DataServiceVersion" => "2.0"
+            "Authorization" => "Bearer #{token}"
           }
         }
     })
@@ -125,7 +120,7 @@ never need to worry about an `OData::EntitySet` directly. For example, to get
 an `OData::EntitySet` for the products in the ODataDemo service simply access
 the entity set through the service like this:
 
-    svc = OData::Service.open('http://services.odata.org/OData/OData.svc')
+    svc = OData::Service.open('http://services.odata.org/V4/OData/OData.svc')
     products = svc['ProductsSet'] # => OData::EntitySet
 
 `OData::EntitySet` instances implement the `Enumerable` module, meaning you can
@@ -237,8 +232,15 @@ to the published RubyDocs for full details on the various capabilities:
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/odata/fork )
+1. Fork it (`https://github.com/[my-github-username]/odata/fork`)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Credits
+
+Many thanks go to [James Thompson][@plainprogrammer], who wrote the [original OData (Version 3.0) gem][ruby-odata]. 
+
+[@plainprogrammer]: https://github.com/plainprogrammer
+[ruby-odata]: https://github.com/ruby-odata/odata
