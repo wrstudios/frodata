@@ -6,11 +6,11 @@ require 'odata/version'
 Gem::Specification.new do |spec|
   spec.name          = 'odata'
   spec.version       = OData::VERSION
-  spec.authors       = ['James Thompson']
-  spec.email         = %w{james@plainprograms.com}
+  spec.authors       = ['Christoph Wagner', 'James Thompson']
+  spec.email         = %w{christoph@wrstudios.com james@plainprograms.com}
   spec.summary       = %q{Simple OData library}
-  spec.description   = %q{Provides a simple interface for working with OData APIs.}
-  spec.homepage      = 'https://github.com/plainprogrammer/odata'
+  spec.description   = %q{Provides a simple interface for working with OData V4 APIs.}
+  spec.homepage      = 'https://github.com/wrstudios/odata'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
