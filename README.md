@@ -1,6 +1,6 @@
 # OData V4
 
-The OData gem provides a simple wrapper around the OData API protocol. 
+The OData gem provides a simple wrapper around the OData API protocol.
 It has the ability to automatically inspect compliant APIs and expose the relevant Ruby objects dynamically.
 It also provides a set of code generation tools for quickly bootstrapping more custom service libraries.
 
@@ -9,10 +9,10 @@ It also provides a set of code generation tools for quickly bootstrapping more c
 If you need a gem to integration with OData Version 3, you can use James Thompson's [original OData gem][ruby-odata], upon which this gem is based.
 
 [![Build Status](https://app.codeship.com/projects/da1eb540-ce3f-0135-2ddc-161d5c3cc5fd/status?branch=master)](https://app.codeship.com/projects/262148)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/3e7b6e3ca35e3b76c898/test_coverage)](https://codeclimate.com/github/wrstudios/odata/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/3e7b6e3ca35e3b76c898/maintainability)](https://codeclimate.com/github/wrstudios/odata/maintainability)
-[![Dependency Status](https://gemnasium.com/badges/github.com/wrstudios/odata.svg)](https://gemnasium.com/github.com/wrstudios/odata)
-[![Documentation](http://inch-ci.org/github/wrstudios/odata.png?branch=master)](http://rubydoc.info/github/ruby-odata/odata/master/frames)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f151944dc05b2c7268e5/maintainability)](https://codeclimate.com/github/wrstudios/odata4/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f151944dc05b2c7268e5/test_coverage)](https://codeclimate.com/github/wrstudios/odata4/test_coverage)
+[![Dependency Status](https://gemnasium.com/badges/github.com/wrstudios/odata4.svg)](https://gemnasium.com/github.com/wrstudios/odata4)
+[![Documentation](http://inch-ci.org/github/wrstudios/odata4.png?branch=master)](http://www.rubydoc.info/github/wrstudios/odata4/master)
 
 ## Installation
 
@@ -240,7 +240,7 @@ to the published RubyDocs for full details on the various capabilities:
 
 ## Credits
 
-Many thanks go to [James Thompson][@plainprogrammer], who wrote the [original OData (Version 3.0) gem][ruby-odata]. 
+Many thanks go to [James Thompson][@plainprogrammer], who wrote the [original OData (Version 3.0) gem][ruby-odata].
 
 [@plainprogrammer]: https://github.com/plainprogrammer
 [ruby-odata]: https://github.com/ruby-odata/odata
