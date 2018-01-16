@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'odata/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'odata'
+  spec.name          = 'odata4'
   spec.version       = OData::VERSION
   spec.authors       = ['Christoph Wagner', 'James Thompson']
   spec.email         = %w{christoph@wrstudios.com james@plainprograms.com}
   spec.summary       = %q{Simple OData library}
   spec.description   = %q{Provides a simple interface for working with OData V4 APIs.}
-  spec.homepage      = 'https://github.com/wrstudios/odata'
+  spec.homepage      = 'https://github.com/wrstudios/odata4'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -21,7 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.6'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'simplecov', '~> 0.8.2'
-  spec.add_development_dependency 'codeclimate-test-reporter'
   spec.add_development_dependency 'rspec', '~> 3.0.0'
   spec.add_development_dependency 'rspec-autotest', '~> 1.0.0'
   spec.add_development_dependency 'autotest', '~> 4.4.6'
