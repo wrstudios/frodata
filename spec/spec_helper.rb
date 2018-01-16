@@ -5,7 +5,7 @@ require 'securerandom'
 require 'timecop'
 
 # Load all files from `spec/support`
-Dir["support/**/*.rb"].each { |f| require f }
+Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f }
 
 RSpec.configure do |config|
   if config.files_to_run.one?

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OData::NavigationProperty::Proxy, vcr: {cassette_name: 'NavigationProperty_proxy_specs'} do
+describe OData::NavigationProperty::Proxy, vcr: {cassette_name: 'navigation_property_proxy_specs'} do
   before :each do
     OData::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
   end
