@@ -1,4 +1,4 @@
-if ENV['CI']
+if ENV['CC_TEST_REPORTER_ID']
   require 'codeclimate-test-reporter'
   CodeClimate::TestReporter.start
 else
