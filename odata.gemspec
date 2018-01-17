@@ -20,12 +20,12 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 1.6'
   spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'simplecov', '~> 0.8.2'
-  spec.add_development_dependency 'rspec', '~> 3.0.0'
+  spec.add_development_dependency 'simplecov', '~> 0.15.1'
+  spec.add_development_dependency 'rspec', '~> 3.7.0'
   spec.add_development_dependency 'rspec-autotest', '~> 1.0.0'
   spec.add_development_dependency 'autotest', '~> 4.4.6'
-  spec.add_development_dependency 'vcr', '~> 2.9.2'
-  spec.add_development_dependency 'timecop', '~> 0.7.1'
+  spec.add_development_dependency 'vcr', '~> 4.0.0'
+  spec.add_development_dependency 'timecop', '~> 0.9.1'
   spec.add_development_dependency 'equivalent-xml', '~> 0.6.0'
 
   spec.add_dependency 'nokogiri', '~> 1.8.1'
