@@ -244,3 +244,8 @@ Many thanks go to [James Thompson][@plainprogrammer], who wrote the [original OD
 
 [@plainprogrammer]: https://github.com/plainprogrammer
 [ruby-odata]: https://github.com/ruby-odata/odata
+
+Also, I would like to thank [W+R Studios][wrstudios] for paying me to work on Open Source software like this. If you want to work on interesting challenges with an awesome team, check out our [open positions][wrcareers].
+
+[wrstudios]: http://wrstudios.com/
+[wrcareers]: http://wrstudios.com/careers
