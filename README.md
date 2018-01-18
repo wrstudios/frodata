@@ -43,12 +43,16 @@ necessary.
 To create an `OData4::Service` simply provide the location of a service endpoint
 to it like this:
 
-    OData4::Service.open('http://services.odata.org/V4/OData/OData.svc')
+```ruby
+  OData4::Service.open('http://services.odata.org/V4/OData/OData.service')
+```
 
 You may also provide an options hash after the URL. It is suggested that you
 supply a name for the service via this hash like so:
 
-    OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+```ruby
+  OData4::Service.open('http://services.odata.org/V4/OData/OData.service', name: 'ODataDemo')
+```
 
 This one call will setup the service and allow for the discovery of everything
 the other parts of the OData4 gem need to function. The two methods you will
@@ -60,8 +64,10 @@ Using either the service URL or the name provided as an option when creating an
 `OData4::Service` will allow for quick lookup in the `OData4::ServiceRegistry`
 like such:
 
-    OData4::ServiceRegistry['http://services.odata.org/V4/OData/OData.svc']
-    OData4::ServiceRegistry['ODataDemo']
+```ruby
+  OData4::ServiceRegistry['http://services.odata.org/V4/OData/OData.service']
+  OData4::ServiceRegistry['ODataDemo']
+```
 
 Both of the above calls would retrieve the same service from the registry. At
 the moment there is no protection against name collisions provided in
@@ -75,14 +81,16 @@ which uses libcurl. Use the **:typhoeus** option to set your authentication.
 
 For example using **ntlm** authentication:
 
-    conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-        name: 'ODataDemo',
-        typhoeus: {
-          username: 'username',
-          password: 'password',
-          httpauth: :ntlm
-        }
-    })
+```ruby
+  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.service', {
+    name: 'ODataDemo',
+    typhoeus: {
+      username: 'username',
+      password: 'password',
+      httpauth: :ntlm
+    }
+  })
+```
 
 For more authentication options see [libcurl](http://curl.haxx.se/libcurl/c/CURLOPT_HTTPAUTH.html) or
 [typhoeus](https://github.com/typhoeus/typhoeus).
@@ -93,24 +101,27 @@ Typically the metadata file of a service can be quite large. You can speed your 
 time by forcing the service to load the metadata from a file rather than a URL.
 This is only recommended for testing purposes, as the metadata file can change.
 
-    conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-        name: 'ODataDemo',
-        metadata_file: "metadata.xml",
-    })
-
+```ruby
+  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.service', {
+      name: 'ODataDemo',
+      metadata_file: "metadata.xml",
+  })
+```
 
 ### Headers
 
 You can set the headers with the **:typhoeus** param like so:
 
-    conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-        name: 'ODataDemo',
-        typhoeus: {
-          headers: {
-            "Authorization" => "Bearer #{token}"
-          }
+```ruby
+  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.service', {
+      name: 'ODataDemo',
+      typhoeus: {
+        headers: {
+          "Authorization" => "Bearer #{token}"
         }
-    })
+      }
+  })
+```
 
 ### Entity Sets
 
@@ -120,43 +131,59 @@ never need to worry about an `OData4::EntitySet` directly. For example, to get
 an `OData4::EntitySet` for the products in the ODataDemo service simply access
 the entity set through the service like this:
 
-    svc = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc')
-    products = svc['ProductsSet'] # => OData4::EntitySet
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.service')
+  products = service['ProductsSet'] # => OData4::EntitySet
+```
 
 `OData4::EntitySet` instances implement the `Enumerable` module, meaning you can
 work with them very naturally, like this:
 
-    products.each do |entity|
-      entity # => OData4::Entity for type Product
-    end
+```ruby
+  products.each do |entity|
+    entity # => OData4::Entity for type Product
+  end
+```
 
 You can get a list of all your entity sets like this:
 
-    svc.entity_sets
+```ruby
+  service.entity_sets
+```
 
 #### Count
 Some versions of Microsoft CRM do not support count.
 
-    products.count
+```ruby
+  products.count
+```
 
 #### Collections
 You can you the following methods to grab a collection of Entities:
 
-    products.each do |entity|
-      ...
-    end
+```ruby
+  products.each do |entity|
+    ...
+  end
+```
 
 The first entity object returns a single entity object.
 
-    products.first
+```ruby
+  products.first
+```
 
-first(x) returns an array of entity objects.
+`first(x)` returns an array of entity objects.
 
-    products.first(x)
+```ruby
+  products.first(x)
+```
 
 #### Find a certain Entity
 
-    svc['ProductsSet']['<guid of entity>']
+```ruby
+  service['ProductsSet']['<guid of entity>']
+```
 
 
 ### Entities
@@ -166,21 +193,27 @@ service. They are returned primarily through interaction with instances of
 `OData4::EntitySet`. You can access individual properties on an `OData4::Entity`
 like so:
 
-    product = products.first # => OData4::Entity
-    product['Name']  # => 'Bread'
-    product['Price'] # => 2.5 (Float)
+```ruby
+  product = products.first # => OData4::Entity
+  product['Name']  # => 'Bread'
+  product['Price'] # => 2.5 (Float)
+```
 
 Individual properties on an `OData4::Entity` are automatically typecast by the
 gem, so you don't have to worry about too much when working with entities. The
 way this is implemented internally guarantees that an `OData4::Entity` is always
 ready to save back to the service or `OData4::EntitySet`, which you do like so:
 
-    svc['Products'] << product # Write back to the service
-    products << product        # Write back to the Entity Set
+```ruby
+  service['Products'] << product # Write back to the service
+  products << product        # Write back to the Entity Set
+```
 
 You can get a list of all your entities like this:
 
-    svc.entity_types
+```ruby
+  service.entity_types
+```
 
 #### Entity Properties
 Reading, parsing and instantiating all properties of an entity can add up to a
@@ -191,15 +224,21 @@ property until you want to use it.
 
 You can find all the property names of your entity with
 
-    product.property_names
+```ruby
+  product.property_names
+```
 
 When you want to grab the value of the property like this
 
-    product["Name"]
+```ruby
+  product["Name"]
+```
 
     or
 
-    product.get_property("Name")
+```ruby
+  product.get_property("Name")
+```
 
 It will parse and instantiate the property if it hasnt done so yet.
 
@@ -207,28 +246,30 @@ It will parse and instantiate the property if it hasnt done so yet.
 
 `OData4::Query` instances form the base for finding specific entities within an
 `OData4::EntitySet`. A query object exposes a number of capabilities based on
-the [System Query Options](http://www.odata.org/documentation/odata-version-3-0/odata-version-3-0-core-protocol#queryingcollections)
-provided for in the OData4 specification. Below is just a partial example of
+the [System Query Options](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Toc453752288)
+provided for in the OData V4.0 specification. Below is just a partial example of
 what is possible:
 
-    query = svc['Products'].query
-    query.where(query[:Price].lt(15))
-    query.where(query[:Rating].gt(3))
-    query.limit(3)
-    query.skip(2)
-    query.order_by("Name")
-    query.select("Name,CreatedBy")
-    query.inline_count
-    results = query.execute
-    results.each {|product| puts product['Name']}
+```ruby
+  query = service['Products'].query
+  query.where(query[:Price].lt(15))
+  query.where(query[:Rating].gt(3))
+  query.limit(3)
+  query.skip(2)
+  query.order_by("Name")
+  query.select("Name,CreatedBy")
+  query.inline_count
+  results = query.execute
+  results.each {|product| puts product['Name']}
+```
 
 The process of querying is kept purposely verbose to allow for lazy behavior to
 be implemented at higher layers. Internally, `OData4::Query` relies on the
 `OData4::Query::Criteria` for the way the `where` method works. You should refer
 to the published RubyDocs for full details on the various capabilities:
 
- * [OData4::Query](http://rubydoc.info/github/ruby-odata/odata/master/OData4/Query)
- * [OData4::Query::Criteria](http://rubydoc.info/github/ruby-odata/odata/master/OData4/Query/Criteria)
+ * [OData4::Query](http://rubydoc.info/github/wrstudios/odata4/master/OData4/Query)
+ * [OData4::Query::Criteria](http://rubydoc.info/github/wrstudios/odata4/master/OData4/Query/Criteria)
 
 ## Contributing
 
