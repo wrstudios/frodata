@@ -65,7 +65,7 @@ module OData4
     # @param member_name [to_s]
     # @return [*]
     def [](member_name)
-      members[member_name.to_s]
+      members.invert[member_name.to_s]
     end
 
     private
@@ -87,8 +87,8 @@ module OData4
     def collect_members
       Hash[type_definition.xpath('./Member').map.with_index do |member_xml, index|
         member_name  = member_xml.attributes['Name'].value
-        member_value = member_xml.attributes['Value'].andand.value.to_i
-        [member_name, member_value || index]
+        member_value = member_xml.attributes['Value'].andand.value.andand.to_i
+        [member_value || index, member_name]
       end]
     end
   end

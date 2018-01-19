@@ -37,7 +37,7 @@ describe OData4::EnumType, vcr: {cassette_name: 'enum_type_specs'} do
     it { expect(enum_type.type).to eq('ODataDemo.ProductStatus') }
     it { expect(enum_type.is_flags?).to eq(false) }
     it { expect(enum_type.underlying_type).to eq('Edm.Byte') }
-    it { expect(enum_type.members.keys).to eq(%w{Available LowStock Backordered Discontinued}) }
+    it { expect(enum_type.members.values).to eq(%w{Available LowStock Backordered Discontinued}) }
   end
 
   # Check property instance inheritance hierarchy
@@ -60,30 +60,42 @@ describe OData4::EnumType, vcr: {cassette_name: 'enum_type_specs'} do
       }.to raise_error(ArgumentError)
     end
 
-    context 'with multiple values' do
-      context 'when is_flags=false' do
-        it 'does not allow setting valid values' do
-          expect {
-            subject.value = 'Available, Backordered'
-          }.to raise_error(ArgumentError)
-        end
+    it 'allows setting by numeric value' do
+      expect {
+        subject.value = 1
+      }.not_to raise_error
+      expect(subject.value).to eq('LowStock')
+    end
+
+    context 'when `IsFlags` is false' do
+      it 'does not allow setting multiple values' do
+        expect {
+          subject.value = 'Available, Backordered'
+        }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when `IsFlags` is true' do
+      before do
+        subject.define_singleton_method(:is_flags?) { true }
       end
 
-      context 'when is_flags=true' do
-        before do
-          subject.define_singleton_method(:is_flags?) { true }
-        end
+      it 'allows setting multiple values' do
+        subject.value = 'Available, Backordered'
+        expect(subject.value).to eq(%w[Available Backordered])
+      end
 
-        it 'allows setting valid values' do
-          subject.value = 'Available, Backordered'
-          expect(subject.value).to eq('Available,Backordered')
-        end
+      it 'does not allow setting invalid values' do
+        expect {
+          subject.value = 'Available, Invalid'
+        }.to raise_error(ArgumentError)
+      end
 
-        it 'does not allow setting an invalid value' do
-          expect {
-            subject.value = 'Available, Invalid'
-          }.to raise_error(ArgumentError)
-        end
+      it 'allows setting by numeric value' do
+        expect {
+          subject.value = 'Available, 1'
+        }.not_to raise_error
+        expect(subject.value).to eq(%w[Available LowStock])
       end
     end
   end

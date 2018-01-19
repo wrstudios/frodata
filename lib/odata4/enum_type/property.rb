@@ -16,8 +16,8 @@ module OData4
       # Sets the property value
       # @params new_value [String]
       def value=(new_value)
-        validate(new_value)
-        @value = parse_value(new_value).andand.join(',')
+        parsed_value = validate(new_value)
+        @value = is_flags? ? parsed_value : parsed_value.first
       end
 
       # Value to be used in URLs.
@@ -35,17 +35,27 @@ module OData4
       def validate(value)
         return if value.nil? && allows_nil?
         values = parse_value(value)
-        raise ArgumentError, 'Multiple values are not allowed for this property' if values.length > 1 && !is_flags?
-        values.each do |value|
-          unless members.keys.include?(value)
-            raise ArgumentError, "Value must be one of #{members.keys}, but was: '#{value}'"
+
+        if values.length > 1 && !is_flags?
+          raise ArgumentError, 'Multiple values are not allowed for this property'
+        end
+
+        values.map do |value|
+          if members.keys.include?(value)
+            members[value]
+          elsif members.values.include?(value)
+            value
+          else
+            raise ArgumentError, "Property '#{name}': Value must be one of #{members.to_a}, but was: '#{value}'"
           end
         end
       end
 
       def parse_value(value)
         return nil if value.nil?
-        value.split(',').map(&:strip)
+        value.to_s.split(',').map(&:strip).map do |val|
+          val =~ /^[0-9]+$/ ? val.to_i : val
+        end
       end
     end
   end
