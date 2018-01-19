@@ -54,7 +54,12 @@ module OData4
                            .new(entity.service, options)
 
         query = OData4::Query.new(entity_set)
-        result = query.execute(link[:href])
+        begin
+          result = query.execute(link[:href])
+        rescue => ex
+          raise ex unless ex.message =~ /Not Found/
+          result = []
+        end
 
         if nav_property.nav_type == :collection
           result
