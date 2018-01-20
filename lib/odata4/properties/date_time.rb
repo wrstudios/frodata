@@ -43,7 +43,7 @@ module OData4
       # Value to be used in URLs.
       # @return [String]
       def url_value
-        "datetime'#{xml_value}'"
+        xml_value
       end
 
       protected
@@ -55,7 +55,8 @@ module OData4
 
       # Specifies the date/time format string used for `strptime`
       def strptime_format
-        '%Y-%m-%dT%H:%M:%S.%L'
+        #'%Y-%m-%dT%H:%M:%S.%L'
+        "%Y-%m-%dT%H:%M:%SZ"
       end
 
       def validate(value)
