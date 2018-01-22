@@ -5,11 +5,15 @@ module OData4
       # Returns the property value, properly typecast
       # @return [BigDecimal,nil]
       def value
-        if (@value.nil? || @value.empty?) && allows_nil?
+        if (@value.nil? || @value.empty?) && (strict? && allows_nil?)
           nil
         else
           BigDecimal(@value)
         end
+      end
+
+      def strict?
+        @options[:strict] || false
       end
 
       # Sets the property value
