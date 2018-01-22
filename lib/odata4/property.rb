@@ -34,9 +34,17 @@ module OData4
     end
 
     # Whether the property permits a nil value.
+    # (Default=true)
     # @return [Boolean]
     def allows_nil?
-      @allows_nil ||= options[:allows_nil]
+      options[:allows_nil]
+    end
+
+    # Whether the property uses strict validation.
+    # (Default=false)
+    # @return [Boolean]
+    def strict?
+      options[:strict]
     end
 
     # The configured concurrency mode for the property.
@@ -97,8 +105,9 @@ module OData4
 
     def default_options
       {
-          allows_nil:       true,
-          concurrency_mode: :none
+        allows_nil:       true,
+        concurrency_mode: :none,
+        strict:           false
       }
     end
 

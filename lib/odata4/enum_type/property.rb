@@ -26,10 +26,6 @@ module OData4
         "#{type}'#{@value}'"
       end
 
-      def strict?
-        @options[:strict] || false
-      end
-
       private
 
       def members

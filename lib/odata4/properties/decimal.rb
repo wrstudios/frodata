@@ -12,10 +12,6 @@ module OData4
         end
       end
 
-      def strict?
-        @options[:strict] || false
-      end
-
       # Sets the property value
       # @params new_value something BigDecimal() can parse
       def value=(new_value)
