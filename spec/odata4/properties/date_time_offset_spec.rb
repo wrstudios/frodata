@@ -7,7 +7,7 @@ describe OData4::Properties::DateTimeOffset do
   it { expect(subject.type).to eq('Edm.DateTimeOffset') }
   it { expect(subject.value).to eq(DateTime.strptime('2000-01-01T16:00:00-09:00', '%Y-%m-%dT%H:%M:%S%:z')) }
 
-  it { expect(subject.url_value).to eq("datetime'2000-01-01T16:00:00-09:00'")}
+  it { expect(subject.url_value).to eq("2000-01-01T16:00:00-09:00")}
 
   it { expect {subject.value = 'bad'}.to raise_error(ArgumentError) }
 
