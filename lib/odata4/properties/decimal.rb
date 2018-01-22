@@ -8,15 +8,15 @@ module OData4
         if (@value.nil? || @value.empty?) && allows_nil?
           nil
         else
-          BigDecimal(@value)
+          BigDecimal(@value.to_f.to_s)
         end
       end
 
       # Sets the property value
       # @params new_value something BigDecimal() can parse
       def value=(new_value)
-        validate(BigDecimal(new_value.to_s))
-        @value = new_value.to_s
+        validate(BigDecimal(new_value.to_f.to_s))
+        @value = new_value.to_f.to_s
       end
 
       # The OData4 type name
