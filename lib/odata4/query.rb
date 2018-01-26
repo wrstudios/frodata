@@ -33,7 +33,9 @@ module OData4
       key_property = entity.get_property(entity.primary_key)
       key_property.value = key
 
-      execute("#{entity_set.name}(#{key_property.url_value})").first
+      pathname = "#{entity_set.name}(#{key_property.url_value})"
+      query = [pathname, assemble_criteria].compact.join('?')
+      execute(query).first
     end
 
     # Adds a filter criteria to the query.
