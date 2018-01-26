@@ -6,6 +6,10 @@ module OData4
         @nav_name = nav_name
       end
 
+      def value=(value)
+        @value = value
+      end
+
       def value
         if link.nil?
           if nav_property.nav_type == :collection
@@ -14,7 +18,7 @@ module OData4
             nil
           end
         else
-          @result ||= fetch_result
+          @value ||= fetch_result
         end
       end
 
