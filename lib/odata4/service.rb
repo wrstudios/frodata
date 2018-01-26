@@ -225,7 +225,7 @@ module OData4
     # @see Logger
     # @return [Fixnum|Symbol]
     def log_level
-      options[:log_level]
+      options[:log_level] || Logger::WARN
     end
 
     # Returns the logger instance used by the service.
@@ -262,8 +262,7 @@ module OData4
         typhoeus: {
           headers: { 'OData4-Version' => '4.0' },
           timeout: HTTP_TIMEOUT
-        },
-        log_level: Logger::WARN
+        }
       }
     end
 
