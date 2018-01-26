@@ -33,7 +33,7 @@ module OData4
       end
 
       def validate(value)
-        return if value.nil? && allows_nil?
+        return [] if value.nil? && allows_nil?
         values = parse_value(value)
 
         if values.length > 1 && !is_flags?
