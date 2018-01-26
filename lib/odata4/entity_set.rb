@@ -73,8 +73,9 @@ module OData4
     # Find the Entity with the supplied key value.
     # @param key [to_s] primary key to lookup
     # @return [OData4::Entity,nil]
-    def [](key)
-      query.find(key)
+    def [](key, options={})
+      properties_to_expand = [ options[:expand] ].compact.flatten
+      query.expand(*properties_to_expand).find(key)
     end
 
     # Write supplied entity back to the service.

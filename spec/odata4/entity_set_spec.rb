@@ -95,10 +95,33 @@ describe OData4::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
     let(:existing_entity) { subject[0] }
     let(:nonexistant_entity) { subject[99] }
 
-    it { expect(existing_entity).to be_a(OData4::Entity) }
-    it { expect(existing_entity['ID']).to eq(0) }
+    it 'finds an entity by its primary key' do
+      expect(existing_entity).to be_a(OData4::Entity)
+      expect(existing_entity['ID']).to eq(0)
+    end
 
-    it { expect { nonexistant_entity }.to raise_error(RuntimeError, /Not Found/) }
+    it 'raises an error when no entity was found' do
+      expect { nonexistant_entity }.to raise_error(RuntimeError, /Not Found/)
+    end
+
+    describe 'eager loading' do
+      it 'works with a single property' do
+        product_with_categories = subject[0, expand: 'Categories']
+
+        expect(product_with_categories['Categories']).to eq([
+          { "ID" => 0, "Name" => "Food" }
+        ])
+      end
+
+      it 'works with multiple properties' do
+        product_with_details = subject[0, expand: %w[Categories Supplier]]
+
+        expect(product_with_details['Supplier']).to include('Name' => 'Tokyo Traders')
+        expect(product_with_details['Categories']).to eq([
+          { "ID" => 0, "Name" => "Food" }
+        ])
+      end
+    end
   end
 
   describe '#<<' do

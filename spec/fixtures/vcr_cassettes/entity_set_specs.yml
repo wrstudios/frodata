@@ -1071,4 +1071,113 @@ http_interactions:
     adapter_metadata:
       effective_url: http://services.odata.org/V4/OData/OData.svc/Products
   recorded_at: Thu, 07 Dec 2017 21:54:53 GMT
-recorded_with: VCR 2.9.3
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(0)?$expand=Categories
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Typhoeus - https://github.com/typhoeus/typhoeus
+      OData4-Version:
+      - '4.0'
+      Accept:
+      - application/atom+xml,application/json,text/plain
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '270'
+      Content-Type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      Server:
+      - Microsoft-IIS/10.0
+      X-Content-Type-Options:
+      - nosniff
+      OData-Version:
+      - 4.0;
+      X-AspNet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      Access-Control-Expose-Headers:
+      - DataServiceVersion
+      Date:
+      - Fri, 26 Jan 2018 23:52:04 GMT
+    body:
+      encoding: UTF-8
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":0,"Name":"Bread","Description":"Whole
+        grain bread","ReleaseDate":"1992-01-01T00:00:00Z","DiscontinuedDate":null,"Rating":4,"Price":2.5,"Categories":[{"ID":0,"Name":"Food"}]}'
+    http_version: '1.1'
+    adapter_metadata:
+      effective_url: http://services.odata.org/V4/OData/OData.svc/Products(0)?$expand=Categories
+  recorded_at: Fri, 26 Jan 2018 23:52:03 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(0)?$expand=Categories,Supplier
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Typhoeus - https://github.com/typhoeus/typhoeus
+      OData4-Version:
+      - '4.0'
+      Accept:
+      - application/atom+xml,application/json,text/plain
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '559'
+      Content-Type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      Server:
+      - Microsoft-IIS/10.0
+      X-Content-Type-Options:
+      - nosniff
+      OData-Version:
+      - 4.0;
+      X-AspNet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      Access-Control-Expose-Headers:
+      - DataServiceVersion
+      Date:
+      - Sat, 27 Jan 2018 00:03:43 GMT
+    body:
+      encoding: UTF-8
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":0,"Name":"Bread","Description":"Whole
+        grain bread","ReleaseDate":"1992-01-01T00:00:00Z","DiscontinuedDate":null,"Rating":4,"Price":2.5,"Categories":[{"ID":0,"Name":"Food"}],"Supplier":{"ID":1,"Name":"Tokyo
+        Traders","Address":{"Street":"NE 40th","City":"Redmond","State":"WA","ZipCode":"98052","Country":"USA"},"Location":{"type":"Point","coordinates":[-122.107711791992,47.6472206115723],"crs":{"type":"name","properties":{"name":"EPSG:4326"}}},"Concurrency":0}}'
+    http_version: '1.1'
+    adapter_metadata:
+      effective_url: http://services.odata.org/V4/OData/OData.svc/Products(0)?$expand=Categories,Supplier
+  recorded_at: Sat, 27 Jan 2018 00:03:42 GMT
+recorded_with: VCR 4.0.0
