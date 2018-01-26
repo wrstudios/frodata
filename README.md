@@ -175,6 +175,11 @@ The first entity object returns a single entity object.
   service['ProductsSet']['<guid of entity>']
 ```
 
+With certain properties expanded:
+
+```ruby
+  service['ProductsSet'].query.expand('Categories').find(11)
+```
 
 ### Entities
 

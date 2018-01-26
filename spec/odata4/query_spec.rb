@@ -23,8 +23,19 @@ describe OData4::Query, vcr: {cassette_name: 'query_specs'} do
 
   it { expect(subject).to respond_to(:find) }
   describe '#find' do
-    it { expect(subject.find(0)).to be_a(OData4::Entity) }
-    it { expect(subject.find(0)['ID']).to eq(0) }
+    let(:product) { subject.find(0) }
+
+    it 'finds an entity by its ID' do
+      expect(product).to be_a(OData4::Entity)
+      expect(product['ID']).to eq(0)
+    end
+
+    it 'allows expanding navigational properties' do
+      product_with_categories = subject.expand('Categories').find(0)
+      expect(product_with_categories['Categories']).to eq([
+        { "ID" => 0, "Name" => "Food" }
+      ])
+    end
   end
 
   it { expect(subject).to respond_to(:where) }
