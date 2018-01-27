@@ -106,20 +106,27 @@ describe OData4::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
 
     describe 'eager loading' do
       it 'works with a single property' do
-        product_with_categories = subject[0, expand: 'Categories']
+        product_with_categories = subject[1, expand: 'Categories']
 
         expect(product_with_categories['Categories']).to eq([
-          { "ID" => 0, "Name" => "Food" }
+          { "ID" => 0, "Name" => "Food" },
+          { "ID" => 1, "Name" => "Beverages" }
         ])
       end
 
       it 'works with multiple properties' do
-        product_with_details = subject[0, expand: %w[Categories Supplier]]
+        product_with_details = subject[1, expand: %w[Categories Supplier]]
 
-        expect(product_with_details['Supplier']).to include('Name' => 'Tokyo Traders')
-        expect(product_with_details['Categories']).to eq([
-          { "ID" => 0, "Name" => "Food" }
-        ])
+        expect(product_with_details['Supplier']).to include('Name' => 'Exotic Liquids')
+        expect(product_with_details['Categories']).to be_a(Array)
+      end
+
+      it 'works with special shortcut for all properties' do
+        product_with_all_details = subject[1, expand: :all]
+
+        expect(product_with_all_details['Supplier']).to include('Name' => 'Exotic Liquids')
+        expect(product_with_all_details['Categories']).to be_a(Array)
+        expect(product_with_all_details['ProductDetail']).to include('Details' => 'Details of product 1')
       end
     end
   end

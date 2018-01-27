@@ -74,7 +74,12 @@ module OData4
     # @param key [to_s] primary key to lookup
     # @return [OData4::Entity,nil]
     def [](key, options={})
-      properties_to_expand = [ options[:expand] ].compact.flatten
+      properties_to_expand = if options[:expand] == :all
+        new_entity.navigation_property_names
+      else
+        [ options[:expand] ].compact.flatten
+      end
+
       query.expand(*properties_to_expand).find(key)
     end
 

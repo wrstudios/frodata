@@ -175,14 +175,17 @@ The first entity object returns a single entity object.
   service['ProductsSet']['<guid of entity>']
 ```
 
-With certain properties expanded:
+With certain navigation properties expanded (i.e. eagerly loaded):
 
 ```ruby
-  # Single property
+  # Eagerly load a single navigation property
   service['ProductsSet', expand: 'Categories']
 
-  # Multiple properties
+  # Eagerly load multiple navigation properties
   service['ProductsSet', expand: ['Categories', 'Supplier']]
+
+  # Eagerly load ALL navigation properties
+  service['ProductsSet', expand: :all]
 ```
 
 ### Entities
