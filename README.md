@@ -18,7 +18,7 @@ If you need a gem to integration with OData Version 3, you can use James Thompso
 
 Add this line to your application's `Gemfile`:
 
-    gem 'odata4', git: 'https://github.com/wrstudios/odata4'
+    gem 'odata4'
 
 And then execute:
 
