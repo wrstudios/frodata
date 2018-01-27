@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.7.0
+
+Major rewrite
+
+* Added support for OData 4.0
+* Dropped support for OData 3.0
+
 ## 0.6.18
 
 * Minor internal fixes to OData::Query::Criteria.
