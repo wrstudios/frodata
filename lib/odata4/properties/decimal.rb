@@ -27,7 +27,7 @@ module OData4
       # Value to be used in URLs.
       # @return [String]
       def url_value
-        "#{value.to_f}M"
+        "#{value.to_f}"
       end
 
       private
