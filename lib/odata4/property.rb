@@ -44,13 +44,19 @@ module OData4
     # (Default=false)
     # @return [Boolean]
     def strict?
-      options[:strict]
+      if options.key? :strict
+        options[:strict]
+      elsif service
+        service.options[:strict]
+      else
+        true
+      end
     end
 
     # The configured concurrency mode for the property.
     # @return [String]
     def concurrency_mode
-      @concurrecy_mode ||= options[:concurrency_mode]
+      @concurrency_mode ||= options[:concurrency_mode]
     end
 
     # Value to be used in XML.
@@ -76,7 +82,7 @@ module OData4
     # @param xml_builder [Nokogiri::XML::Builder]
     def to_xml(xml_builder)
       attributes = {
-          'metadata:type' => type,
+        'metadata:type' => type,
       }
 
       if value.nil?
@@ -103,16 +109,31 @@ module OData4
 
     private
 
+    attr_reader :options
+
     def default_options
       {
         allows_nil:       true,
-        concurrency_mode: :none,
-        strict:           false
+        concurrency_mode: :none
       }
     end
 
-    def options
-      @options
+    def service
+      options[:service]
+    end
+
+    def logger
+      # Use a dummy logger if service is not available (-> unit tests)
+      @logger ||= service.andand.logger || Logger.new('/dev/null')
+    end
+
+    def validation_error(message)
+      if strict?
+        raise ArgumentError, "#{name}: #{message}"
+      else
+        logger.warn "#{name}: #{message}"
+        nil
+      end
     end
   end
 end

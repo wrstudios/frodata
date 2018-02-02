@@ -34,7 +34,7 @@ module OData4
 
       def validate(value)
         if value > max_value || value < min_value || value.precs.first > 29
-          raise ArgumentError, "Value is outside accepted range: #{min_value} to #{max_value}, or has more than 29 significant digits"
+          validation_error "Value is outside accepted range: #{min_value} to #{max_value}, or has more than 29 significant digits"
         end
       end
 

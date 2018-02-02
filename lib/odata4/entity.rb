@@ -237,7 +237,7 @@ module OData4
       if klass.nil?
         raise RuntimeError, "Unknown property type: #{value_type}"
       else
-        klass.from_xml(value_xml)
+        klass.from_xml(value_xml, service: service)
       end
     end
 
