@@ -2,7 +2,8 @@
 
 ## 0.7.1
 
-* Fixed: incorrect URL representation for Decimal properties
+* [New Feature] Optional lenient property validation
+* [Fixed] Incorrect URL representation for Decimal properties
 
 ## 0.7.0
 

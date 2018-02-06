@@ -239,6 +239,21 @@ or, you can get a hold of the property class instance using
 
 This will parse and instantiate the property if it hasn't done so yet.
 
+##### Lenient Property Validation
+
+By default, we use strict property validation, meaning that any property validation errors in the data will raise an exception.
+However, you may encounter OData implementations in the wild that break the specs in strange and surprising ways (shocking, I know!).
+
+Since it's often better to get *some* data instead of nothing at all, you can optionally make the property validation lenient.
+Simply add `strict: false` to the service constructor options.
+In this mode, any property validation error will log a warning instead of raising an exception. The corresponding property value will be `nil` (even if the property is declared as not allowing NULL values).
+
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', strict: false)
+  # -- alternatively, for an existing service instance --
+  service.options[:strict] = false
+```
+
 ### Queries
 
 `OData4::Query` instances form the base for finding specific entities within an `OData4::EntitySet`.
@@ -265,6 +280,17 @@ You should refer to the published RubyDocs for full details on the various capab
 
  * [OData4::Query](http://rubydoc.info/github/wrstudios/odata4/master/OData4/Query)
  * [OData4::Query::Criteria](http://rubydoc.info/github/wrstudios/odata4/master/OData4/Query/Criteria)
+
+## To Do
+
+[x] ~Lenient property validation~
+[ ] Write support (create/update/delete)
+[ ] Support for invoking [Operations][odata-ops] (Functions/Actions)
+[ ] [Property facets][odata-facets]
+[ ] Annotations
+
+[odata-facets]: http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part3-csdl/odata-v4.0-errata03-os-part3-csdl-complete.html#_Toc453752528
+[odata-ops]: http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Toc453752307
 
 ## Contributing
 
