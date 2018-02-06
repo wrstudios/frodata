@@ -42,7 +42,7 @@ module OData4
 
       def validate(value)
         unless [0,1,'0','1',true,false].include?(value)
-          raise ArgumentError, 'Value is outside accepted range: 0 or 1'
+          validation_error 'Value is outside accepted range: 0 or 1'
         end
       end
     end

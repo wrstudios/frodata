@@ -8,6 +8,8 @@ module OData4
     attr_reader :name
     # The property's value
     attr_accessor :value
+    # The property's options
+    attr_reader :options
 
     # Default intialization for a property with a name, value and options.
     # @param name [to_s]
@@ -107,9 +109,7 @@ module OData4
       new(property_xml.name, content, options)
     end
 
-    private
-
-    attr_reader :options
+    protected
 
     def default_options
       {
