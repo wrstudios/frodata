@@ -40,14 +40,14 @@ The nice thing about `OData4::Service` is that it automatically registers with t
 To create an `OData4::Service` simply provide the location of a service endpoint to it like this:
 
 ```ruby
-  OData4::Service.open('http://services.odata.org/V4/OData/OData.service')
+  OData4::Service.open('http://services.odata.org/V4/OData/OData.svc')
 ```
 
 You may also provide an options hash after the URL.
 It is suggested that you supply a name for the service via this hash like so:
 
 ```ruby
-  OData4::Service.open('http://services.odata.org/V4/OData/OData.service', name: 'ODataDemo')
+  OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
 ```
 
 This one call will setup the service and allow for the discovery of everything the other parts of the OData4 gem need to function.
@@ -57,7 +57,7 @@ Both of these methods are available on instances and will allow for lookup in th
 Using either the service URL or the name provided as an option when creating an `OData4::Service` will allow for quick lookup in the `OData4::ServiceRegistry` like such:
 
 ```ruby
-  OData4::ServiceRegistry['http://services.odata.org/V4/OData/OData.service']
+  OData4::ServiceRegistry['http://services.odata.org/V4/OData/OData.svc']
   OData4::ServiceRegistry['ODataDemo']
 ```
 
@@ -73,7 +73,7 @@ Use the **:typhoeus** option to set your authentication.
 For example using **ntlm** authentication:
 
 ```ruby
-  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.service', {
+  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
     typhoeus: {
       username: 'username',
@@ -95,7 +95,7 @@ You can speed your load time by forcing the service to load the metadata from a 
 This is only recommended for testing purposes, as the metadata file can change.
 
 ```ruby
-  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.service', {
+  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
       name: 'ODataDemo',
       metadata_file: "metadata.xml",
   })
@@ -106,7 +106,7 @@ This is only recommended for testing purposes, as the metadata file can change.
 You can set the headers with the **:typhoeus** param like so:
 
 ```ruby
-  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.service', {
+  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
     typhoeus: {
       headers: {
@@ -123,7 +123,7 @@ Under normal circumstances you should never need to worry about an `OData4::Enti
 For example, to get an `OData4::EntitySet` for the products in the ODataDemo service simply access the entity set through the service like this:
 
 ```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.service')
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc')
   products = service['ProductsSet'] # => OData4::EntitySet
 ```
 
