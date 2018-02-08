@@ -7,16 +7,21 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
 
   describe '.open' do
     it { expect(OData4::Service).to respond_to(:open) }
-  end
+    it 'adds itself to OData4::ServiceRegistry on creation' do
+      expect(OData4::ServiceRegistry['ODataDemo']).to be_nil
+      expect(OData4::ServiceRegistry[service_url]).to be_nil
 
-  it 'adds itself to OData4::ServiceRegistry on creation' do
-    expect(OData4::ServiceRegistry['ODataDemo']).to be_nil
-    expect(OData4::ServiceRegistry[service_url]).to be_nil
+      service = OData4::Service.open(service_url, name: 'ODataDemo')
 
-    service = OData4::Service.open(service_url, name: 'ODataDemo')
+      expect(OData4::ServiceRegistry['ODataDemo']).to eq(service)
+      expect(OData4::ServiceRegistry[service_url]).to eq(service)
+    end
+    it 'registers custom types on creation' do
+      service = OData4::Service.open(service_url, name: 'ODataDemo')
 
-    expect(OData4::ServiceRegistry['ODataDemo']).to eq(service)
-    expect(OData4::ServiceRegistry[service_url]).to eq(service)
+      expect(OData4::PropertyRegistry['ODataDemo.Address']).to be_a(Class)
+      expect(OData4::PropertyRegistry['ODataDemo.ProductStatus']).to be_a(Class)
+    end
   end
 
   describe '#service_url' do
@@ -56,13 +61,13 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(subject).to respond_to(:entity_sets) }
     it { expect(subject.entity_sets.size).to eq(7) }
     it { expect(subject.entity_sets.keys).to eq(%w[
-      ODataDemo.Products
-      ODataDemo.ProductDetails
-      ODataDemo.Categories
-      ODataDemo.Suppliers
-      ODataDemo.Persons
-      ODataDemo.PersonDetails
-      ODataDemo.Advertisements
+      Products
+      ProductDetails
+      Categories
+      Suppliers
+      Persons
+      PersonDetails
+      Advertisements
     ]) }
     it { expect(subject.entity_sets.values).to eq(%w[
       ODataDemo.Product
@@ -98,7 +103,8 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
   end
 
   describe '#[]' do
-    it { expect(subject['Products']).to be_a(OData4::EntitySet) }
+    let(:entity_sets) { subject.entity_sets.keys.map { |name| subject[name] } }
+    it { expect(entity_sets).to all(be_a(OData4::EntitySet)) }
     it { expect {subject['Nonexistant']}.to raise_error(ArgumentError) }
   end
 end

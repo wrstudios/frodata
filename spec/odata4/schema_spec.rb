@@ -9,8 +9,6 @@ describe OData4::Schema do
   let(:namespace) { service.metadata.xpath('//Schema').first }
 
   let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
-  let(:entity_sets) { %w{Products ProductDetails Categories Suppliers Persons PersonDetails Advertisements} }
-  let(:entity_set_types) { %w{Product ProductDetail Category Supplier Person PersonDetail Advertisement} }
   let(:complex_types) { %w{Address} }
   let(:enum_types) { %w{ProductStatus} }
 
@@ -40,13 +38,6 @@ describe OData4::Schema do
     it { expect(subject).to respond_to(:entity_types) }
     it { expect(subject.entity_types.size).to eq(10) }
     it { expect(subject.entity_types).to eq(entity_types) }
-  end
-
-  describe '#entity_sets' do
-    it { expect(subject).to respond_to(:entity_sets) }
-    it { expect(subject.entity_sets.size).to eq(7) }
-    it { expect(subject.entity_sets.keys).to eq(entity_sets) }
-    it { expect(subject.entity_sets.values).to eq(entity_set_types) }
   end
 
   describe '#enum_types' do

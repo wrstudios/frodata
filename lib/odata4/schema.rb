@@ -36,17 +36,6 @@ module OData4
       end
     end
 
-    # Returns a hash of `EntitySet` names and their `EntityType`s.
-    # @return Hash<String, String>
-    def entity_sets
-      @entity_sets ||= metadata.xpath('//EntityContainer/EntitySet').map do |entity|
-        [
-          entity.attributes['Name'].value,
-          entity.attributes['EntityType'].value.gsub("#{namespace}.", '')
-        ]
-      end.to_h
-    end
-
     # Returns a list of `ComplexType`s defined by the schema.
     # @return [Hash<String, OData4::ComplexType>]
     def complex_types
