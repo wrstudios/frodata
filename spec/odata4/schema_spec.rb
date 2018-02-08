@@ -22,7 +22,8 @@ describe OData4::Schema do
   end
 
   describe '#actions' do
-    # TBD
+    it { expect(subject).to respond_to(:actions) }
+    it { expect(subject.actions.size).to eq(0) }
   end
 
   describe '#annotations' do
@@ -55,7 +56,8 @@ describe OData4::Schema do
   end
 
   describe '#functions' do
-    # TBD
+    it { expect(subject).to respond_to(:functions) }
+    it { expect(subject.functions.size).to eq(0) }
   end
 
   describe '#terms' do

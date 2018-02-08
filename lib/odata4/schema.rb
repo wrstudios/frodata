@@ -14,10 +14,18 @@ module OData4
       @service = service
     end
 
-    # The schema's `Namespace` attribute (mandatory).
+    # Returns the schema's `Namespace` attribute (mandatory).
     # @return [String]
     def namespace
       @namespace ||= metadata.attributes['Namespace'].value
+    end
+
+    # Returns a list of actions defined by the schema.
+    # @return Array<String>
+    def actions
+      @actions ||= metadata.xpath('//Action').map do |action|
+        action.attributes['Name'].value
+      end
     end
 
     # Returns a list of entities defined by the schema.
@@ -59,6 +67,14 @@ module OData4
           ::OData4::EnumType.new(entity, self)
         ]
       end.to_h
+    end
+
+    # Returns a list of functions defined by the schema.
+    # @return Array<String>
+    def functions
+      @functions ||= metadata.xpath('//Function').map do |function|
+        function.attributes['Name'].value
+      end
     end
 
     # Returns a hash for finding an association through an entity type's defined
