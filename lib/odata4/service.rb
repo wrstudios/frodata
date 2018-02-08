@@ -58,41 +58,54 @@ module OData4
       @metadata ||= lambda { read_metadata }.call
     end
 
-    # Returns a list of entities exposed by the service
-    def entity_types
-      @entity_types ||= metadata.xpath('//EntityType').collect {|entity| entity.attributes['Name'].value}
-    end
-
-    # Returns a hash of EntitySet names keyed to their respective EntityType name
-    def entity_sets
-      @entity_sets ||= metadata.xpath('//EntityContainer/EntitySet').collect {|entity|
+    # Returns all of the service's schemas.
+    # @return Hash<String, OData4::Schema>
+    def schemas
+      @schemas ||= metadata.xpath('//Schema').map do |schema_xml|
         [
-          entity.attributes['EntityType'].value.gsub("#{namespace}.", ''),
-          entity.attributes['Name'].value
+          schema_xml.attributes['Namespace'].value,
+          Schema.new(schema_xml, self)
         ]
-      }.to_h
+      end.to_h
     end
 
-    # Returns a list of ComplexTypes used by the service
+    # Returns a list of `EntityType`s exposed by the service
+    # @return Array<String>
+    def entity_types
+      @entity_types ||= schemas.map do |namespace, schema|
+        schema.entity_types.map do |entity_type|
+          "#{namespace}.#{entity_type}"
+        end
+      end.flatten
+    end
+
+    # Returns a hash of `EntitySet` names keyed to their respective EntityType name
+    def entity_sets
+      @entity_sets ||= schemas.map do |namespace, schema|
+        schema.entity_sets.map do |entity_set, entity_type|
+          [ "#{namespace}.#{entity_set}", "#{namespace}.#{entity_type}" ]
+        end.to_h
+      end.reduce({}, :merge)
+    end
+
+    # Returns a list of `ComplexType`s used by the service.
     # @return [Hash<String, OData4::ComplexType>]
     def complex_types
-      @complex_types ||= metadata.xpath('//ComplexType').map do |entity|
-        [
-          entity.attributes['Name'].value,
-          ::OData4::ComplexType.new(entity, self)
-        ]
-      end.to_h
+      @complex_types ||= schemas.map do |namespace, schema|
+        schema.complex_types.map do |name, complex_type|
+          [ "#{namespace}.#{name}", complex_type ]
+        end.to_h
+      end.reduce({}, :merge)
     end
 
-    # Returns a list of EnumTypes used by the service
+    # Returns a list of `EnumType`s used by the service
     # @return [Hash<String, OData4::EnumType>]
     def enum_types
-      @enum_types ||= metadata.xpath('//EnumType').map do |entity|
-        [
-          entity.attributes['Name'].value,
-          ::OData4::EnumType.new(entity, self)
-        ]
-      end.to_h
+      @enum_types ||= schemas.map do |namespace, schema|
+        schema.enum_types.map do |name, enum_type|
+          [ "#{namespace}.#{name}", enum_type ]
+        end.to_h
+      end.reduce({}, :merge)
     end
 
     # Returns a hash for finding an association through an entity type's defined

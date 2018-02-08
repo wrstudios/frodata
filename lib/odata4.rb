@@ -24,6 +24,7 @@ require 'odata4/query/criteria'
 require 'odata4/query/result'
 require 'odata4/query/in_batches'
 require 'odata4/query'
+require 'odata4/schema'
 require 'odata4/service'
 require 'odata4/service_registry'
 

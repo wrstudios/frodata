@@ -4,11 +4,6 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
   let(:service_url) { 'http://services.odata.org/V4/OData/OData.svc' }
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
   let(:subject) { OData4::Service.open(service_url, name: 'ODataDemo', metadata_file: metadata_file) }
-  let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
-  let(:entity_sets) { %w{Products ProductDetails Categories Suppliers Persons PersonDetails Advertisements} }
-  let(:entity_set_types) { %w{Product ProductDetail Category Supplier Person PersonDetail Advertisement} }
-  let(:complex_types) { %w{Address} }
-  let(:enum_types) { %w{ProductStatus} }
 
   describe '.open' do
     it { expect(OData4::Service).to respond_to(:open) }
@@ -24,44 +19,78 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
     expect(OData4::ServiceRegistry[service_url]).to eq(service)
   end
 
-  describe 'instance methods' do
-    it { expect(subject).to respond_to(:service_url) }
-    it { expect(subject).to respond_to(:entity_types) }
-    it { expect(subject).to respond_to(:entity_sets) }
-    it { expect(subject).to respond_to(:complex_types) }
-    it { expect(subject).to respond_to(:enum_types) }
-    it { expect(subject).to respond_to(:namespace) }
-  end
-
   describe '#service_url' do
+    it { expect(subject).to respond_to(:service_url) }
     it { expect(subject.service_url).to eq(service_url) }
   end
 
+  describe '#schemas' do
+    it { expect(subject).to respond_to(:schemas) }
+    it { expect(subject.schemas.keys).to eq(['ODataDemo']) }
+    it { expect(subject.schemas.values).to all(be_a(OData4::Schema)) }
+    it {
+      subject.schemas.each do |namespace, schema|
+        expect(schema.namespace).to eq(namespace)
+      end
+    }
+  end
+
   describe '#entity_types' do
+    it { expect(subject).to respond_to(:entity_types) }
     it { expect(subject.entity_types.size).to eq(10) }
-    it { expect(subject.entity_types).to eq(entity_types) }
+    it { expect(subject.entity_types).to eq(%w[
+      ODataDemo.Product
+      ODataDemo.FeaturedProduct
+      ODataDemo.ProductDetail
+      ODataDemo.Category
+      ODataDemo.Supplier
+      ODataDemo.Person
+      ODataDemo.Customer
+      ODataDemo.Employee
+      ODataDemo.PersonDetail
+      ODataDemo.Advertisement
+    ]) }
   end
 
   describe '#entity_sets' do
+    it { expect(subject).to respond_to(:entity_sets) }
     it { expect(subject.entity_sets.size).to eq(7) }
-    it { expect(subject.entity_sets.keys).to eq(entity_set_types) }
-    it { expect(subject.entity_sets.values).to eq(entity_sets) }
+    it { expect(subject.entity_sets.keys).to eq(%w[
+      ODataDemo.Products
+      ODataDemo.ProductDetails
+      ODataDemo.Categories
+      ODataDemo.Suppliers
+      ODataDemo.Persons
+      ODataDemo.PersonDetails
+      ODataDemo.Advertisements
+    ]) }
+    it { expect(subject.entity_sets.values).to eq(%w[
+      ODataDemo.Product
+      ODataDemo.ProductDetail
+      ODataDemo.Category
+      ODataDemo.Supplier
+      ODataDemo.Person
+      ODataDemo.PersonDetail
+      ODataDemo.Advertisement
+    ]) }
   end
 
   describe '#complex_types' do
+    it { expect(subject).to respond_to(:complex_types) }
     it { expect(subject.complex_types.size).to eq(1) }
-    it { expect(subject.complex_types.keys).to eq(complex_types) }
+    it { expect(subject.complex_types.keys).to eq(['ODataDemo.Address']) }
   end
 
   describe '#enum_types' do
+    it { expect(subject).to respond_to(:enum_types) }
     it { expect(subject.enum_types.size).to eq(1) }
-    it { expect(subject.enum_types.keys).to eq(enum_types)}
+    it { expect(subject.enum_types.keys).to eq(['ODataDemo.ProductStatus'])}
   end
 
   describe '#navigation_properties' do
     it { expect(subject).to respond_to(:navigation_properties) }
     it { expect(subject.navigation_properties['Product'].size).to eq(3) }
-    it { expect(subject.navigation_properties['Product']['Categories']).to be_a(OData4::NavigationProperty) }
+    it { expect(subject.navigation_properties['Product'].values).to all(be_a(OData4::NavigationProperty)) }
   end
 
   describe '#namespace' do
