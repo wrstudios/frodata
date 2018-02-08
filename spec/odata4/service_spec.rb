@@ -9,11 +9,6 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
   let(:entity_set_types) { %w{Product ProductDetail Category Supplier Person PersonDetail Advertisement} }
   let(:complex_types) { %w{Address} }
   let(:enum_types) { %w{ProductStatus} }
-  let(:associations) { %w{Product_Categories_Category_Products
-                          Product_Supplier_Supplier_Products
-                          Product_ProductDetail_ProductDetail_Product
-                          FeaturedProduct_Advertisement_Advertisement_FeaturedProduct
-                          Person_PersonDetail_PersonDetail_Person} }
 
   describe '.open' do
     it { expect(OData4::Service).to respond_to(:open) }

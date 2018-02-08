@@ -52,6 +52,12 @@ module OData4
       "#{service_url}/$metadata"
     end
 
+    # Returns the service's metadata definition.
+    # @return [Nokogiri::XML]
+    def metadata
+      @metadata ||= lambda { read_metadata }.call
+    end
+
     # Returns a list of entities exposed by the service
     def entity_types
       @entity_types ||= metadata.xpath('//EntityType').collect {|entity| entity.attributes['Name'].value}
@@ -275,10 +281,6 @@ module OData4
       else
         raise ArgumentError, "Unknown format '#{format}'"
       end
-    end
-
-    def metadata
-      @metadata ||= lambda { read_metadata }.call
     end
 
     def read_metadata
