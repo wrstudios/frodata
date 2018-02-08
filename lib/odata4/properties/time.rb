@@ -28,7 +28,7 @@ module OData4
 
       def validate(value)
         unless value.is_a?(::Time)
-          raise ArgumentError, 'Value is not a time object'
+          validation_error 'Value is not a time object'
         end
       end
 

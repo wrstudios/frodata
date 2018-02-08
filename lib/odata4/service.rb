@@ -262,7 +262,8 @@ module OData4
         typhoeus: {
           headers: { 'OData4-Version' => '4.0' },
           timeout: HTTP_TIMEOUT
-        }
+        },
+        strict: true # strict property validation
       }
     end
 
@@ -317,7 +318,7 @@ module OData4
     def process_property_from_xml(property_xml)
       property_name = property_xml.attributes['Name'].value
       value_type = property_xml.attributes['Type'].value
-      property_options = {}
+      property_options = { service: self }
 
       klass = ::OData4::PropertyRegistry[value_type]
 

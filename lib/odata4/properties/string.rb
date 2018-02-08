@@ -56,7 +56,7 @@ module OData4
 
       def validate(new_value)
         if new_value.nil? && !allows_nil?
-          raise ArgumentError, 'This property does not allow for nil values to be set'
+          validation_error 'This property does not allow for nil values to be set'
         end
       end
 

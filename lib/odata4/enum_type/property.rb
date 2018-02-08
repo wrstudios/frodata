@@ -46,7 +46,7 @@ module OData4
           elsif members.values.include?(value)
             value
           else
-            raise ArgumentError, "Property '#{name}': Value must be one of #{members.to_a}, but was: '#{value}'" if strict?
+            validation_error "Value must be one of #{members.to_a}, but was: '#{value}'"
           end
         end.compact
       end

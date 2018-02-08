@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.7.1
+
+* [New Feature] Optional lenient property validation
+* [Fixed] Incorrect URL representation for Decimal properties
+
 ## 0.7.0
 
 Major rewrite

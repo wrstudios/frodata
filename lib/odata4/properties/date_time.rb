@@ -65,7 +65,7 @@ module OData4
           return if value.is_a?(date_class)
           date_class.parse(value)
         rescue
-          raise ArgumentError, "Value '#{value}' is not a date time format that can be parsed"
+          validation_error "Value '#{value}' is not a date time format that can be parsed"
         end
       end
 

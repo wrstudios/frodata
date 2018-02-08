@@ -54,12 +54,10 @@ describe OData4::EnumType, vcr: {cassette_name: 'enum_type_specs'} do
       expect(subject.value).to eq('Available')
     end
 
-    it 'ignores invalid values' do
+    it 'does not allow setting an invalid value' do
       expect {
         subject.value = 'Invalid'
-      }.not_to raise_error
-
-      expect(subject.value).to be_nil
+      }.to raise_error(ArgumentError)
     end
 
     it 'allows setting by numeric value' do
@@ -87,12 +85,10 @@ describe OData4::EnumType, vcr: {cassette_name: 'enum_type_specs'} do
         expect(subject.value).to eq(%w[Available Backordered])
       end
 
-      it 'allows setting an invalid value' do
+      it 'does not allow setting invalid values' do
         expect {
           subject.value = 'Available, Invalid'
-        }.not_to raise_error
-
-        expect(subject.value).to eq(['Available'])
+        }.to raise_error(ArgumentError)
       end
 
       it 'allows setting by numeric value' do
@@ -104,29 +100,31 @@ describe OData4::EnumType, vcr: {cassette_name: 'enum_type_specs'} do
     end
   end
 
-  describe 'strict mode' do
-    let(:subject) { enum_type.property_class.new('ProductStatus', nil, strict: true) }
-
-    describe '#strict?' do
-      it { expect(subject).to be_strict }
+  describe 'lenient validation' do
+    let(:subject) do
+      enum_type.property_class.new('ProductStatus', nil, strict: false)
     end
 
     describe '#value=' do
-      it 'does not allow setting an invalid value' do
+      it 'ignores invalid values' do
         expect {
           subject.value = 'Invalid'
-        }.to raise_error(ArgumentError)
+        }.not_to raise_error
+
+        expect(subject.value).to be_nil
       end
 
-      context 'when is_flags=true' do
+      context 'when `IsFlags` is true' do
         before do
           subject.define_singleton_method(:is_flags?) { true }
         end
 
-        it 'does not allow setting invalid values' do
+        it 'ignores invalid values' do
           expect {
             subject.value = 'Available, Invalid'
-          }.to raise_error(ArgumentError)
+          }.not_to raise_error
+
+          expect(subject.value).to eq(['Available'])
         end
       end
     end
