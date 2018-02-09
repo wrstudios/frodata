@@ -89,6 +89,13 @@ module OData4
       entity_container[entity_set_name]
     end
 
+    # Returns the default namespace, that is, the namespace of the schema
+    # that contains the service's EntityContainer.
+    # @return [String]
+    def namespace
+      entity_container.namespace
+    end
+
     # Returns a list of `EntityType`s exposed by the service
     # @return Array<String>
     def entity_types
@@ -135,11 +142,6 @@ module OData4
             end.to_h
         ]
       end.to_h
-    end
-
-    # Returns the namespace defined on the service's schema
-    def namespace
-      @namespace ||= metadata.xpath('//Schema').first.attributes['Namespace'].value
     end
 
     # Returns a more compact inspection of the service object
