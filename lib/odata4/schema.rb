@@ -66,6 +66,14 @@ module OData4
       end
     end
 
+    # Returns a list of type definitions defined by the schema.
+    # @return [Array<String>]
+    def type_definitions
+      @typedefs ||= metadata.xpath('//TypeDefinition').map do |typedef|
+        typedef.attributes['Name'].value
+      end
+    end
+
     # Returns a hash for finding an association through an entity type's defined
     # NavigationProperty elements.
     # @return [Hash<Hash<OData4::NavigationProperty>>]

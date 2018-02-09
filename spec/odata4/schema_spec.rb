@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe OData4::Schema do
-  let(:subject) { OData4::Schema.new(namespace, service) }
+  let(:subject) { OData4::Schema.new(schema_xml, service) }
   let(:service) do
     OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', metadata_file: metadata_file)
   end
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
-  let(:namespace) { service.metadata.xpath('//Schema').first }
+  let(:schema_xml) { service.metadata.xpath('//Schema').first }
 
   let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
   let(:complex_types) { %w{Address} }
@@ -20,6 +20,7 @@ describe OData4::Schema do
   end
 
   describe '#actions' do
+    # TODO add a action definition to metadata
     it { expect(subject).to respond_to(:actions) }
     it { expect(subject.actions.size).to eq(0) }
   end
@@ -47,6 +48,7 @@ describe OData4::Schema do
   end
 
   describe '#functions' do
+    # TODO add a function definition to metadata
     it { expect(subject).to respond_to(:functions) }
     it { expect(subject.functions.size).to eq(0) }
   end
@@ -56,7 +58,9 @@ describe OData4::Schema do
   end
 
   describe '#type_definitions' do
-    # TBD
+    # TODO add a type definition to metadata
+    it { expect(subject).to respond_to(:type_definitions) }
+    it { expect(subject.type_definitions.size).to eq(0) }
   end
 
 end
