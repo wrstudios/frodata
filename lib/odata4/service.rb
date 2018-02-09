@@ -184,6 +184,38 @@ module OData4
       document.xpath('//entry')
     end
 
+    # Get the property type for an entity from metadata.
+    #
+    # @param entity_name [to_s] the fully qualified entity name
+    # @param property_name [to_s] the property name needed
+    # @return [String] the name of the property's type
+    def get_property_type(entity_name, property_name)
+      namespace, _, entity_name = entity_name.rpartition('.')
+      raise ArgumentError, 'Namespace missing' if namespace.nil? || namespace.empty?
+      schemas[namespace].get_property_type(entity_name, property_name)
+    end
+
+    # Get the primary key for the supplied Entity.
+    #
+    # @param entity_name [to_s] The fully qualified entity name
+    # @return [String]
+    def primary_key_for(entity_name)
+      namespace, _, entity_name = entity_name.rpartition('.')
+      raise ArgumentError, 'Namespace missing' if namespace.nil? || namespace.empty?
+      schemas[namespace].primary_key_for(entity_name)
+    end
+
+    # Get the list of properties and their various options for the supplied
+    # Entity name.
+    # @param entity_name [to_s]
+    # @return [Hash]
+    # @api private
+    def properties_for_entity(entity_name)
+      namespace, _, entity_name = entity_name.rpartition('.')
+      raise ArgumentError, 'Namespace missing' if namespace.nil? || namespace.empty?
+      schemas[namespace].properties_for_entity(entity_name)
+    end
+
     # Returns the log level set via initial options, or the
     # default log level (`Logger::WARN`) if none was specified.
     # @see Logger
@@ -277,11 +309,11 @@ module OData4
 
     def register_custom_types
       complex_types.each do |name, type|
-        ::OData4::PropertyRegistry.add(type.type, type.property_class)
+        ::OData4::PropertyRegistry.add(name, type.property_class)
       end
 
       enum_types.each do |name, type|
-        ::OData4::PropertyRegistry.add(type.type, type.property_class)
+        ::OData4::PropertyRegistry.add(name, type.property_class)
       end
     end
   end

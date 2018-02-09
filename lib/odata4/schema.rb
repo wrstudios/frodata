@@ -78,11 +78,10 @@ module OData4
     # NavigationProperty elements.
     # @return [Hash<Hash<OData4::NavigationProperty>>]
     def navigation_properties
-      @navigation_properties ||= metadata.xpath('//EntityType').collect do |entity_type_def|
-        entity_type_name = entity_type_def.attributes['Name'].value
+      @navigation_properties ||= metadata.xpath('//EntityType').map do |entity_type_def|
         [
-          entity_type_name,
-          entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
+          entity_type_def.attributes['Name'].value,
+          entity_type_def.xpath('./NavigationProperty').map do |nav_property_def|
             [
               nav_property_def.attributes['Name'].value,
               ::OData4::NavigationProperty.build(nav_property_def)
@@ -130,7 +129,7 @@ module OData4
     def process_property_from_xml(property_xml)
       property_name = property_xml.attributes['Name'].value
       value_type = property_xml.attributes['Type'].value
-      property_options = { service: self }
+      property_options = { service: service }
 
       klass = ::OData4::PropertyRegistry[value_type]
 

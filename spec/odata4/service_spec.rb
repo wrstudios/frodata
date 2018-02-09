@@ -101,4 +101,30 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(entity_sets).to all(be_a(OData4::EntitySet)) }
     it { expect {subject['Nonexistant']}.to raise_error(ArgumentError) }
   end
+
+  describe '#get_property_type' do
+    it { expect(subject).to respond_to(:get_property_type) }
+    it { expect(subject.get_property_type('ODataDemo.Product', 'ID')).to eq('Edm.Int32') }
+    it { expect(subject.get_property_type('ODataDemo.Product', 'ProductStatus')).to eq('ODataDemo.ProductStatus') }
+  end
+
+  describe '#primary_key_for' do
+    it { expect(subject).to respond_to(:primary_key_for) }
+    it { expect(subject.primary_key_for('ODataDemo.Product')).to eq('ID') }
+  end
+
+  describe '#properties_for_entity' do
+    it { expect(subject).to respond_to(:properties_for_entity) }
+    it { expect(subject.properties_for_entity('ODataDemo.Product').keys).to eq(%w[
+      ID
+      Name
+      Description
+      ReleaseDate
+      DiscontinuedDate
+      Rating
+      Price
+      ProductStatus
+    ]) }
+    it { expect(subject.properties_for_entity('ODataDemo.Product').values).to all(be_a(OData4::Property)) }
+  end
 end

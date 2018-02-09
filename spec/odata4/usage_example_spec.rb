@@ -48,7 +48,7 @@ describe 'Usage examples', vcr: { cassette_name: 'usage_example_specs' } do
 
         expect(entity_set).to be_a(OData4::EntitySet)
         expect(entity_set.name).to eq(entity_set_name)
-        expect(entity_set.type).to eq(entity_name.split('.').last)
+        expect(entity_set.type).to eq(entity_name)
         expect(entity_set.namespace).to eq(service.namespace)
       end
     end
@@ -144,7 +144,7 @@ describe 'Usage examples', vcr: { cassette_name: 'usage_example_specs' } do
 
           batch.each do |entity|
             expect(entity).to be_a(OData4::Entity)
-            expect(entity.type).to eq('Product')
+            expect(entity.type).to eq('ODataDemo.Product')
           end
           batch_count += 1
         end

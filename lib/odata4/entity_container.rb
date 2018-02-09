@@ -50,11 +50,11 @@ module OData4
       xpath_query = "//EntitySet[@Name='#{entity_set_name}']"
       entity_set_node = metadata.xpath(xpath_query).first
       raise ArgumentError, "Unknown Entity Set: #{entity_set_name}" if entity_set_node.nil?
-      entity_type_name = entity_set_node.attributes['EntityType'].value.gsub(/#{namespace}\./, '')
+      entity_type = entity_set_node.attributes['EntityType'].value
       OData4::EntitySet.new(
         name: entity_set_name,
         namespace: namespace,
-        type: entity_type_name.to_s,
+        type: entity_type,
         service_name: service.name,
         container: name
       )

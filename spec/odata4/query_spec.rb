@@ -8,8 +8,11 @@ describe OData4::Query, vcr: {cassette_name: 'query_specs'} do
   let(:subject) { OData4::Query.new(entity_set) }
   let(:entity_set) { OData4::EntitySet.new(options) }
   let(:options) { {
-      container: 'DemoService', namespace: 'ODataDemo', name: 'Products',
-      service_name: 'ODataDemo', type: 'Product'
+    service_name: 'ODataDemo',
+    container: 'DemoService',
+    namespace: 'ODataDemo',
+    name: 'Products',
+    type: 'ODataDemo.Product'
   } }
 
   it { expect(subject).to respond_to(:to_s) }
@@ -168,7 +171,7 @@ describe OData4::Query, vcr: {cassette_name: 'query_specs'} do
 
         batch.each do |entity|
           expect(entity).to be_a(OData4::Entity)
-          expect(entity.type).to eq('Product')
+          expect(entity.type).to eq('ODataDemo.Product')
           entity_count += 1
         end
 
@@ -185,7 +188,7 @@ describe OData4::Query, vcr: {cassette_name: 'query_specs'} do
 
         subject.in_batches(of: 5).each do |entity|
           expect(entity).to be_a(OData4::Entity)
-          expect(entity.type).to eq('Product')
+          expect(entity.type).to eq('ODataDemo.Product')
           entity_count += 1
         end
 

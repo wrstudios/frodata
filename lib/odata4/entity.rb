@@ -7,8 +7,6 @@ module OData4
   class Entity
     # The Entity type name
     attr_reader :type
-    # The OData4::Service's namespace
-    attr_reader :namespace
     # The OData4::Service's identifying name
     attr_reader :service_name
     # The entity set this entity belongs to
@@ -31,7 +29,6 @@ module OData4
     def initialize(options = {})
       @id = options[:id]
       @type = options[:type]
-      @namespace = options[:namespace]
       @service_name = options[:service_name]
       @entity_set = options[:entity_set]
       @context = options[:context]
@@ -39,10 +36,14 @@ module OData4
       @errors = []
     end
 
+    def namespace
+      @namespace ||= type.rpartition('.').first
+    end
+
     # Returns name of Entity from Service specified type.
     # @return [String]
     def name
-      @name ||= type.gsub(/#{namespace}\./, '')
+      @name ||= type.split('.').last
     end
 
     # Returns context URL for this entity
@@ -125,7 +126,7 @@ module OData4
     def self.with_properties(new_properties = {}, options = {})
       entity = OData4::Entity.new(options)
       entity.instance_eval do
-        schema.properties_for_entity(name).each do |property_name, instance|
+        service.properties_for_entity(type).each do |property_name, instance|
           set_property(property_name, instance)
         end
 

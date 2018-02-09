@@ -13,7 +13,7 @@ shared_examples 'valid result' do
     it 'returns just OData4::Entities of the right type' do
       result.each do |entity|
         expect(entity).to be_a(OData4::Entity)
-        expect(entity.type).to eq('Product')
+        expect(entity.type).to eq('ODataDemo.Product')
       end
     end
   end
