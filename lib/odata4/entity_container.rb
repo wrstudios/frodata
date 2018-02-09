@@ -59,5 +59,17 @@ module OData4
         container: name
       )
     end
+
+    def singletons
+      # TODO return singletons exposed by this EntityContainer
+    end
+
+    def actions
+      # TODO return action imports exposed by this EntityContainer
+    end
+
+    def functions
+      # TODO return function imports exposed by this EntityContainer
+    end
   end
 end

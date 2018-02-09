@@ -21,7 +21,7 @@ module OData4
     end
 
     # Returns a list of actions defined by the schema.
-    # @return Array<String>
+    # @return [Array<String>]
     def actions
       @actions ||= metadata.xpath('//Action').map do |action|
         action.attributes['Name'].value
@@ -29,7 +29,7 @@ module OData4
     end
 
     # Returns a list of entities defined by the schema.
-    # @return Array<String>
+    # @return [Array<String>]
     def entity_types
       @entity_types ||= metadata.xpath('//EntityType').map do |entity|
         entity.attributes['Name'].value
@@ -59,7 +59,7 @@ module OData4
     end
 
     # Returns a list of functions defined by the schema.
-    # @return Array<String>
+    # @return [Array<String>]
     def functions
       @functions ||= metadata.xpath('//Function').map do |function|
         function.attributes['Name'].value
@@ -73,13 +73,13 @@ module OData4
       @navigation_properties ||= metadata.xpath('//EntityType').collect do |entity_type_def|
         entity_type_name = entity_type_def.attributes['Name'].value
         [
-            entity_type_name,
-            entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
-              [
-                  nav_property_def.attributes['Name'].value,
-                  ::OData4::NavigationProperty.build(nav_property_def)
-              ]
-            end.to_h
+          entity_type_name,
+          entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
+            [
+              nav_property_def.attributes['Name'].value,
+              ::OData4::NavigationProperty.build(nav_property_def)
+            ]
+          end.to_h
         ]
       end.to_h
     end
