@@ -126,24 +126,6 @@ module OData4
       end.reduce({}, :merge)
     end
 
-    # Returns a hash for finding an association through an entity type's defined
-    # NavigationProperty elements.
-    # @return [Hash<Hash<OData4::Association>>]
-    def navigation_properties
-      @navigation_properties ||= metadata.xpath('//EntityType').collect do |entity_type_def|
-        entity_type_name = entity_type_def.attributes['Name'].value
-        [
-            entity_type_name,
-            entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
-              [
-                  nav_property_def.attributes['Name'].value,
-                  ::OData4::NavigationProperty.build(nav_property_def)
-              ]
-            end.to_h
-        ]
-      end.to_h
-    end
-
     # Returns a more compact inspection of the service object
     def inspect
       "#<#{self.class.name}:#{self.object_id} name='#{name}' service_url='#{self.service_url}'>"
@@ -200,39 +182,6 @@ module OData4
       document = ::Nokogiri::XML(results.body)
       document.remove_namespaces!
       document.xpath('//entry')
-    end
-
-    # Get the property type for an entity from metadata.
-    #
-    # @param entity_name [to_s] the name of the relevant entity
-    # @param property_name [to_s] the property name needed
-    # @return [String] the name of the property's type
-    def get_property_type(entity_name, property_name)
-      metadata.xpath("//EntityType[@Name='#{entity_name}']/Property[@Name='#{property_name}']").first.attributes['Type'].value
-    end
-
-    # Get the primary key for the supplied Entity.
-    #
-    # @param entity_name [to_s]
-    # @return [String]
-    def primary_key_for(entity_name)
-      metadata.xpath("//EntityType[@Name='#{entity_name}']/Key/PropertyRef").first.attributes['Name'].value
-    end
-
-    # Get the list of properties and their various options for the supplied
-    # Entity name.
-    # @param entity_name [to_s]
-    # @return [Hash]
-    # @api private
-    def properties_for_entity(entity_name)
-      type_definition = metadata.xpath("//EntityType[@Name='#{entity_name}']").first
-      raise ArgumentError, "Unknown EntityType: #{entity_name}" if type_definition.nil?
-      properties_to_return = {}
-      type_definition.xpath('./Property').each do |property_xml|
-        property_name, property = process_property_from_xml(property_xml)
-        properties_to_return[property_name] = property
-      end
-      properties_to_return
     end
 
     # Returns the log level set via initial options, or the
@@ -324,23 +273,6 @@ module OData4
 
     def error_message(response)
       OData4::Query::Result.new(nil, response).error_message
-    end
-
-    def process_property_from_xml(property_xml)
-      property_name = property_xml.attributes['Name'].value
-      value_type = property_xml.attributes['Type'].value
-      property_options = { service: self }
-
-      klass = ::OData4::PropertyRegistry[value_type]
-
-      if klass.nil?
-        raise RuntimeError, "Unknown property type: #{value_type}"
-      else
-        property_options[:allows_nil] = false if property_xml.attributes['Nullable'] == 'false'
-        property = klass.new(property_name, nil, property_options)
-      end
-
-      return [property_name, property]
     end
 
     def register_custom_types

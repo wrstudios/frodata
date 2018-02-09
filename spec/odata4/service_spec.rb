@@ -92,12 +92,6 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(subject.enum_types.keys).to eq(['ODataDemo.ProductStatus'])}
   end
 
-  describe '#navigation_properties' do
-    it { expect(subject).to respond_to(:navigation_properties) }
-    it { expect(subject.navigation_properties['Product'].size).to eq(3) }
-    it { expect(subject.navigation_properties['Product'].values).to all(be_a(OData4::NavigationProperty)) }
-  end
-
   describe '#namespace' do
     it { expect(subject.namespace).to eq('ODataDemo') }
   end

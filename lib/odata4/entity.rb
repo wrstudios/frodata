@@ -110,7 +110,7 @@ module OData4
     # Links to other OData4 entitites
     # @return [Hash]
     def links
-      @links ||= service.navigation_properties[name].map do |nav_name, details|
+      @links ||= schema.navigation_properties[name].map do |nav_name, details|
         [
           nav_name,
           { type: details.nav_type, href: "#{id}/#{nav_name}" }
@@ -125,7 +125,7 @@ module OData4
     def self.with_properties(new_properties = {}, options = {})
       entity = OData4::Entity.new(options)
       entity.instance_eval do
-        service.properties_for_entity(name).each do |property_name, instance|
+        schema.properties_for_entity(name).each do |property_name, instance|
           set_property(property_name, instance)
         end
 
@@ -213,7 +213,7 @@ module OData4
     # Returns the primary key for the Entity.
     # @return [String]
     def primary_key
-      service.primary_key_for(name)
+      schema.primary_key_for(name)
     end
 
     def is_new?
@@ -228,10 +228,14 @@ module OData4
       @service ||= OData4::ServiceRegistry[service_name]
     end
 
+    def schema
+      @schema ||= service.schemas[namespace]
+    end
+
     private
 
     def instantiate_property(property_name, value_xml)
-      value_type = service.get_property_type(name, property_name)
+      value_type = schema.get_property_type(name, property_name)
       klass = ::OData4::PropertyRegistry[value_type]
 
       if klass.nil?
@@ -280,7 +284,7 @@ module OData4
     def self.process_links(entity, xml_doc)
       entity.instance_eval do
         new_links = instance_variable_get(:@links) || {}
-        service.navigation_properties[name].each do |nav_name, details|
+        schema.navigation_properties[name].each do |nav_name, details|
           xml_doc.xpath("./link[@title='#{nav_name}']").each do |node|
             next if node.attributes['type'].nil?
             next unless node.attributes['type'].value =~ /^application\/atom\+xml;type=(feed|entry)$/i
@@ -304,7 +308,7 @@ module OData4
     def self.process_metadata(entity, metadata)
       entity.instance_eval do
         new_links = instance_variable_get(:@links) || {}
-        service.navigation_properties[name].each do |nav_name, details|
+        schema.navigation_properties[name].each do |nav_name, details|
           href = metadata["#{nav_name}@odata.navigationLink"]
           next if href.nil?
           new_links[nav_name] = {

@@ -57,6 +57,10 @@ module OData4
 
     private
 
+    def schema
+      @schema
+    end
+
     def service
       @schema.service
     end
@@ -67,7 +71,7 @@ module OData4
 
     def collect_properties
       Hash[type_definition.xpath('./Property').map do |property_xml|
-        property_name, property = service.send(:process_property_from_xml, property_xml)
+        property_name, property = schema.send(:process_property_from_xml, property_xml)
         [property_name, property]
       end]
     end

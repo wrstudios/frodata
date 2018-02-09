@@ -63,4 +63,35 @@ describe OData4::Schema do
     it { expect(subject.type_definitions.size).to eq(0) }
   end
 
+  describe '#navigation_properties' do
+    it { expect(subject).to respond_to(:navigation_properties) }
+    it { expect(subject.navigation_properties['Product'].size).to eq(3) }
+    it { expect(subject.navigation_properties['Product'].values).to all(be_a(OData4::NavigationProperty)) }
+  end
+
+  describe '#get_property_type' do
+    it { expect(subject).to respond_to(:get_property_type) }
+    it { expect(subject.get_property_type('Product', 'ID')).to eq('Edm.Int32') }
+    it { expect(subject.get_property_type('Product', 'ProductStatus')).to eq('ODataDemo.ProductStatus') }
+  end
+
+  describe '#primary_key_for' do
+    it { expect(subject).to respond_to(:primary_key_for) }
+    it { expect(subject.primary_key_for('Product')).to eq('ID') }
+  end
+
+  describe '#properties_for_entity' do
+    it { expect(subject).to respond_to(:properties_for_entity) }
+    it { expect(subject.properties_for_entity('Product').keys).to eq(%w[
+      ID
+      Name
+      Description
+      ReleaseDate
+      DiscontinuedDate
+      Rating
+      Price
+      ProductStatus
+    ]) }
+    it { expect(subject.properties_for_entity('Product').values).to all(be_a(OData4::Property)) }
+  end
 end
