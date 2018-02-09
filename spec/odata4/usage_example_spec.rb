@@ -14,41 +14,41 @@ describe 'Usage examples', vcr: { cassette_name: 'usage_example_specs' } do
     end
 
     it 'lists entity types' do
-      expect(service.entity_types).to eq([
-        "Product",
-        "FeaturedProduct",
-        "ProductDetail",
-        "Category",
-        "Supplier",
-        "Person",
-        "Customer",
-        "Employee",
-        "PersonDetail",
-        "Advertisement"
+      expect(service.entity_types).to eq(%w[
+        ODataDemo.Product
+        ODataDemo.FeaturedProduct
+        ODataDemo.ProductDetail
+        ODataDemo.Category
+        ODataDemo.Supplier
+        ODataDemo.Person
+        ODataDemo.Customer
+        ODataDemo.Employee
+        ODataDemo.PersonDetail
+        ODataDemo.Advertisement
       ])
     end
 
     it 'lists entity sets' do
       expect(service.entity_sets).to eq({
-        "Product"       => "Products",
-        "ProductDetail" => "ProductDetails",
-        "Category"      => "Categories",
-        "Supplier"      => "Suppliers",
-        "Person"        => "Persons",
-        "PersonDetail"  => "PersonDetails",
-        "Advertisement" => "Advertisements"
+        "Products"       => "ODataDemo.Product",
+        "ProductDetails" => "ODataDemo.ProductDetail",
+        "Categories"     => "ODataDemo.Category",
+        "Suppliers"      => "ODataDemo.Supplier",
+        "Persons"        => "ODataDemo.Person",
+        "PersonDetails"  => "ODataDemo.PersonDetail",
+        "Advertisements" => "ODataDemo.Advertisement"
       })
     end
   end
 
   describe 'working with entity sets' do
     it 'accessing entity sets' do
-      service.entity_sets.each do |entity_name, set_name|
-        entity_set = service[set_name]
+      service.entity_sets.each do |entity_set_name, entity_name|
+        entity_set = service[entity_set_name]
 
         expect(entity_set).to be_a(OData4::EntitySet)
-        expect(entity_set.name).to eq(set_name)
-        expect(entity_set.type).to eq(entity_name)
+        expect(entity_set.name).to eq(entity_set_name)
+        expect(entity_set.type).to eq(entity_name.split('.').last)
         expect(entity_set.namespace).to eq(service.namespace)
       end
     end

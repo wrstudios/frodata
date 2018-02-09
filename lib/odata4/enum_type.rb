@@ -8,9 +8,9 @@ module OData4
     # @param type_xml [Nokogiri::XML::Element]
     # @param service [OData4::Service]
     # @return [self]
-    def initialize(type_definition, service)
+    def initialize(type_definition, schema)
       @type_definition = type_definition
-      @service         = service
+      @schema          = schema
     end
 
     # The name of the EnumType
@@ -71,7 +71,7 @@ module OData4
     private
 
     def service
-      @service
+      @schema.service
     end
 
     def type_definition

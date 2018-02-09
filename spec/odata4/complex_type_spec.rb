@@ -7,26 +7,6 @@ describe OData4::ComplexType, vcr: {cassette_name: 'complex_type_specs'} do
 
   let(:service) { OData4::ServiceRegistry['ODataDemo'] }
 
-  describe '.new' do
-    it 'requires type name' do
-      expect {
-        OData4::ComplexType.new(service: service)
-      }.to raise_error(ArgumentError)
-    end
-
-    it 'requires service instance' do
-      expect {
-        OData4::ComplexType.new(name: 'Address')
-      }.to raise_error(ArgumentError)
-    end
-
-    it 'requires name to refer to a valid complex type' do
-      expect {
-        OData4::ComplexType.new(name: 'NotAType', service: service)
-      }.to raise_error(ArgumentError)
-    end
-  end
-
   let(:address) { {
       'Street'  => '123 Main St',
       'City'    => 'Huntington Beach',
@@ -35,7 +15,7 @@ describe OData4::ComplexType, vcr: {cassette_name: 'complex_type_specs'} do
       'Country' => 'USA'
   } }
 
-  let(:complex_type) { service.complex_types['Address'] }
+  let(:complex_type) { service.complex_types['ODataDemo.Address'] }
   let(:subject) { complex_type.property_class.new('Address', nil) }
 
   describe 'is properly parsed from service metadata' do

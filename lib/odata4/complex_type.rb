@@ -9,10 +9,9 @@ module OData4
     # Creates a new ComplexType based on the supplied options.
     # @param type_xml [Nokogiri::XML::Element]
     # @param service [OData4::Service]
-    # @return [self]
-    def initialize(type_definition, service)
+    def initialize(type_definition, schema)
       @type_definition = type_definition
-      @service         = service
+      @schema          = schema
     end
 
     # The name of the ComplexType
@@ -59,7 +58,7 @@ module OData4
     private
 
     def service
-      @service
+      @schema.service
     end
 
     def type_definition
@@ -68,7 +67,7 @@ module OData4
 
     def collect_properties
       Hash[type_definition.xpath('./Property').map do |property_xml|
-        property_name, property = service.send(:process_property_from_xml,property_xml)
+        property_name, property = service.send(:process_property_from_xml, property_xml)
         [property_name, property]
       end]
     end
