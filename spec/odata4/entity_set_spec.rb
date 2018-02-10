@@ -8,7 +8,7 @@ describe OData4::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
   let(:subject) { OData4::EntitySet.new(options) }
   let(:options) { {
       container: 'DemoService', namespace: 'ODataDemo', name: 'Products',
-      type: 'Product', service_name: 'ODataDemo'
+      type: 'ODataDemo.Product', service_name: 'ODataDemo'
   } }
 
   it { expect(subject).to respond_to(:name) }
@@ -24,7 +24,7 @@ describe OData4::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
   it { expect(subject.container).to eq('DemoService') }
   it { expect(subject.namespace).to eq('ODataDemo') }
   it { expect(subject.service_name).to eq('ODataDemo') }
-  it { expect(subject.type).to eq('Product') }
+  it { expect(subject.type).to eq('ODataDemo.Product') }
 
   describe '#each' do
     it { expect(subject).to respond_to(:each) }

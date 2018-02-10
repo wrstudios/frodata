@@ -8,27 +8,7 @@ describe OData4::EnumType, vcr: {cassette_name: 'enum_type_specs'} do
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
   let(:service) { OData4::ServiceRegistry['ODataDemo'] }
 
-  describe '.new' do
-    it 'requires type name' do
-      expect {
-        OData4::EnumType.new(service: service)
-      }.to raise_error(ArgumentError)
-    end
-
-    it 'requires service instance' do
-      expect {
-        OData4::EnumType.new(name: 'Address')
-      }.to raise_error(ArgumentError)
-    end
-
-    it 'requires name to refer to a valid enum type' do
-      expect {
-        OData4::EnumType.new(name: 'NotAType', service: service)
-      }.to raise_error(ArgumentError)
-    end
-  end
-
-  let(:enum_type) { service.enum_types['ProductStatus'] }
+  let(:enum_type) { service.enum_types['ODataDemo.ProductStatus'] }
   let(:subject) { enum_type.property_class.new('ProductStatus', nil) }
 
   describe 'is properly parsed from service metadata' do

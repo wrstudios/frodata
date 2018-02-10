@@ -65,6 +65,61 @@ Both of the above calls would retrieve the same service from the registry.
 At the moment there is no protection against name collisions provided in `OData4::ServiceRegistry`.
 So, looking up services by their service URL is the most exact method, but lookup by name is provided for convenience.
 
+### Exploring a Service
+
+Once instantiated, you can request various information about the service, such as the names and types of entity sets it exposes, or the names of the entity types (and custom datatypes) it defines.
+
+For example:
+
+Get a list of available entity types
+
+```ruby
+  service.entity_types
+  # => [
+  #   "ODataDemo.Product",
+  #   "ODataDemo.FeaturedProduct",
+  #   "ODataDemo.ProductDetail",
+  #   "ODataDemo.Category",
+  #   "ODataDemo.Supplier",
+  #   "ODataDemo.Person",
+  #   "ODataDemo.Customer",
+  #   "ODataDemo.Employee",
+  #   "ODataDemo.PersonDetail",
+  #   "ODataDemo.Advertisement"
+  # ]
+```
+
+Get a list of entity sets
+
+```ruby
+  service.entity_sets
+  # => {
+  #   "Products"       => "ODataDemo.Product",
+  #   "ProductDetails" => "ODataDemo.ProductDetail",
+  #   "Categories"     => "ODataDemo.Category",
+  #   "Suppliers"      => "ODataDemo.Supplier",
+  #   "Persons"        => "ODataDemo.Person",
+  #   "PersonDetails"  => "ODataDemo.PersonDetail",
+  #   "Advertisements" => "ODataDemo.Advertisement"
+  # }
+```
+
+Get a list of complex types
+
+```ruby
+  service.complex_types
+  # => ["ODataDemo.Address"]
+```
+
+Get a list of enum types
+
+```ruby
+  service.enum_types
+  # => ["ODataDemo.ProductStatus"]
+```
+
+For more examples, refer to [usage_example_specs.rb](spec/odata4/usage_example_specs.rb).
+
 ### Authentication
 
 When authenticating with your service you can set parameters to the Typhoeus gem which uses libcurl.
@@ -172,7 +227,7 @@ The first entity object returns a single entity object.
 #### Find a certain Entity
 
 ```ruby
-  service['ProductsSet']['<guid of entity>']
+  service['ProductsSet']['<primary key of entity>']
 ```
 
 With certain navigation properties expanded (i.e. eagerly loaded):

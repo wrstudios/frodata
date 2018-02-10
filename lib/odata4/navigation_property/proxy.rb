@@ -34,6 +34,10 @@ module OData4
         @namespace ||= service.namespace
       end
 
+      def schema
+        @schema ||= service.schemas[namespace]
+      end
+
       def entity_type
         @entity_type ||= entity.name
       end
@@ -43,7 +47,7 @@ module OData4
       end
 
       def nav_property
-        service.navigation_properties[entity_type][nav_name]
+        schema.navigation_properties[entity_type][nav_name]
       end
 
       def fetch_result
