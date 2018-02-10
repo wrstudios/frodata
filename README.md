@@ -13,6 +13,7 @@ If you need a gem to integration with OData Version 3, you can use James Thompso
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f151944dc05b2c7268e5/test_coverage)](https://codeclimate.com/github/wrstudios/odata4/test_coverage)
 [![Dependency Status](https://gemnasium.com/badges/github.com/wrstudios/odata4.svg)](https://gemnasium.com/github.com/wrstudios/odata4)
 [![Documentation](http://inch-ci.org/github/wrstudios/odata4.png?branch=master)](http://www.rubydoc.info/github/wrstudios/odata4/master)
+[![Gem Version](https://badge.fury.io/rb/odata4.svg)](https://badge.fury.io/rb/odata4)
 
 ## Installation
 
