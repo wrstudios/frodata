@@ -1,7 +1,11 @@
 # CHANGELOG
 
-## 0.7.1
+## 0.8.0
 
+* [New Feature] Support for multiple schemas
+* [Breaking] `Service#complex_types`, `Service#entity_types`,
+  `Service#enum_types` and `Service#entity_sets` now return fully qualified
+  type names
 * [New Feature] Optional lenient property validation
 * [Fixed] Incorrect URL representation for Decimal properties
 
