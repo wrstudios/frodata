@@ -58,7 +58,8 @@ module OData4
       end
 
       def is_atom_result?
-        content_type =~ /#{Regexp.escape OData4::Service::MIME_TYPES[:atom]}/
+        content_type =~ /#{Regexp.escape OData4::Service::MIME_TYPES[:atom]}/ ||
+        content_type =~ /#{Regexp.escape OData4::Service::MIME_TYPES[:xml]}/
       end
 
       def is_json_result?

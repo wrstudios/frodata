@@ -14,6 +14,7 @@ module OData4
     MIME_TYPES = {
       atom:  'application/atom+xml',
       json:  'application/json',
+      xml:   'application/xml',
       plain: 'text/plain'
     }
 
