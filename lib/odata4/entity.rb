@@ -169,7 +169,7 @@ module OData4
       namespaces = XML_NAMESPACES.merge('xml:base' => service.service_url)
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.entry(namespaces) do
-          xml.category(term: "#{namespace}.#{type}",
+          xml.category(term: type,
                        scheme: 'http://docs.oasis-open.org/odata/ns/scheme')
           xml.author { xml.name }
 

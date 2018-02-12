@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <entry xmlns="http://www.w3.org/2005/Atom" xmlns:data="http://docs.oasis-open.org/odata/ns/data" xmlns:metadata="http://docs.oasis-open.org/odata/ns/metadata" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xml:base="http://services.odata.org/V4/OData/OData.svc">
-  <category term="ODataDemo.ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"/>
+  <category term="ODataDemo.Product" scheme="http://docs.oasis-open.org/odata/ns/scheme"/>
   <author>
     <name/>
   </author>
