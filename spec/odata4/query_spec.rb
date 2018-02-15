@@ -132,7 +132,7 @@ describe OData4::Query, vcr: {cassette_name: 'query_specs'} do
 
   describe '#execute' do
     it { expect(subject).to respond_to(:execute) }
-    it { expect(subject.execute).to be_a(OData4::Query::Result) }
+    it { expect(subject.execute).to be_a(OData4::Service::Response) }
   end
 
   describe '#count' do
@@ -166,7 +166,7 @@ describe OData4::Query, vcr: {cassette_name: 'query_specs'} do
       batch_count = entity_count = 0
 
       subject.in_batches(of: 5) do |batch|
-        expect(batch).to be_a(OData4::Query::Result)
+        expect(batch).to be_a(OData4::Service::Response)
         expect(batch.count).to eq(5) unless batch_count == 2
 
         batch.each do |entity|

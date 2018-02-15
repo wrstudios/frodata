@@ -1,8 +1,6 @@
 module OData4
-  class Query
-    class Result
-      # Represents the results of executing a OData4::Query.
-      # @api private
+  class Service
+    class Response
       module JSON
         def process_results(&block)
           find_entities.each do |entity_json|
@@ -26,7 +24,7 @@ module OData4
         private
 
         def result_json
-          @result_json ||= ::JSON.parse(result.body)
+          @result_json ||= ::JSON.parse(response.body)
         end
 
         def single_entity?

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<m:error xmlns:m="http://docs.oasis-open.org/odata/ns/metadata">
+    <m:code />
+    <m:message>Resource not found for the segment 'Products'.</m:message>
+</m:error>

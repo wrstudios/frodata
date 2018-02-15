@@ -1,3 +1,6 @@
+require 'odata4/query/criteria'
+require 'odata4/query/in_batches'
+
 module OData4
   # OData4::Query provides the query interface for requesting Entities matching
   # specific criteria from an OData4::EntitySet. This class should not be
@@ -133,17 +136,16 @@ module OData4
     end
 
     # Execute the query.
-    # @return [OData4::Query::Result]
-    def execute(query = self.to_s)
-      response = service.execute(query, options)
-      OData4::Query::Result.new(self, response)
+    # @return [OData4::Service::Response]
+    def execute(url_chunk = self.to_s)
+      service.execute(url_chunk, options.merge(query: self))
     end
 
     # Executes the query to get a count of entities.
     # @return [Integer]
     def count
       url_chunk = ["#{entity_set.name}/$count", assemble_criteria].compact.join('?')
-      response = service.execute(url_chunk)
+      response = self.execute(url_chunk)
       # Some servers (*cough* Microsoft *cough*) seem to
       # return extraneous characters in the response.
       response.body.scan(/\d+/).first.to_i

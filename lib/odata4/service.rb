@@ -1,3 +1,6 @@
+require 'odata4/service/request'
+require 'odata4/service/response'
+
 module OData4
   # Encapsulates the basic details and functionality needed to interact with an
   # OData4 service.
@@ -134,55 +137,11 @@ module OData4
 
     # Execute a request against the service
     #
-    # @param url_chunk [to_s] string to append to service url
-    # @param additional_options [Hash] options to pass to Typhoeus
-    # @return [Typhoeus::Response]
-    def execute(url_chunk, additional_options = {})
-      accept = content_type(additional_options.delete(:format) || :auto)
-      accept_header = {'Accept' => accept }
-
-      request_options = options[:typhoeus]
-        .merge({ method: :get })
-        .merge(additional_options)
-
-      # Don't overwrite Accept header if already present
-      unless request_options[:headers]['Accept']
-        request_options[:headers] = request_options[:headers].merge(accept_header)
-      end
-
-      request = ::Typhoeus::Request.new(
-        URI.join("#{service_url}/", URI.escape(url_chunk)),
-        request_options
-      )
-      logger.info "Requesting #{URI.unescape(request.url)}..."
-      request.run
-
-      response = request.response
-      logger.debug(response.headers)
-      logger.debug(response.body)
-
-      validate_response(response)
-      response
-    end
-
-    # Find a specific node in the given result set
-    #
-    # @param results [Typhoeus::Response]
-    # @return [Nokogiri::XML::Element]
-    def find_node(results, node_name)
-      document = ::Nokogiri::XML(results.body)
-      document.remove_namespaces!
-      document.xpath("//#{node_name}").first
-    end
-
-    # Find entity entries in a result set
-    #
-    # @param results [Typhoeus::Response]
-    # @return [Nokogiri::XML::NodeSet]
-    def find_entities(results)
-      document = ::Nokogiri::XML(results.body)
-      document.remove_namespaces!
-      document.xpath('//entry')
+    # @param url_chunk [to_s] string to append to service URL
+    # @param options [Hash] additional request options
+    # @return [OData4::Service::Response]
+    def execute(url_chunk, options = {})
+      Request.new(self, url_chunk, options).execute
     end
 
     # Get the property type for an entity from metadata.
@@ -264,48 +223,20 @@ module OData4
       }
     end
 
-    def content_type(format)
-      if format == :auto
-        MIME_TYPES.values.join(',')
-      elsif MIME_TYPES.has_key? format
-        MIME_TYPES[format]
-      else
-        raise ArgumentError, "Unknown format '#{format}'"
-      end
-    end
-
     def read_metadata
-      response = nil
       # From file, good for debugging
       if options[:metadata_file]
         data = File.read(options[:metadata_file])
         ::Nokogiri::XML(data).remove_namespaces!
       else # From a URL
+        response = nil
         METADATA_TIMEOUTS.each do |timeout|
-          response = ::Typhoeus::Request.get(URI.escape(metadata_url),
-                                             options[:typhoeus].merge(timeout: timeout))
+          response = execute(metadata_url, timeout: timeout)
           break unless response.timed_out?
         end
         raise "Metadata Timeout" if response.timed_out?
-        validate_response(response)
         ::Nokogiri::XML(response.body).remove_namespaces!
       end
-    end
-
-    def validate_response(response)
-      raise "Bad Request. #{error_message(response)}" if response.code == 400
-      raise "Access Denied" if response.code == 401
-      raise "Forbidden" if response.code == 403
-      raise "Not Found" if [0,404].include?(response.code)
-      raise "Method Not Allowed" if response.code == 405
-      raise "Not Acceptable" if response.code == 406
-      raise "Request Entity Too Large" if response.code == 413
-      raise "Internal Server Error" if response.code == 500
-      raise "Service Unavailable" if response.code == 503
-    end
-
-    def error_message(response)
-      OData4::Query::Result.new(nil, response).error_message
     end
 
     def register_custom_types

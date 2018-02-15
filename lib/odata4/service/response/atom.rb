@@ -1,8 +1,6 @@
 module OData4
-  class Query
-    class Result
-      # Represents the results of executing a OData4::Query.
-      # @api private
+  class Service
+    class Response
       module Atom
         def process_results(&block)
           find_entities.each do |entity_xml|
@@ -26,7 +24,7 @@ module OData4
         private
 
         def result_xml
-          @result_xml ||= ::Nokogiri::XML(result.body).remove_namespaces!
+          @result_xml ||= ::Nokogiri::XML(response.body).remove_namespaces!
         end
 
         # Find entity entries in a result set
