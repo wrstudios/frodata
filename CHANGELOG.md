@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.8.1
+
+* [New Feature] Basic support for `Collection` property type
+
 ## 0.8.0
 
 * [New Feature] Support for multiple schemas
