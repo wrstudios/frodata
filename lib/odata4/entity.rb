@@ -236,13 +236,21 @@ module OData4
     private
 
     def instantiate_property(property_name, value_xml)
-      value_type = schema.get_property_type(name, property_name)
-      klass = ::OData4::PropertyRegistry[value_type]
+      prop_type = schema.get_property_type(name, property_name)
+      prop_type, value_type = prop_type.split(/\(|\)/)
+
+      if prop_type == 'Collection'
+        klass = ::OData4::Properties::Collection
+        options = { value_type: value_type }
+      else
+        klass = ::OData4::PropertyRegistry[prop_type]
+        options = {}
+      end
 
       if klass.nil?
-        raise RuntimeError, "Unknown property type: #{value_type}"
+        raise RuntimeError, "Unknown property type: #{prop_type}"
       else
-        klass.from_xml(value_xml, service: service)
+        klass.from_xml(value_xml, options.merge(service: service))
       end
     end
 

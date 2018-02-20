@@ -128,10 +128,16 @@ module OData4
 
     def process_property_from_xml(property_xml)
       property_name = property_xml.attributes['Name'].value
-      value_type = property_xml.attributes['Type'].value
+      property_type = property_xml.attributes['Type'].value
       property_options = { service: service }
 
-      klass = ::OData4::PropertyRegistry[value_type]
+      property_type, value_type = property_type.split(/\(|\)/)
+      if property_type == 'Collection'
+        klass = ::OData4::Properties::Collection
+        property_options.merge(value_type: value_type)
+      else
+        klass = ::OData4::PropertyRegistry[property_type]
+      end
 
       if klass.nil?
         raise RuntimeError, "Unknown property type: #{value_type}"
