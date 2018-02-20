@@ -4,6 +4,7 @@ require 'odata4/properties/number'
 # Implementations
 require 'odata4/properties/binary'
 require 'odata4/properties/boolean'
+require 'odata4/properties/collection'
 require 'odata4/properties/date'
 require 'odata4/properties/date_time'
 require 'odata4/properties/date_time_offset'
