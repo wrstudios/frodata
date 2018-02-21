@@ -256,7 +256,7 @@ module OData4
     def default_options
       {
         typhoeus: {
-          headers: { 'OData4-Version' => '4.0' },
+          headers: { 'OData-Version' => '4.0' },
           timeout: HTTP_TIMEOUT
         },
         strict: true # strict property validation

@@ -3,6 +3,7 @@
 ## 0.8.1
 
 * [New Feature] Basic support for `Collection` property type
+* [Bugfix] Fixed incorrect `OData-Version` header being sent
 
 ## 0.8.0
 
