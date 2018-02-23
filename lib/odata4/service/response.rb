@@ -24,7 +24,7 @@ module OData4
         @response = response
         @query    = query
         check_content_type
-        validate_response
+        validate!
       end
 
       # Returns the HTTP status code.
@@ -69,16 +69,17 @@ module OData4
         response.timed_out?
       end
 
-      # Provided for Enumerable functionality
+      # Iterates over all entities in the response, using
+      # automatic paging if necessary.
+      # Provided for Enumerable functionality.
       # @param block [block] a block to evaluate
       # @return [OData4::Entity] each entity in turn for the query result
       def each(&block)
         unless empty?
           process_results(&block)
-          until next_page.nil?
-            # ensure query gets executed with the same options
-            result = query.execute(URI.decode next_page_url)
-            process_results(&block)
+          unless next_page.nil?
+            # ensure request gets executed with the same options
+            query.execute(URI.decode next_page_url).each(&block)
           end
         end
       end
@@ -88,23 +89,36 @@ module OData4
         response.body
       end
 
-      private
-
-      def entity_options
-        if query
-          query.entity_set.entity_options
-        else
-          {
-            service_name: service.name,
-          }
-        end
+      # Validates the response. Throws an exception with
+      # an appropriate message if a 4xx or 5xx status code
+      # occured.
+      #
+      # @return [self]
+      def validate!
+        raise "Bad Request. #{error_message(response)}" if response.code == 400
+        raise "Access Denied" if response.code == 401
+        raise "Forbidden" if response.code == 403
+        raise "Not Found" if [0,404].include?(response.code)
+        raise "Method Not Allowed" if response.code == 405
+        raise "Not Acceptable" if response.code == 406
+        raise "Request Entity Too Large" if response.code == 413
+        raise "Internal Server Error" if response.code == 500
+        raise "Service Unavailable" if response.code == 503
+        self
       end
+
+      private
 
       def logger
         service.logger
       end
 
       def check_content_type
+        logger.debug <<-EOS
+          [OData4: #{service.name}] Received response:
+            Headers: #{response.headers}
+            Body: #{response.body}
+        EOS
         # Dynamically extend instance with methods for
         # processing the current result type
         if is_atom?
@@ -125,21 +139,21 @@ module OData4
         end
       end
 
-      def validate_response
-        logger.debug <<-EOS
-          [OData4: #{service.name}] Received response:
-            Headers: #{response.headers}
-            Body: #{response.body}
-        EOS
-        raise "Bad Request. #{error_message(response)}" if response.code == 400
-        raise "Access Denied" if response.code == 401
-        raise "Forbidden" if response.code == 403
-        raise "Not Found" if [0,404].include?(response.code)
-        raise "Method Not Allowed" if response.code == 405
-        raise "Not Acceptable" if response.code == 406
-        raise "Request Entity Too Large" if response.code == 413
-        raise "Internal Server Error" if response.code == 500
-        raise "Service Unavailable" if response.code == 503
+      def entity_options
+        if query
+          query.entity_set.entity_options
+        else
+          {
+            service_name: service.name,
+          }
+        end
+      end
+
+      def process_results(&block)
+        find_entities.each do |entity_data|
+          entity = parse_entity(entity_data, entity_options)
+          block_given? ? block.call(entity) : yield(entity)
+        end
       end
     end
   end

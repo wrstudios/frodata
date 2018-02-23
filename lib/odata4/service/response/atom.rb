@@ -2,11 +2,8 @@ module OData4
   class Service
     class Response
       module Atom
-        def process_results(&block)
-          find_entities.each do |entity_xml|
-            entity = OData4::Entity.from_xml(entity_xml, entity_options)
-            block_given? ? block.call(entity) : yield(entity)
-          end
+        def parse_entity(entity_xml, entity_options)
+          OData4::Entity.from_xml(entity_xml, entity_options)
         end
 
         def next_page
@@ -19,6 +16,10 @@ module OData4
 
         def error_message
           result_xml.xpath('//error/message').first.andand.text
+        end
+
+        def parsed_body
+          result_xml
         end
 
         private

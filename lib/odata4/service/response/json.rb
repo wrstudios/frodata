@@ -2,11 +2,8 @@ module OData4
   class Service
     class Response
       module JSON
-        def process_results(&block)
-          find_entities.each do |entity_json|
-            entity = OData4::Entity.from_json(entity_json, entity_options)
-            block_given? ? block.call(entity) : yield(entity)
-          end
+        def parse_entity(entity_json, entity_options)
+          OData4::Entity.from_json(entity_json, entity_options)
         end
 
         def next_page
@@ -19,6 +16,10 @@ module OData4
 
         def error_message
           result_json['error'].andand['message']
+        end
+
+        def parsed_body
+          result_json
         end
 
         private

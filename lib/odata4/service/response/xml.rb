@@ -2,20 +2,24 @@ module OData4
   class Service
     class Response
       module XML
-        def process_results(&block)
-          find_entities.each(&block)
+        def parse_entity(entity_data, entity_options)
+          raise NotImplementedError, 'Not Available'
         end
 
         def next_page
-          raise NotImplementedError, 'Not available'
+          raise NotImplementedError, 'Not Available'
         end
 
         def next_page_url
-          raise NotImplementedError, 'Not available'
+          raise NotImplementedError, 'Not Available'
         end
 
         def error_message
           response_xml.xpath('//error/message').first.andand.text
+        end
+
+        def parsed_body
+          response_xml
         end
 
         private

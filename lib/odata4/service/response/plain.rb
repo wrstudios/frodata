@@ -2,8 +2,8 @@ module OData4
   class Service
     class Response
       module Plain
-        def process_results(&block)
-          find_entities.each(&block)
+        def parse_entity(entity_data, entity_options)
+          raise NotImplementedError, 'Not Available'
         end
 
         def next_page
@@ -15,6 +15,10 @@ module OData4
         end
 
         def error_message
+          response.body
+        end
+
+        def parsed_body
           response.body
         end
 
