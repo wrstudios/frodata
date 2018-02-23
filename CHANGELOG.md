@@ -3,7 +3,10 @@
 ## 0.8.1
 
 * [New Feature] Basic support for `Collection` property type
+* [Refactor] Moved all HTTP-related code into `Service::Request`,
+             renamed `Query::Result` to `Service::Response`
 * [Bugfix] Fixed incorrect `OData-Version` header being sent
+* [Bugfix] Fixed duplicate namespace in Atom serialization
 
 ## 0.8.0
 
