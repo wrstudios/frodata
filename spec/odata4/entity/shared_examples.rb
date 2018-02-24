@@ -65,7 +65,7 @@ shared_examples 'a valid supplier' do
   # Check property types
   it { expect(subject.get_property('ID')).to be_a(OData4::Properties::Integer) }
   it { expect(subject.get_property('Name')).to be_a(OData4::Properties::String) }
-  it { expect(subject.get_property('Address')).to be_a(OData4::ComplexType::Property) }
+  it { expect(subject.get_property('Address')).to be_a(OData4::Properties::Complex) }
   it { expect(subject.get_property('Location')).to be_a(OData4::Properties::Geography::Point) }
   # it { expect(subject.get_property('Products')).to be_a(OData4::NavigationProperty::Proxy)}
 

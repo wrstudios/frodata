@@ -111,7 +111,7 @@ module OData4
     end
 
     # Returns a list of `ComplexType`s used by the service.
-    # @return [Hash<String, OData4::ComplexType>]
+    # @return [Hash<String, OData4::Schema::ComplexType>]
     def complex_types
       @complex_types ||= schemas.map do |namespace, schema|
         schema.complex_types.map do |name, complex_type|
@@ -121,7 +121,7 @@ module OData4
     end
 
     # Returns a list of `EnumType`s used by the service
-    # @return [Hash<String, OData4::EnumType>]
+    # @return [Hash<String, OData4::Schema::EnumType>]
     def enum_types
       @enum_types ||= schemas.map do |namespace, schema|
         schema.enum_types.map do |name, enum_type|

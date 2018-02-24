@@ -1,8 +1,8 @@
 module OData4
-  class EnumType
+  module Properties
     # Abstract base class for OData4 EnumTypes
-    # @see [OData4::EnumType]
-    class Property < OData4::Property
+    # @see [OData4::Schema::EnumType]
+    class Enum < OData4::Property
       # Returns the property value, properly typecast
       # @return [String, nil]
       def value

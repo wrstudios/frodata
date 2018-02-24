@@ -1,8 +1,8 @@
 module OData4
-  class ComplexType
+  module Properties
     # Abstract base class for OData4 ComplexTypes
-    # @see [OData4::ComplexType]
-    class Property < OData4::Property
+    # @see [OData4::Schema::ComplexType]
+    class Complex < OData4::Property
       def initialize(name, value, options = {})
         super(name, value, options)
         init_properties

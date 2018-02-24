@@ -1,3 +1,6 @@
+require 'odata4/schema/complex_type'
+require 'odata4/schema/enum_type'
+
 module OData4
   class Schema
     # The schema's parent service
@@ -37,23 +40,23 @@ module OData4
     end
 
     # Returns a list of `ComplexType`s defined by the schema.
-    # @return [Hash<String, OData4::ComplexType>]
+    # @return [Hash<String, OData4::Schema::ComplexType>]
     def complex_types
       @complex_types ||= metadata.xpath('//ComplexType').map do |entity|
         [
           entity.attributes['Name'].value,
-          ::OData4::ComplexType.new(entity, self)
+          ComplexType.new(entity, self)
         ]
       end.to_h
     end
 
     # Returns a list of EnumTypes defined by the schema.
-    # @return [Hash<String, OData4::EnumType>]
+    # @return [Hash<String, OData4::Schema::EnumType>]
     def enum_types
       @enum_types ||= metadata.xpath('//EnumType').map do |entity|
         [
           entity.attributes['Name'].value,
-          ::OData4::EnumType.new(entity, self)
+          EnumType.new(entity, self)
         ]
       end.to_h
     end

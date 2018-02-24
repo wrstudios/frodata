@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OData4::EnumType, vcr: {cassette_name: 'enum_type_specs'} do
+describe OData4::Schema::EnumType, vcr: {cassette_name: 'schema/enum_type_specs'} do
   before(:example) do
     OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo', metadata_file: metadata_file)
   end
@@ -22,7 +22,7 @@ describe OData4::EnumType, vcr: {cassette_name: 'enum_type_specs'} do
 
   # Check property instance inheritance hierarchy
   it { expect(subject).to be_a(OData4::Property) }
-  it { expect(subject).to be_a(OData4::EnumType::Property) }
+  it { expect(subject).to be_a(OData4::Properties::Enum) }
 
   it { expect(subject).to respond_to(:name) }
   it { expect(subject).to respond_to(:type) }

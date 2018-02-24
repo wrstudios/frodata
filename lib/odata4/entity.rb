@@ -56,7 +56,7 @@ module OData4
     # @param property_name [to_s]
     # @return [*]
     def [](property_name)
-      if get_property(property_name).is_a?(::OData4::ComplexType::Property)
+      if get_property(property_name).is_a?(::OData4::Properties::Complex)
         get_property(property_name)
       else
         get_property(property_name).value
