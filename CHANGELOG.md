@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## next
+
+* [Refactor] Moved `ComplexType` and `EnumType` class into `Schema`, respective property types into `Properties` namespace
+
 ## 0.8.1
 
 * [New Feature] Basic support for `Collection` property type
