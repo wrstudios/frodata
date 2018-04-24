@@ -1345,4 +1345,291 @@ http_interactions:
     adapter_metadata:
       effective_url: http://services.odata.org/V4/OData/OData.svc/Products(1)?$expand=Categories
   recorded_at: Sat, 27 Jan 2018 00:23:53 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(1)?%24expand=Categories%2CSupplier
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      Accept:
+      - application/atom+xml,application/json,application/xml,text/plain
+      Content-Type:
+      - application/atom+xml,application/json,application/xml,text/plain
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '559'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Tue, 24 Apr 2018 01:58:48 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":1,"Name":"Milk","Description":"Low
+        fat milk","ReleaseDate":"1995-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":3.5,"Categories":[{"ID":0,"Name":"Food"},{"ID":1,"Name":"Beverages"}],"Supplier":{"ID":0,"Name":"Exotic
+        Liquids","Address":{"Street":"NE 228th","City":"Sammamish","State":"WA","ZipCode":"98074","Country":"USA"},"Location":{"type":"Point","coordinates":[-122.03547668457,47.6316604614258],"crs":{"type":"name","properties":{"name":"EPSG:4326"}}},"Concurrency":0}}'
+    http_version: 
+  recorded_at: Tue, 24 Apr 2018 01:58:49 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(1)?%24expand=Categories%2CSupplier%2CProductDetail
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      Accept:
+      - application/atom+xml,application/json,application/xml,text/plain
+      Content-Type:
+      - application/atom+xml,application/json,application/xml,text/plain
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '589'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Tue, 24 Apr 2018 01:58:49 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":1,"Name":"Milk","Description":"Low
+        fat milk","ReleaseDate":"1995-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":3.5,"Categories":[{"ID":0,"Name":"Food"},{"ID":1,"Name":"Beverages"}],"Supplier":{"ID":0,"Name":"Exotic
+        Liquids","Address":{"Street":"NE 228th","City":"Sammamish","State":"WA","ZipCode":"98074","Country":"USA"},"Location":{"type":"Point","coordinates":[-122.03547668457,47.6316604614258],"crs":{"type":"name","properties":{"name":"EPSG:4326"}}},"Concurrency":0},"ProductDetail":{"ProductID":1,"Details":"Details
+        of product 1"}}'
+    http_version: 
+  recorded_at: Tue, 24 Apr 2018 01:58:49 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(1)?%24expand=Categories
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      Accept:
+      - application/atom+xml,application/json,application/xml,text/plain
+      Content-Type:
+      - application/atom+xml,application/json,application/xml,text/plain
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '339'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Tue, 24 Apr 2018 01:58:49 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":1,"Name":"Milk","Description":"Low
+        fat milk","ReleaseDate":"1995-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":3.5,"Categories":[{"ID":0,"Name":"Food"},{"ID":1,"Name":"Beverages"}]}'
+    http_version: 
+  recorded_at: Tue, 24 Apr 2018 01:58:49 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products?%24top=1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      Accept:
+      - application/atom+xml,application/json,application/xml,text/plain
+      Content-Type:
+      - application/atom+xml,application/json,application/xml,text/plain
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '308'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Tue, 24 Apr 2018 01:58:49 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products","value":[{"ID":0,"Name":"Bread","Description":"Whole
+        grain bread","ReleaseDate":"1992-01-01T00:00:00Z","DiscontinuedDate":null,"Rating":4,"Price":2.5}]}'
+    http_version: 
+  recorded_at: Tue, 24 Apr 2018 01:58:50 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products?%24top=5
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      Accept:
+      - application/atom+xml,application/json,application/xml,text/plain
+      Content-Type:
+      - application/atom+xml,application/json,application/xml,text/plain
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '523'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Tue, 24 Apr 2018 01:58:50 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products","value":[{"ID":0,"Name":"Bread","Description":"Whole
+        grain bread","ReleaseDate":"1992-01-01T00:00:00Z","DiscontinuedDate":null,"Rating":4,"Price":2.5},{"ID":1,"Name":"Milk","Description":"Low
+        fat milk","ReleaseDate":"1995-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":3.5},{"ID":2,"Name":"Vint
+        soda","Description":"Americana Variety - Mix of 6 flavors","ReleaseDate":"2000-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":20.9},{"ID":3,"Name":"Havina
+        Cola","Description":"The Original Key Lime Cola","ReleaseDate":"2005-10-01T00:00:00Z","DiscontinuedDate":"2006-10-01T00:00:00Z","Rating":3,"Price":19.9},{"ID":4,"Name":"Fruit
+        Punch","Description":"Mango flavor, 8.3 Ounce Cans (Pack of 24)","ReleaseDate":"2003-01-05T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":22.99}]}'
+    http_version: 
+  recorded_at: Tue, 24 Apr 2018 01:58:50 GMT
 recorded_with: VCR 4.0.0

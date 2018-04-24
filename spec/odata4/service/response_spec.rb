@@ -21,7 +21,7 @@ shared_examples 'a valid response' do
 end
 
 describe OData4::Service::Response, vcr: {cassette_name: 'service/response_specs'} do
-  let(:subject) { OData4::Service::Response.new(service, response, entity_set.query) }
+  let(:subject) { OData4::Service::Response.new(service, entity_set.query) { response } }
   let(:service) { OData4::Service.open(service_url, name: 'ODataDemo', metadata_file: metadata_file) }
   let(:service_url) { 'http://services.odata.org/V4/OData/OData.svc' }
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
@@ -30,7 +30,7 @@ describe OData4::Service::Response, vcr: {cassette_name: 'service/response_specs
     response = double('response')
     allow(response).to receive_messages(
       headers: { 'Content-Type' => content_type },
-      code: response_status,
+      status: response_status,
       body: response_body
     )
     response

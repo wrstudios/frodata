@@ -10,7 +10,7 @@ module OData4
     # Options to pass around
     attr_reader :options
 
-    HTTP_TIMEOUT = 20
+    DEFAULT_TIMEOUT = 20
 
     METADATA_TIMEOUTS = [20, 60]
 
@@ -215,9 +215,8 @@ module OData4
 
     def default_options
       {
-        typhoeus: {
-          headers: { 'OData-Version' => '4.0' },
-          timeout: HTTP_TIMEOUT
+        request: {
+          timeout: DEFAULT_TIMEOUT
         },
         strict: true # strict property validation
       }

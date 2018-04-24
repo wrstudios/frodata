@@ -19,17 +19,16 @@ module OData4
       # Create a new response given a service and a raw response.
       # @param service [OData4::Service]
       # @param response [Typhoeus::Result]
-      def initialize(service, response, query = nil)
+      def initialize(service, query = nil, &block)
         @service  = service
-        @response = response
         @query    = query
-        check_content_type
-        validate!
+        @timed_out = false
+        run_request(&block)
       end
 
       # Returns the HTTP status code.
       def status
-        response.code
+        response.status
       end
 
       # Whether the request was successful.
@@ -66,7 +65,7 @@ module OData4
 
       # Whether the response failed due to a timeout
       def timed_out?
-        response.timed_out?
+        @timed_out
       end
 
       # Iterates over all entities in the response, using
@@ -95,30 +94,38 @@ module OData4
       #
       # @return [self]
       def validate!
-        raise "Bad Request. #{error_message(response)}" if response.code == 400
-        raise "Access Denied" if response.code == 401
-        raise "Forbidden" if response.code == 403
-        raise "Not Found" if [0,404].include?(response.code)
-        raise "Method Not Allowed" if response.code == 405
-        raise "Not Acceptable" if response.code == 406
-        raise "Request Entity Too Large" if response.code == 413
-        raise "Internal Server Error" if response.code == 500
-        raise "Service Unavailable" if response.code == 503
+        raise "Bad Request. #{error_message(response)}" if status == 400
+        raise "Access Denied" if status == 401
+        raise "Forbidden" if status == 403
+        raise "Not Found" if [0,404].include?(status)
+        raise "Method Not Allowed" if status == 405
+        raise "Not Acceptable" if status == 406
+        raise "Request Entity Too Large" if status == 413
+        raise "Internal Server Error" if status == 500
+        raise "Service Unavailable" if status == 503
         self
       end
 
       private
+
+      def run_request(&block)
+        @response = block.call
+        logger.debug <<-EOS
+          [OData4: #{service.name}] Received response:
+            Headers: #{response.headers}
+            Body: #{response.body}
+        EOS
+        check_content_type
+        validate!
+      rescue Faraday::TimeoutError
+        @timed_out = true
+      end
 
       def logger
         service.logger
       end
 
       def check_content_type
-        logger.debug <<-EOS
-          [OData4: #{service.name}] Received response:
-            Headers: #{response.headers}
-            Body: #{response.body}
-        EOS
         # Dynamically extend instance with methods for
         # processing the current result type
         if is_atom?

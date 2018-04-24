@@ -18,9 +18,10 @@ module OData4
       def initialize(service, url_chunk, options = {})
         @service = service
         @url_chunk = url_chunk
-        @method = options[:method] || :get
-        @format = options[:format] || :auto
-        @query  = options[:query]
+        @method = options.delete(:method) || :get
+        @format = options.delete(:format) || :auto
+        @query  = options.delete(:query)
+        @options = options
       end
 
       # Return the full request URL (including service base)
@@ -46,35 +47,40 @@ module OData4
       # @param additional_options [Hash] options to pass to Typhoeus
       # @return [OData4::Service::Response]
       def execute(additional_options = {})
-        options = request_options(additional_options)
-        request = ::Typhoeus::Request.new(url, options)
         logger.info "Requesting #{method.to_s.upcase} #{url}..."
-        request.run
-
-        Response.new(service, request.response, query)
+        Response.new(service, query) do
+          connection.run_request(method, url, nil, headers) do |conn|
+            conn.options.merge! request_options(additional_options)
+          end
+        end
       end
 
       private
 
       attr_reader :url_chunk
 
-      def logger
-        service.logger
+      def connection
+        Faraday.new
+      end
+
+      def default_headers
+        {
+          'Accept'        => content_type,
+          'Content-Type'  => content_type,
+          'OData-Version' => '4.0'
+        }
+      end
+
+      def headers
+        default_headers.merge(@options[:headers] || {})
       end
 
       def request_options(additional_options = {})
-        options = service.options[:typhoeus]
-          .merge({ method: method })
-          .merge(additional_options)
+        service.options[:request].merge(additional_options)
+      end
 
-        # Don't overwrite Accept header if already present
-        unless options[:headers]['Accept']
-          options[:headers] = options[:headers].merge({
-            'Accept' => content_type
-          })
-        end
-
-        options
+      def logger
+        service.logger
       end
     end
   end
