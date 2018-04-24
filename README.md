@@ -123,26 +123,24 @@ For more examples, refer to [usage_example_specs.rb](spec/odata4/usage_example_s
 
 ### Authentication
 
-When authenticating with your service you can set parameters to the Typhoeus gem which uses libcurl.
-Use the **:typhoeus** option to set your authentication.
+Under the hood, the gem uses the [Faraday][faraday] HTTP library to provide flexible
+integration of various Ruby HTTP backends.
 
-For example using **ntlm** authentication:
+The Faraday connection object being used by the service is `yield`ed to the client
+constructor, so you may set up any necessary authentication there (as well as
+specify the adapter to be used).
+
+For instance, if your service requires HTTP basic authentication:
 
 ```ruby
-  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo',
-    typhoeus: {
-      username: 'username',
-      password: 'password',
-      httpauth: :ntlm
-    }
-  })
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo'
+  }) do |conn|
+    conn.basic_auth('username', 'password')
+  end
 ```
 
-For more authentication options see [libcurl][libcurl] or [typhoeus][typhoeus].
-
-[libcurl]: http://curl.haxx.se/libcurl/c/CURLOPT_HTTPAUTH.html
-[typhoeus]: https://github.com/typhoeus/typhoeus
+[faraday]: https://github.com/lostisland/faraday
 
 ### Metadata File
 
@@ -151,7 +149,7 @@ You can speed your load time by forcing the service to load the metadata from a 
 This is only recommended for testing purposes, as the metadata file can change.
 
 ```ruby
-  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
       name: 'ODataDemo',
       metadata_file: "metadata.xml",
   })
@@ -159,12 +157,12 @@ This is only recommended for testing purposes, as the metadata file can change.
 
 ### Headers
 
-You can set the headers with the **:typhoeus** param like so:
+You can customize the headers with the **:request** param like so:
 
 ```ruby
-  conn = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
-    typhoeus: {
+    request: {
       headers: {
         "Authorization" => "Bearer #{token}"
       }
