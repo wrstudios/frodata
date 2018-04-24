@@ -60,7 +60,7 @@ module OData4
       attr_reader :url_chunk
 
       def connection
-        Faraday.new
+        service.connection
       end
 
       def default_headers
