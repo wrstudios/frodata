@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.9.0
+
+* [Breaking] Use Faraday instead of Typhoeus as HTTP connection adapter.
+
 ## 0.8.2
 
 * [Refactor] Moved `ComplexType` and `EnumType` class into `Schema`, respective property types into `Properties` namespace
