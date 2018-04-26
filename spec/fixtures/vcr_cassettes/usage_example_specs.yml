@@ -1211,4 +1211,120 @@ http_interactions:
         grain bread","ReleaseDate":"1992-01-01T00:00:00Z","DiscontinuedDate":null,"Rating":4,"Price":2.5}]}'
     http_version: 
   recorded_at: Tue, 24 Apr 2018 01:58:51 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(2)
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      Authorization:
+      - Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+      Accept:
+      - application/atom+xml,application/json,application/xml,text/plain
+      Content-Type:
+      - application/atom+xml,application/json,application/xml,text/plain
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '325'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Thu, 26 Apr 2018 21:29:37 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":2,"Name":"Vint
+        soda","Description":"Americana Variety - Mix of 6 flavors","ReleaseDate":"2000-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":20.9}'
+    http_version: 
+  recorded_at: Thu, 26 Apr 2018 21:29:37 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(3)
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      Authorization:
+      - Bearer token
+      Accept:
+      - application/atom+xml,application/json,application/xml,text/plain
+      Content-Type:
+      - application/atom+xml,application/json,application/xml,text/plain
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '312'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Thu, 26 Apr 2018 21:41:27 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":3,"Name":"Havina
+        Cola","Description":"The Original Key Lime Cola","ReleaseDate":"2005-10-01T00:00:00Z","DiscontinuedDate":"2006-10-01T00:00:00Z","Rating":3,"Price":19.9}'
+    http_version: 
+  recorded_at: Thu, 26 Apr 2018 21:41:27 GMT
 recorded_with: VCR 4.0.0

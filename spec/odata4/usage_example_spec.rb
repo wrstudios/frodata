@@ -173,4 +173,16 @@ describe 'Usage examples', vcr: { cassette_name: 'usage_example_specs' } do
       expect(product["Price"]).to eq(3.5)
     end
   end
+
+  describe 'headers and authorization' do
+    it 'using HTTP Basic auth' do
+      service.connection.basic_auth('username', 'password')
+      expect(service['Products'][2]).to be_a(OData4::Entity)
+    end
+
+    it 'using token auth' do
+      service.connection.authorization(:Bearer, 'token')
+      expect(service['Products'][3]).to be_a(OData4::Entity)
+    end
+  end
 end

@@ -51,6 +51,8 @@ It is suggested that you supply a name for the service via this hash like so:
   OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
 ```
 
+For more information regarding available options and how to configure a service instance, refer to [Service Configuration](#service-configuration) below.
+
 This one call will setup the service and allow for the discovery of everything the other parts of the OData4 gem need to function.
 The two methods you will want to remember from `OData4::Service` are `#service_url` and `#name`.
 Both of these methods are available on instances and will allow for lookup in the `OData4::ServiceRegistry`, should you need it.
@@ -65,6 +67,130 @@ Using either the service URL or the name provided as an option when creating an 
 Both of the above calls would retrieve the same service from the registry.
 At the moment there is no protection against name collisions provided in `OData4::ServiceRegistry`.
 So, looking up services by their service URL is the most exact method, but lookup by name is provided for convenience.
+
+### Service Configuration
+
+#### Metadata File
+
+Typically the metadata file of a service can be quite large.
+You can speed your load time by forcing the service to load the metadata from a file rather than a URL.
+This is only recommended for testing purposes, as the metadata file can change.
+
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo',
+    metadata_file: "metadata.xml",
+  })
+```
+
+#### Headers & Authorization
+
+The OData protocol does not deal with authentication and authorization at all, nor does it need to, since [HTTP already provides many different options][http-auth] for this, such as HTTP Basic or token authorization.
+Hence, this gem does not implement any special authentication mechanisms either, and relies on the underlying HTTP library ([Faraday][faraday]) to take care of this.
+
+##### Setting Custom Headers
+
+You can customize request headers with the **:request** option key.
+This allows you to e.g. set custom headers (such as `Authorization`) that may be required by your service.
+
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo',
+    request: {
+      headers: {
+        "Authorization" => "Bearer #{access_token}"
+      }
+    }
+  })
+```
+
+##### Using Authentication Helpers
+
+You may also set up authorization by directly accessing the underlying `Faraday::Connection` object (as explained in [Advanced Customization](#advanced-connection-customization) below).
+This allows you to make use of Faraday's [authentication helpers][faraday-auth], such as `basic_auth` or `token_auth`.
+
+For instance, if your service requires HTTP basic authentication:
+
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo'
+  })
+  service.connection.basic_auth('username', 'password')
+```
+
+You can also use this helper when using the constructor block version.
+However, please be aware that you MUST specify an adapter in this case!
+
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo'
+  }) do |conn|
+    conn.basic_auth('username', 'password')
+    conn.adapter Faraday.default_adapter
+  end
+```
+
+[http-auth]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
+[faraday]: https://github.com/lostisland/faraday
+[faraday-auth]: https://github.com/lostisland/faraday#authentication
+
+#### Advanced Connection Customization
+
+Under the hood, the gem uses the [Faraday][faraday] HTTP library to provide flexible
+integration of various Ruby HTTP backends.
+
+There are several ways to access the underlying `Faraday::Connection`:
+
+##### As a service option
+
+If you already have a `Faraday::Connection` instance that you want the service to use, you can specify it using the **:connection** option like so:
+
+```ruby
+  conn = Faraday.new do |conn|
+    #...
+  end
+
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo', connection: conn
+  })
+```
+
+##### Using the `connection` attribute
+
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo'
+  })
+  service.connection = Faraday.new do |conn|
+    # ...
+  end
+```
+
+##### By passing a block to the constructor
+
+Finally, the connection object is also `yield`ed by the constructor, so you may customize it by passing a block argument like so:
+
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo'
+  }) do |conn|
+    conn.basic_auth('username', 'password')
+  end
+```
+
+**IMPORTANT**: Please be aware that whenever you want to change the HTTP adapter, you MUST also specify the `Faraday::Middleware::UrlEncoded` middleware.
+For instance, if you wanted to use [Typhoeus][typhoeus] as your HTTP library:
+
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo'
+  }) do |conn|
+    conn.request :url_encoded
+    conn.adapter :typhoeus
+  end
+```
+
+[typhoeus]: https://github.com/typhoeus/typhoeus
 
 ### Exploring a Service
 
@@ -121,54 +247,6 @@ Get a list of enum types
 
 For more examples, refer to [usage_example_specs.rb](spec/odata4/usage_example_specs.rb).
 
-### Authentication
-
-Under the hood, the gem uses the [Faraday][faraday] HTTP library to provide flexible
-integration of various Ruby HTTP backends.
-
-The Faraday connection object being used by the service is `yield`ed to the client
-constructor, so you may set up any necessary authentication there (as well as
-specify the adapter to be used).
-
-For instance, if your service requires HTTP basic authentication:
-
-```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo'
-  }) do |conn|
-    conn.basic_auth('username', 'password')
-  end
-```
-
-[faraday]: https://github.com/lostisland/faraday
-
-### Metadata File
-
-Typically the metadata file of a service can be quite large.
-You can speed your load time by forcing the service to load the metadata from a file rather than a URL.
-This is only recommended for testing purposes, as the metadata file can change.
-
-```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-      name: 'ODataDemo',
-      metadata_file: "metadata.xml",
-  })
-```
-
-### Headers
-
-You can customize the headers with the **:request** param like so:
-
-```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo',
-    request: {
-      headers: {
-        "Authorization" => "Bearer #{token}"
-      }
-    }
-  })
-```
 
 ### Entity Sets
 

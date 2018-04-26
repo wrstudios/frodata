@@ -7,10 +7,10 @@ module OData4
   class Service
     # The OData4 Service's URL
     attr_reader :service_url
-    # The Faraday connection object used by the service to make requests
-    attr_reader :connection
     # Options to pass around
     attr_reader :options
+    # The Faraday connection object used by the service to make requests
+    attr_accessor :connection
 
     DEFAULT_TIMEOUT = 20
 
@@ -31,8 +31,8 @@ module OData4
     # @return [OData4::Service] an instance of the service
     def initialize(service_url, options = {}, &block)
       @service_url = service_url
-      @options = default_options.merge(options)
-      @connection = Faraday.new(&block)
+      @options     = default_options.merge(options)
+      @connection  = options[:connection] || Faraday.new(&block)
       OData4::ServiceRegistry.add(self)
       register_custom_types
     end
