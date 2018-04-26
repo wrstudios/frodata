@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## next
+## 0.8.2
 
 * [Refactor] Moved `ComplexType` and `EnumType` class into `Schema`, respective property types into `Properties` namespace
 
