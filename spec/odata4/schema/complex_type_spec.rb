@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe OData4::Schema::ComplexType, vcr: {cassette_name: 'schema/complex_type_specs'} do
   before(:example) do
-    OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+    OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
   end
 
   let(:service) { OData4::ServiceRegistry['ODataDemo'] }

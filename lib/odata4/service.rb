@@ -45,6 +45,7 @@ module OData4
 
     # Opens the service based on the requested URL and adds the service to
     # {OData4::Registry}
+    # @deprecated Use {Service.new} instead.
     #
     # @param service_url [String] the URL to the desired OData4 service
     # @param options [Hash] options to pass to the service

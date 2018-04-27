@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe OData4::Service::Request, vcr: {cassette_name: 'service/request_specs'} do
   let(:subject) { OData4::Service::Request.new(service, 'Products') }
-  let(:service) { OData4::Service.open(service_url, name: 'ODataDemo', metadata_file: metadata_file) }
+  let(:service) { OData4::Service.new(service_url, name: 'ODataDemo', metadata_file: metadata_file) }
   let(:service_url) { 'http://services.odata.org/V4/OData/OData.svc' }
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
 

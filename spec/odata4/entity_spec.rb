@@ -3,7 +3,7 @@ require_relative 'entity/shared_examples'
 
 describe OData4::Entity, vcr: {cassette_name: 'entity_specs'} do
   before(:example) do
-    OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+    OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
   end
 
   let(:subject) { OData4::Entity.new(options) }

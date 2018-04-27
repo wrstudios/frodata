@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe OData4::Property do
   let(:service) do
-    OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', metadata_file: metadata_file)
+    OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', metadata_file: metadata_file)
   end
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
   let(:subject) { OData4::Property.new('PropertyName', '1') }

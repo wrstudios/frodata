@@ -3,6 +3,7 @@
 ## 0.9.0
 
 * [Breaking] Use Faraday instead of Typhoeus as HTTP connection adapter.
+* [Breaking] Deprecate `Service.open` in favor of using constructor directly.
 
 ## 0.8.2
 

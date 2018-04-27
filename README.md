@@ -41,14 +41,14 @@ The nice thing about `OData4::Service` is that it automatically registers with t
 To create an `OData4::Service` simply provide the location of a service endpoint to it like this:
 
 ```ruby
-  OData4::Service.open('http://services.odata.org/V4/OData/OData.svc')
+  OData4::Service.new('http://services.odata.org/V4/OData/OData.svc')
 ```
 
 You may also provide an options hash after the URL.
 It is suggested that you supply a name for the service via this hash like so:
 
 ```ruby
-  OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+  OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
 ```
 
 For more information regarding available options and how to configure a service instance, refer to [Service Configuration](#service-configuration) below.
@@ -77,7 +77,7 @@ You can speed your load time by forcing the service to load the metadata from a 
 This is only recommended for testing purposes, as the metadata file can change.
 
 ```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
     metadata_file: "metadata.xml",
   })
@@ -94,7 +94,7 @@ You can customize request headers with the **:connection** option key.
 This allows you to e.g. set custom headers (such as `Authorization`) that may be required by your service.
 
 ```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
     connection: {
       headers: {
@@ -112,7 +112,7 @@ This allows you to make use of Faraday's [authentication helpers][faraday-auth],
 For instance, if your service requires HTTP basic authentication:
 
 ```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo'
   })
   service.connection.basic_auth('username', 'password')
@@ -141,7 +141,7 @@ In this case, you'll be setting the service URL on the connection object, as sho
     # ... customize connection ...
   end
 
-  service = OData4::Service.open(conn, name: 'ODataDemo')
+  service = OData4::Service.new(conn, name: 'ODataDemo')
 ```
 
 ##### Passing a block to the constructor
@@ -150,7 +150,7 @@ Alternatively, the connection object is also `yield`ed by the constructor, so yo
 For instance, if you wanted to use [Typhoeus][typhoeus] as your HTTP library:
 
 ```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo'
   }) do |conn|
     conn.adapter :typhoeus
@@ -162,7 +162,7 @@ For instance, if you wanted to use [Typhoeus][typhoeus] as your HTTP library:
 Please be aware that if you use this method to customize the connection, you must ALWAYS specify an adapter:
 
 ```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo'
   }) do |conn|
     conn.basic_auth('username', 'password')
@@ -237,7 +237,7 @@ Under normal circumstances you should never need to worry about an `OData4::Enti
 For example, to get an `OData4::EntitySet` for the products in the ODataDemo service simply access the entity set through the service like this:
 
 ```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc')
+  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc')
   products = service['ProductsSet'] # => OData4::EntitySet
 ```
 
@@ -363,7 +363,7 @@ Simply add `strict: false` to the service constructor options.
 In this mode, any property validation error will log a warning instead of raising an exception. The corresponding property value will be `nil` (even if the property is declared as not allowing NULL values).
 
 ```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', strict: false)
+  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', strict: false)
   # -- alternatively, for an existing service instance --
   service.options[:strict] = false
 ```

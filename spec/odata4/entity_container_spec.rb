@@ -3,7 +3,7 @@ require 'spec_helper'
 describe OData4::EntityContainer do
   let(:subject) { OData4::EntityContainer.new(service) }
   let(:service) do
-    OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', metadata_file: metadata_file)
+    OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', metadata_file: metadata_file)
   end
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
 

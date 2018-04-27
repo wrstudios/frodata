@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe OData4::NavigationProperty::Proxy, vcr: {cassette_name: 'navigation_property_proxy_specs'} do
   before :each do
-    OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+    OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
   end
 
   let(:entity) { OData4::ServiceRegistry['ODataDemo']['Products'][1] }
