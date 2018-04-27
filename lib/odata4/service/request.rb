@@ -49,7 +49,7 @@ module OData4
       def execute(additional_options = {})
         logger.info "Requesting #{method.to_s.upcase} #{url}..."
         Response.new(service, query) do
-          connection.run_request(method, url, nil, headers) do |conn|
+          connection.run_request(method, url_chunk, nil, headers) do |conn|
             conn.options.merge! request_options(additional_options)
           end
         end

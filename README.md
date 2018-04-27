@@ -90,13 +90,13 @@ Hence, this gem does not implement any special authentication mechanisms either,
 
 ##### Setting Custom Headers
 
-You can customize request headers with the **:request** option key.
+You can customize request headers with the **:connection** option key.
 This allows you to e.g. set custom headers (such as `Authorization`) that may be required by your service.
 
 ```ruby
   service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
-    request: {
+    connection: {
       headers: {
         "Authorization" => "Bearer #{access_token}"
       }
@@ -118,17 +118,7 @@ For instance, if your service requires HTTP basic authentication:
   service.connection.basic_auth('username', 'password')
 ```
 
-You can also use this helper when using the constructor block version.
-However, please be aware that you MUST specify an adapter in this case!
-
-```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo'
-  }) do |conn|
-    conn.basic_auth('username', 'password')
-    conn.adapter Faraday.default_adapter
-  end
-```
+You may also use these helpers when passing a block to the constructor (see second example [below](#passing-a-block-to-the-constructor)).
 
 [http-auth]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
 [faraday]: https://github.com/lostisland/faraday
@@ -143,52 +133,44 @@ There are several ways to access the underlying `Faraday::Connection`:
 
 ##### As a service option
 
-If you already have a `Faraday::Connection` instance that you want the service to use, you can specify it using the **:connection** option like so:
+If you already have a `Faraday::Connection` instance that you want the service to use, you can simply pass it to the constructor *instead* of the service URL as first parameter.
+In this case, you'll be setting the service URL on the connection object, as shown below:
 
 ```ruby
-  conn = Faraday.new do |conn|
-    #...
+  conn = Faraday.new('http://services.odata.org/V4/OData/OData.svc') do |conn|
+    # ... customize connection ...
   end
 
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo', connection: conn
-  })
+  service = OData4::Service.open(conn, name: 'ODataDemo')
 ```
 
-##### Using the `connection` attribute
+##### Passing a block to the constructor
 
-```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo'
-  })
-  service.connection = Faraday.new do |conn|
-    # ...
-  end
-```
-
-##### By passing a block to the constructor
-
-Finally, the connection object is also `yield`ed by the constructor, so you may customize it by passing a block argument like so:
-
-```ruby
-  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo'
-  }) do |conn|
-    conn.basic_auth('username', 'password')
-  end
-```
-
-**IMPORTANT**: Please be aware that whenever you want to change the HTTP adapter, you MUST also specify the `Faraday::Middleware::UrlEncoded` middleware.
+Alternatively, the connection object is also `yield`ed by the constructor, so you may customize it by passing a block argument.
 For instance, if you wanted to use [Typhoeus][typhoeus] as your HTTP library:
 
 ```ruby
   service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo'
   }) do |conn|
-    conn.request :url_encoded
     conn.adapter :typhoeus
   end
 ```
+
+**IMPORTANT**
+
+Please be aware that if you use this method to customize the connection, you must ALWAYS specify an adapter:
+
+```ruby
+  service = OData4::Service.open('http://services.odata.org/V4/OData/OData.svc', {
+    name: 'ODataDemo'
+  }) do |conn|
+    conn.basic_auth('username', 'password')
+    conn.adapter Faraday.default_adapter
+  end
+```
+
+Otherwise, your requests WILL fail!
 
 [typhoeus]: https://github.com/typhoeus/typhoeus
 

@@ -6,7 +6,6 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
   let(:subject) { OData4::Service.open(service_url, name: 'ODataDemo', metadata_file: metadata_file) }
 
   describe '.open' do
-    it { expect(OData4::Service).to respond_to(:open) }
     it 'adds itself to OData4::ServiceRegistry on creation' do
       expect(OData4::ServiceRegistry['ODataDemo']).to be_nil
       expect(OData4::ServiceRegistry[service_url]).to be_nil
@@ -16,30 +15,49 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
       expect(OData4::ServiceRegistry['ODataDemo']).to eq(service)
       expect(OData4::ServiceRegistry[service_url]).to eq(service)
     end
+
     it 'registers custom types on creation' do
       service = OData4::Service.open(service_url, name: 'ODataDemo')
 
       expect(OData4::PropertyRegistry['ODataDemo.Address']).to be_a(Class)
       expect(OData4::PropertyRegistry['ODataDemo.ProductStatus']).to be_a(Class)
     end
+
+    it 'allows connection to be set by passing it instead of service_url' do
+      connection = Faraday.new(service_url)
+      service = OData4::Service.open(connection)
+      expect(service.connection).to eq(connection)
+    end
+
+    it 'allows connection to be customized via options hash' do
+      service = OData4::Service.open(service_url, connection: {
+        headers: { 'X-Custom-Header' => 'foo' }
+      })
+      expect(service.connection.headers).to include('X-Custom-Header' => 'foo')
+    end
+
+    it 'allows connection to be customized via block argument' do
+      service = OData4::Service.open(service_url) do |conn|
+        conn.headers['X-Custom-Header'] = 'foo'
+        conn.adapter Faraday.default_adapter
+      end
+      expect(service.connection.headers).to include('X-Custom-Header' => 'foo')
+    end
+
+    it 'allows logger to be set via option' do
+      logger = Logger.new(STDERR).tap { |l| l.level = Logger::ERROR }
+      service = OData4::Service.open(service_url, logger: logger)
+      expect(service.logger).to eq(logger)
+    end
   end
 
   describe '#connection' do
-    let(:connection) { Faraday.new(service_url) }
-
     it 'returns the connection object used by the service' do
       expect(subject.connection).to be_a(Faraday::Connection)
     end
 
-    it 'allows connection to be set via attribute writer' do
-      expect(subject.connection).not_to eq(connection)
-      subject.connection = connection
-      expect(subject.connection).to eq(connection)
-    end
-
-    it 'allows connection to be set via constructor option' do
-      service = OData4::Service.new(service_url, connection: connection)
-      expect(service.connection).to eq(connection)
+    it 'uses the service URL as URL prefix' do
+      expect(subject.connection.url_prefix.to_s).to eq(subject.service_url)
     end
   end
 
@@ -64,11 +82,6 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
       expect(subject.logger).not_to eq(logger)
       subject.logger = logger
       expect(subject.logger).to eq(logger)
-    end
-
-    it 'allows logger to be set via constructor option' do
-      service = OData4::Service.new(service_url, logger: logger)
-      expect(service.logger).to eq(logger)
     end
   end
 

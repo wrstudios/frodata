@@ -5,12 +5,12 @@ module OData4
   # Encapsulates the basic details and functionality needed to interact with an
   # OData4 service.
   class Service
+    # The Faraday connection object used by the service to make requests
+    attr_reader :connection
     # The OData4 Service's URL
     attr_reader :service_url
-    # Options to pass around
+    # Service options
     attr_reader :options
-    # The Faraday connection object used by the service to make requests
-    attr_accessor :connection
 
     DEFAULT_TIMEOUT = 20
 
@@ -26,11 +26,18 @@ module OData4
     # Opens the service based on the requested URL and adds the service to
     # {OData4::Registry}
     #
-    # @param service_url [String] the URL to the desired OData4 service
+    # @param service_url [String|Faraday::Connection]
+    #   The URL to the desired OData4 service, or a Faraday connection object
     # @param options [Hash] options to pass to the service
     # @return [OData4::Service] an instance of the service
     def initialize(service_url, options = {}, &block)
-      @service_url = service_url
+      if service_url.is_a? Faraday::Connection
+        @connection  = service_url
+        @service_url = connection.url_prefix
+      else
+        @service_url = service_url
+        @connection  = Faraday.new(service_url, options[:connection], &block)
+      end
       @options     = default_options.merge(options)
       OData4::ServiceRegistry.add(self)
       register_custom_types
@@ -177,13 +184,6 @@ module OData4
       raise ArgumentError, 'Namespace missing' if namespace.nil? || namespace.empty?
       schemas[namespace].properties_for_entity(entity_name)
     end
-
-    # Returns the HTTP connection used by the service.
-    # @return [Faraday::Connection] The connection object
-    def connection
-      @connection ||= options[:connection] || Faraday.new
-    end
-    attr_writer :connection
 
     # Returns the logger instance used by the service.
     # When Ruby on Rails has been detected, the service will
