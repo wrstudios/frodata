@@ -44,13 +44,15 @@ module OData4
 
       # Execute the request
       #
-      # @param additional_options [Hash] options to pass to Typhoeus
+      # @param additional_options [Hash] Request options to pass to Faraday
       # @return [OData4::Service::Response]
       def execute(additional_options = {})
+        request_options = service.options[:request].merge(additional_options)
+
         logger.info "Requesting #{method.to_s.upcase} #{url}..."
         Response.new(service, query) do
           connection.run_request(method, url_chunk, nil, headers) do |conn|
-            conn.options.merge! request_options(additional_options)
+            conn.options.merge! request_options
           end
         end
       end
@@ -73,10 +75,6 @@ module OData4
 
       def headers
         default_headers.merge(@options[:headers] || {})
-      end
-
-      def request_options(additional_options = {})
-        service.options[:request].merge(additional_options)
       end
 
       def logger

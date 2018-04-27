@@ -17,13 +17,14 @@ module OData4
       attr_reader :query
 
       # Create a new response given a service and a raw response.
-      # @param service [OData4::Service]
-      # @param response [Typhoeus::Result]
+      # @param service [OData4::Service] The executing service.
+      # @param query [OData4::Query] The related query (optional).
+      # @param
       def initialize(service, query = nil, &block)
         @service  = service
         @query    = query
         @timed_out = false
-        run_request(&block)
+        execute(&block)
       end
 
       # Returns the HTTP status code.
@@ -108,7 +109,7 @@ module OData4
 
       private
 
-      def run_request(&block)
+      def execute(&block)
         @response = block.call
         logger.debug <<-EOS
           [OData4: #{service.name}] Received response:
@@ -118,6 +119,7 @@ module OData4
         check_content_type
         validate!
       rescue Faraday::TimeoutError
+        logger.info "Request timed out."
         @timed_out = true
       end
 
