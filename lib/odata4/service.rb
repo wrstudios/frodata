@@ -32,7 +32,6 @@ module OData4
     def initialize(service_url, options = {}, &block)
       @service_url = service_url
       @options     = default_options.merge(options)
-      @connection  = options[:connection] || Faraday.new(&block)
       OData4::ServiceRegistry.add(self)
       register_custom_types
     end
@@ -179,13 +178,12 @@ module OData4
       schemas[namespace].properties_for_entity(entity_name)
     end
 
-    # Returns the log level set via initial options, or the
-    # default log level (`Logger::WARN`) if none was specified.
-    # @see Logger
-    # @return [Fixnum|Symbol]
-    def log_level
-      options[:log_level] || Logger::WARN
+    # Returns the HTTP connection used by the service.
+    # @return [Faraday::Connection] The connection object
+    def connection
+      @connection ||= options[:connection] || Faraday.new
     end
+    attr_writer :connection
 
     # Returns the logger instance used by the service.
     # When Ruby on Rails has been detected, the service will
@@ -194,18 +192,13 @@ module OData4
     # When no Rails has been detected, a default logger will
     # be used that logs to STDOUT with the log level supplied
     # via options, or the default log level if none was given.
-    # @see #log_level
     # @return [Logger]
     def logger
-      @logger ||= lambda do
-        if defined?(Rails)
-          Rails.logger
-        else
-          logger = Logger.new(STDOUT)
-          logger.level = log_level
-          logger
-        end
-      end.call
+      @logger ||= options[:logger] || if defined?(Rails)
+        Rails.logger
+      else
+        default_logger
+      end
     end
 
     # Allows the logger to be set to a custom `Logger` instance.
@@ -223,6 +216,12 @@ module OData4
         },
         strict: true # strict property validation
       }
+    end
+
+    def default_logger
+      Logger.new(STDOUT).tap do |logger|
+        logger.level = options[:log_level] || Logger::WARN
+      end
     end
 
     def read_metadata

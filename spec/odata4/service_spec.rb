@@ -24,6 +24,54 @@ describe OData4::Service, vcr: {cassette_name: 'service_specs'} do
     end
   end
 
+  describe '#connection' do
+    let(:connection) { Faraday.new(service_url) }
+
+    it 'returns the connection object used by the service' do
+      expect(subject.connection).to be_a(Faraday::Connection)
+    end
+
+    it 'allows connection to be set via attribute writer' do
+      expect(subject.connection).not_to eq(connection)
+      subject.connection = connection
+      expect(subject.connection).to eq(connection)
+    end
+
+    it 'allows connection to be set via constructor option' do
+      service = OData4::Service.new(service_url, connection: connection)
+      expect(service.connection).to eq(connection)
+    end
+  end
+
+  describe '#logger' do
+    let(:logger) { Logger.new(STDERR).tap { |l| l.level = Logger::ERROR } }
+
+    it 'returns the logger used by the service' do
+      expect(subject.logger).to be_a(Logger)
+    end
+
+    it 'returns the default logger if none was set' do
+      expect(subject.logger.level).to eq(Logger::WARN)
+    end
+
+    it 'uses Rails logger if available' do
+      stub_const 'Rails', Class.new { def self.logger; end }
+      allow(Rails).to receive(:logger).and_return(logger)
+      expect(subject.logger).to eq(logger)
+    end
+
+    it 'allows logger to be set via attribute writer' do
+      expect(subject.logger).not_to eq(logger)
+      subject.logger = logger
+      expect(subject.logger).to eq(logger)
+    end
+
+    it 'allows logger to be set via constructor option' do
+      service = OData4::Service.new(service_url, logger: logger)
+      expect(service.logger).to eq(logger)
+    end
+  end
+
   describe '#service_url' do
     it { expect(subject).to respond_to(:service_url) }
     it { expect(subject.service_url).to eq(service_url) }
