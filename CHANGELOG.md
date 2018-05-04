@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.9.1
+
+* [New] Raising specific error classes instead of `RuntimeError` when request fails
+
 ## 0.9.0
 
 * [Breaking] Use Faraday instead of Typhoeus as HTTP connection adapter.
