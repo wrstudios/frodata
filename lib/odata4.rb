@@ -13,6 +13,7 @@ require 'json'
 # require 'active_support/concern'
 
 require 'odata4/version'
+require 'odata4/errors'
 require 'odata4/property_registry'
 require 'odata4/property'
 require 'odata4/properties'

@@ -101,7 +101,7 @@ describe OData4::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
     end
 
     it 'raises an error when no entity was found' do
-      expect { nonexistant_entity }.to raise_error(RuntimeError, /Not Found/)
+      expect { nonexistant_entity }.to raise_error(OData4::Errors::NotFound)
     end
 
     describe 'eager loading' do

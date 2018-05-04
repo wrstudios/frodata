@@ -94,17 +94,10 @@ module OData4
       # occured.
       #
       # @return [self]
-      def validate!
-        raise "Bad Request. #{error_message(response)}" if status == 400
-        raise "Access Denied" if status == 401
-        raise "Forbidden" if status == 403
-        raise "Not Found" if [0,404].include?(status)
-        raise "Method Not Allowed" if status == 405
-        raise "Not Acceptable" if status == 406
-        raise "Request Entity Too Large" if status == 413
-        raise "Internal Server Error" if status == 500
-        raise "Service Unavailable" if status == 503
-        self
+      def validate_response!
+        if error = OData4::Errors::ERROR_MAP[status]
+          raise error, response, error_message
+        end
       end
 
       private
@@ -117,7 +110,7 @@ module OData4
             Body: #{response.body}
         EOS
         check_content_type
-        validate!
+        validate_response!
       rescue Faraday::TimeoutError
         logger.info "Request timed out."
         @timed_out = true
@@ -144,7 +137,7 @@ module OData4
           # We catch that here and bypass content type detection.
           @empty = true
         else
-          raise ArgumentError, "Invalid response type '#{content_type}'"
+          raise RequestError, response, "Invalid response type '#{content_type}'"
         end
       end
 

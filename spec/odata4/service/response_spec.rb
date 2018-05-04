@@ -74,4 +74,12 @@ describe OData4::Service::Response, vcr: {cassette_name: 'service/response_specs
     it { expect(subject).to be_success }
     it { expect(subject.body).to match(/123/) }
   end
+
+  context 'with unregistered content type' do
+    let(:content_type) { 'text/unknown' }
+    let(:response_status) { 200 }
+    let(:response_body) { '123' }
+
+    it { expect { subject }.to raise_error(OData4::RequestError) }
+  end
 end
