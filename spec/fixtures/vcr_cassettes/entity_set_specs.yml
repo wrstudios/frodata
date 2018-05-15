@@ -1080,7 +1080,7 @@ http_interactions:
     headers:
       User-Agent:
       - Typhoeus - https://github.com/typhoeus/typhoeus
-      OData4-Version:
+      OData-Version:
       - '4.0'
       Accept:
       - application/atom+xml,application/json,text/plain
@@ -1134,7 +1134,7 @@ http_interactions:
     headers:
       User-Agent:
       - Typhoeus - https://github.com/typhoeus/typhoeus
-      OData4-Version:
+      OData-Version:
       - '4.0'
       Accept:
       - application/atom+xml,application/json,text/plain
@@ -1189,7 +1189,7 @@ http_interactions:
     headers:
       User-Agent:
       - Typhoeus - https://github.com/typhoeus/typhoeus
-      OData4-Version:
+      OData-Version:
       - '4.0'
       Accept:
       - application/atom+xml,application/json,text/plain
@@ -1244,7 +1244,7 @@ http_interactions:
     headers:
       User-Agent:
       - Typhoeus - https://github.com/typhoeus/typhoeus
-      OData4-Version:
+      OData-Version:
       - '4.0'
       Accept:
       - application/atom+xml,application/json,text/plain
@@ -1300,7 +1300,7 @@ http_interactions:
     headers:
       User-Agent:
       - Typhoeus - https://github.com/typhoeus/typhoeus
-      OData4-Version:
+      OData-Version:
       - '4.0'
       Accept:
       - application/atom+xml,application/json,text/plain
