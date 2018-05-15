@@ -1,6 +1,6 @@
-# OData4
+# FrOData
 
-The OData4 gem provides a simple wrapper around the OData Version 4.0 API protocol.
+The FrOData gem provides a simple wrapper around the OData Version 4.0 API protocol.
 It has the ability to automatically inspect compliant APIs and expose the relevant Ruby objects dynamically.
 It also provides a set of code generation tools for quickly bootstrapping more custom service libraries.
 
@@ -9,17 +9,17 @@ It also provides a set of code generation tools for quickly bootstrapping more c
 If you need a gem to integration with OData Version 3, you can use James Thompson's [original OData gem][ruby-odata], upon which this gem is based.
 
 [![Build Status](https://app.codeship.com/projects/da1eb540-ce3f-0135-2ddc-161d5c3cc5fd/status?branch=master)](https://app.codeship.com/projects/262148)
-[![Maintainability](https://api.codeclimate.com/v1/badges/f151944dc05b2c7268e5/maintainability)](https://codeclimate.com/github/wrstudios/odata4/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/f151944dc05b2c7268e5/test_coverage)](https://codeclimate.com/github/wrstudios/odata4/test_coverage)
-[![Dependency Status](https://gemnasium.com/badges/github.com/wrstudios/odata4.svg)](https://gemnasium.com/github.com/wrstudios/odata4)
-[![Documentation](http://inch-ci.org/github/wrstudios/odata4.png?branch=master)](http://www.rubydoc.info/github/wrstudios/odata4/master)
-[![Gem Version](https://badge.fury.io/rb/odata4.svg)](https://badge.fury.io/rb/odata4)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f151944dc05b2c7268e5/maintainability)](https://codeclimate.com/github/wrstudios/frodata/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f151944dc05b2c7268e5/test_coverage)](https://codeclimate.com/github/wrstudios/frodata/test_coverage)
+[![Dependency Status](https://gemnasium.com/badges/github.com/wrstudios/frodata.svg)](https://gemnasium.com/github.com/wrstudios/frodata)
+[![Documentation](http://inch-ci.org/github/wrstudios/frodata.png?branch=master)](http://www.rubydoc.info/github/wrstudios/frodata/master)
+[![Gem Version](https://badge.fury.io/rb/frodata.svg)](https://badge.fury.io/rb/frodata)
 
 ## Installation
 
 Add this line to your application's `Gemfile`:
 
-    gem 'odata4'
+    gem 'frodata'
 
 And then execute:
 
@@ -27,45 +27,45 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install odata4
+    $ gem install frodata
 
 ## Usage
 
 ### Services & the Service Registry
 
-The OData4 gem provides a number of core classes, the two most basic ones are the `OData4::Service` and the `OData4::ServiceRegistry`.
-The only time you will need to worry about the `OData4::ServiceRegistry` is when you have multiple OData4
+The FrOData gem provides a number of core classes, the two most basic ones are the `FrOData::Service` and the `FrOData::ServiceRegistry`.
+The only time you will need to worry about the `FrOData::ServiceRegistry` is when you have multiple FrOData
 services you are interacting with that you want to keep straight easily.
-The nice thing about `OData4::Service` is that it automatically registers with the registry on creation, so there is no manual interaction with the registry necessary.
+The nice thing about `FrOData::Service` is that it automatically registers with the registry on creation, so there is no manual interaction with the registry necessary.
 
-To create an `OData4::Service` simply provide the location of a service endpoint to it like this:
+To create an `FrOData::Service` simply provide the location of a service endpoint to it like this:
 
 ```ruby
-  OData4::Service.new('http://services.odata.org/V4/OData/OData.svc')
+  FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc')
 ```
 
 You may also provide an options hash after the URL.
 It is suggested that you supply a name for the service via this hash like so:
 
 ```ruby
-  OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+  FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
 ```
 
 For more information regarding available options and how to configure a service instance, refer to [Service Configuration](#service-configuration) below.
 
-This one call will setup the service and allow for the discovery of everything the other parts of the OData4 gem need to function.
-The two methods you will want to remember from `OData4::Service` are `#service_url` and `#name`.
-Both of these methods are available on instances and will allow for lookup in the `OData4::ServiceRegistry`, should you need it.
+This one call will setup the service and allow for the discovery of everything the other parts of the FrOData gem need to function.
+The two methods you will want to remember from `FrOData::Service` are `#service_url` and `#name`.
+Both of these methods are available on instances and will allow for lookup in the `FrOData::ServiceRegistry`, should you need it.
 
-Using either the service URL or the name provided as an option when creating an `OData4::Service` will allow for quick lookup in the `OData4::ServiceRegistry` like such:
+Using either the service URL or the name provided as an option when creating an `FrOData::Service` will allow for quick lookup in the `FrOData::ServiceRegistry` like such:
 
 ```ruby
-  OData4::ServiceRegistry['http://services.odata.org/V4/OData/OData.svc']
-  OData4::ServiceRegistry['ODataDemo']
+  FrOData::ServiceRegistry['http://services.odata.org/V4/OData/OData.svc']
+  FrOData::ServiceRegistry['ODataDemo']
 ```
 
 Both of the above calls would retrieve the same service from the registry.
-At the moment there is no protection against name collisions provided in `OData4::ServiceRegistry`.
+At the moment there is no protection against name collisions provided in `FrOData::ServiceRegistry`.
 So, looking up services by their service URL is the most exact method, but lookup by name is provided for convenience.
 
 ### Service Configuration
@@ -77,7 +77,7 @@ You can speed your load time by forcing the service to load the metadata from a 
 This is only recommended for testing purposes, as the metadata file can change.
 
 ```ruby
-  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
+  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
     metadata_file: "metadata.xml",
   })
@@ -94,7 +94,7 @@ You can customize request headers with the **:connection** option key.
 This allows you to e.g. set custom headers (such as `Authorization`) that may be required by your service.
 
 ```ruby
-  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
+  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
     connection: {
       headers: {
@@ -112,7 +112,7 @@ This allows you to make use of Faraday's [authentication helpers][faraday-auth],
 For instance, if your service requires HTTP basic authentication:
 
 ```ruby
-  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
+  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo'
   })
   service.connection.basic_auth('username', 'password')
@@ -141,7 +141,7 @@ In this case, you'll be setting the service URL on the connection object, as sho
     # ... customize connection ...
   end
 
-  service = OData4::Service.new(conn, name: 'ODataDemo')
+  service = FrOData::Service.new(conn, name: 'ODataDemo')
 ```
 
 ##### Passing a block to the constructor
@@ -150,7 +150,7 @@ Alternatively, the connection object is also `yield`ed by the constructor, so yo
 For instance, if you wanted to use [Typhoeus][typhoeus] as your HTTP library:
 
 ```ruby
-  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
+  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo'
   }) do |conn|
     conn.adapter :typhoeus
@@ -162,7 +162,7 @@ For instance, if you wanted to use [Typhoeus][typhoeus] as your HTTP library:
 Please be aware that if you use this method to customize the connection, you must ALWAYS specify an adapter:
 
 ```ruby
-  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', {
+  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo'
   }) do |conn|
     conn.basic_auth('username', 'password')
@@ -227,25 +227,25 @@ Get a list of enum types
   # => ["ODataDemo.ProductStatus"]
 ```
 
-For more examples, refer to [usage_example_specs.rb](spec/odata4/usage_example_specs.rb).
+For more examples, refer to [usage_example_specs.rb](spec/frodata/usage_example_specs.rb).
 
 
 ### Entity Sets
 
-When it comes to reading data from an OData4 service the most typical way will be via `OData4::EntitySet` instances.
-Under normal circumstances you should never need to worry about an `OData4::EntitySet` directly.
-For example, to get an `OData4::EntitySet` for the products in the ODataDemo service simply access the entity set through the service like this:
+When it comes to reading data from an OData service the most typical way will be via `FrOData::EntitySet` instances.
+Under normal circumstances you should never need to worry about an `FrOData::EntitySet` directly.
+For example, to get an `FrOData::EntitySet` for the products in the ODataDemo service simply access the entity set through the service like this:
 
 ```ruby
-  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc')
-  products = service['ProductsSet'] # => OData4::EntitySet
+  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc')
+  products = service['ProductsSet'] # => FrOData::EntitySet
 ```
 
-`OData4::EntitySet` instances implement the `Enumerable` module, meaning you can work with them very naturally, like this:
+`FrOData::EntitySet` instances implement the `Enumerable` module, meaning you can work with them very naturally, like this:
 
 ```ruby
   products.each do |entity|
-    entity # => OData4::Entity for type Product
+    entity # => FrOData::Entity for type Product
   end
 ```
 
@@ -304,18 +304,18 @@ With certain navigation properties expanded (i.e. eagerly loaded):
 
 ### Entities
 
-`OData4::Entity` instances represent individual entities, or records, in a given service.
-They are returned primarily through interaction with instances of `OData4::EntitySet`.
-You can access individual properties on an `OData4::Entity` like so:
+`FrOData::Entity` instances represent individual entities, or records, in a given service.
+They are returned primarily through interaction with instances of `FrOData::EntitySet`.
+You can access individual properties on an `FrOData::Entity` like so:
 
 ```ruby
-  product = products.first # => OData4::Entity
+  product = products.first # => FrOData::Entity
   product['Name']  # => 'Bread'
   product['Price'] # => 2.5 (Float)
 ```
 
-Individual properties on an `OData4::Entity` are automatically typecast by the gem, so you don't have to worry about too much when working with entities.
-The way this is implemented internally guarantees that an `OData4::Entity` is always ready to save back to the service or `OData4::EntitySet`, which you do like so:
+Individual properties on an `FrOData::Entity` are automatically typecast by the gem, so you don't have to worry about too much when working with entities.
+The way this is implemented internally guarantees that an `FrOData::Entity` is always ready to save back to the service or `FrOData::EntitySet`, which you do like so:
 
 ```ruby
   service['Products'] << product # Write back to the service
@@ -363,14 +363,14 @@ Simply add `strict: false` to the service constructor options.
 In this mode, any property validation error will log a warning instead of raising an exception. The corresponding property value will be `nil` (even if the property is declared as not allowing NULL values).
 
 ```ruby
-  service = OData4::Service.new('http://services.odata.org/V4/OData/OData.svc', strict: false)
+  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', strict: false)
   # -- alternatively, for an existing service instance --
   service.options[:strict] = false
 ```
 
 ### Queries
 
-`OData4::Query` instances form the base for finding specific entities within an `OData4::EntitySet`.
+`FrOData::Query` instances form the base for finding specific entities within an `FrOData::EntitySet`.
 A query object exposes a number of capabilities based on
 the [System Query Options](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Toc453752288) provided for in the OData V4.0 specification.
 Below is just a partial example of what is possible:
@@ -389,11 +389,11 @@ Below is just a partial example of what is possible:
 ```
 
 The process of querying is kept purposely verbose to allow for lazy behavior to be implemented at higher layers.
-Internally, `OData4::Query` relies on the `OData4::Query::Criteria` for the way the `where` method works.
+Internally, `FrOData::Query` relies on the `FrOData::Query::Criteria` for the way the `where` method works.
 You should refer to the published RubyDocs for full details on the various capabilities:
 
- * [OData4::Query](http://rubydoc.info/github/wrstudios/odata4/master/OData4/Query)
- * [OData4::Query::Criteria](http://rubydoc.info/github/wrstudios/odata4/master/OData4/Query/Criteria)
+ * [FrOData::Query](http://rubydoc.info/github/wrstudios/frodata/master/FrOData/Query)
+ * [FrOData::Query::Criteria](http://rubydoc.info/github/wrstudios/frodata/master/FrOData/Query/Criteria)
 
 ## To Do
 
