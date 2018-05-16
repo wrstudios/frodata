@@ -1,4 +1,4 @@
-# FrOData
+# FrOData - Free OData V4.0 library for Ruby
 
 The FrOData gem provides a simple wrapper around the OData Version 4.0 API protocol.
 It has the ability to automatically inspect compliant APIs and expose the relevant Ruby objects dynamically.
@@ -393,14 +393,6 @@ You should refer to the published RubyDocs for full details on the various capab
 
  * [FrOData::Query](http://rubydoc.info/github/wrstudios/frodata/master/FrOData/Query)
  * [FrOData::Query::Criteria](http://rubydoc.info/github/wrstudios/frodata/master/FrOData/Query/Criteria)
-
-## To Do
-
-[x] ~Lenient property validation~
-[ ] Write support (create/update/delete)
-[ ] Support for invoking [Operations][odata-ops] (Functions/Actions)
-[ ] [Property facets][odata-facets]
-[ ] Annotations
 
 [odata-facets]: http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part3-csdl/odata-v4.0-errata03-os-part3-csdl-complete.html#_Toc453752528
 [odata-ops]: http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Toc453752307
