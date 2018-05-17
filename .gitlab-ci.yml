@@ -1,7 +1,3 @@
-before_script:
-  - apt-get update -qy
-  - bundle install --path /cache --jobs $(nproc) "${FLAGS[@]}"
-
 dependency_scanning:
   image: docker:stable
   variables:
@@ -21,4 +17,5 @@ dependency_scanning:
 
 rspec:
   script:
+    - bundle install --path /cache --jobs $(nproc)
     - bundle exec rspec
