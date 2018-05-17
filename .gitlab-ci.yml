@@ -6,4 +6,4 @@ rspec:
     - chmod +x ./cc-test-reporter
     - ./cc-test-reporter before-build
     - bundle exec rspec  
-    - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+    - ./cc-test-reporter after-build --exit-code $?
