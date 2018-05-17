@@ -49,7 +49,6 @@ module FrOData
       def execute(additional_options = {})
         request_options = service.options[:request].merge(additional_options)
 
-        logger.info "Requesting #{method.to_s.upcase} #{url}..."
         Response.new(service, query) do
           connection.run_request(method, url_chunk, nil, headers) do |conn|
             conn.options.merge! request_options

@@ -104,11 +104,6 @@ module FrOData
 
       def execute(&block)
         @response = block.call
-        logger.debug <<-EOS
-          [FrOData: #{service.name}] Received response:
-            Headers: #{response.headers}
-            Body: #{response.body}
-        EOS
         check_content_type
         validate_response!
       rescue Faraday::TimeoutError
