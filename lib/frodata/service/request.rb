@@ -66,8 +66,6 @@ module FrOData
 
       def default_headers
         {
-          'Accept'        => content_type,
-          'Content-Type'  => content_type,
           'OData-Version' => '4.0'
         }
       end
