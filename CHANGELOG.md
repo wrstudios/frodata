@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.9.2
+
+* Ignore connection options when connection object is passed in
+* Don't send `Accept` header unless explicitly configured
+* Use middleware for request/response logging
+* Specifying an adapter is no longer necessary when passing a block to the constructor
+
 ## 0.9.1
 
 * [New] Raising specific error classes instead of `RuntimeError` when request fails
