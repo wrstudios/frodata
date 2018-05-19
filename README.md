@@ -8,11 +8,11 @@ It also provides a set of code generation tools for quickly bootstrapping more c
 
 If you need a gem to integration with OData Version 3, you can use James Thompson's [original OData gem][ruby-odata], upon which this gem is based.
 
+[![Gem Version](https://badge.fury.io/rb/frodata.svg)](https://badge.fury.io/rb/frodata)
 [![Build Status](https://app.codeship.com/projects/da1eb540-ce3f-0135-2ddc-161d5c3cc5fd/status?branch=master)](https://app.codeship.com/projects/262148)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2425311d859408ef8798/maintainability)](https://codeclimate.com/github/wrstudios/frodata/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/2425311d859408ef8798/test_coverage)](https://codeclimate.com/github/wrstudios/frodata/test_coverage)
 [![Documentation](http://inch-ci.org/github/wrstudios/frodata.png?branch=master)](http://www.rubydoc.info/github/wrstudios/frodata/master)
-[![Gem Version](https://badge.fury.io/rb/frodata.svg)](https://badge.fury.io/rb/frodata)
 
 ## Installation
 
