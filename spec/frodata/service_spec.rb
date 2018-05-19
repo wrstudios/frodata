@@ -36,6 +36,16 @@ describe FrOData::Service, vcr: {cassette_name: 'service_specs'} do
       expect(service.connection.headers).to include('X-Custom-Header' => 'foo')
     end
 
+    it 'ignores connection options when connetion is passed in' do
+      connection = Faraday.new(service_url, {
+        headers: { 'X-Custom-Header' => 'foo' }
+      })
+      service = FrOData::Service.new(connection, connection: {
+        headers: { 'X-Custom-Header' => 'bar' }
+      })
+      expect(service.connection.headers).to include('X-Custom-Header' => 'foo')
+    end
+
     it 'allows connection to be customized via block argument' do
       service = FrOData::Service.new(service_url) do |conn|
         conn.headers['X-Custom-Header'] = 'foo'

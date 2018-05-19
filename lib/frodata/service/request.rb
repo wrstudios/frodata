@@ -44,11 +44,9 @@ module FrOData
 
       # Execute the request
       #
-      # @param additional_options [Hash] Request options to pass to Faraday
+      # @param request_options [Hash] Request options to pass to Faraday
       # @return [FrOData::Service::Response]
-      def execute(additional_options = {})
-        request_options = service.options[:request].merge(additional_options)
-
+      def execute(request_options = {})
         Response.new(service, query) do
           connection.run_request(method, url_chunk, nil, headers) do |conn|
             conn.options.merge! request_options
@@ -60,10 +58,6 @@ module FrOData
 
       attr_reader :url_chunk
 
-      def connection
-        service.connection
-      end
-
       def default_headers
         {
           'OData-Version' => '4.0'
@@ -72,6 +66,10 @@ module FrOData
 
       def headers
         default_headers.merge(@options[:headers] || {})
+      end
+
+      def connection
+        service.connection
       end
 
       def logger
