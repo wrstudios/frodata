@@ -105,7 +105,7 @@ This allows you to e.g. set custom headers (such as `Authorization`) that may be
 
 ##### Using Authentication Helpers
 
-You may also set up authorization by directly accessing the underlying `Faraday::Connection` object (as explained in [Advanced Customization](#advanced-connection-customization) below).
+You may also set up authorization by directly accessing the underlying `Faraday::Connection` object `yield`ed to the constructor (as explained in [Advanced Customization](#advanced-connection-customization) below).
 This allows you to make use of Faraday's [authentication helpers][faraday-auth], such as `basic_auth` or `token_auth`.
 
 For instance, if your service requires HTTP basic authentication:
@@ -113,11 +113,10 @@ For instance, if your service requires HTTP basic authentication:
 ```ruby
   service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo'
-  })
-  service.connection.basic_auth('username', 'password')
+  }) do |conn|
+    conn.basic_auth('username', 'password')
+  end
 ```
-
-You may also use these helpers when passing a block to the constructor (see second example [below](#passing-a-block-to-the-constructor)).
 
 [http-auth]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
 [faraday]: https://github.com/lostisland/faraday
@@ -157,21 +156,6 @@ For instance, if you wanted to use [Typhoeus][typhoeus] as your HTTP library:
     conn.adapter :typhoeus
   end
 ```
-
-**IMPORTANT**
-
-Please be aware that if you use this method to customize the connection, you must ALWAYS specify an adapter:
-
-```ruby
-  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo'
-  }) do |conn|
-    conn.basic_auth('username', 'password')
-    conn.adapter Faraday.default_adapter
-  end
-```
-
-Otherwise, your requests WILL fail!
 
 [typhoeus]: https://github.com/typhoeus/typhoeus
 

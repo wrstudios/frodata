@@ -49,7 +49,6 @@ describe FrOData::Service, vcr: {cassette_name: 'service_specs'} do
     it 'allows connection to be customized via block argument' do
       service = FrOData::Service.new(service_url) do |conn|
         conn.headers['X-Custom-Header'] = 'foo'
-        conn.adapter Faraday.default_adapter
       end
       expect(service.connection.headers).to include('X-Custom-Header' => 'foo')
     end

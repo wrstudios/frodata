@@ -31,14 +31,14 @@ module FrOData
     # @param options [Hash] options to pass to the service
     # @return [FrOData::Service] an instance of the service
     def initialize(service_url, options = {}, &block)
+      @options = default_options.merge(options)
       if service_url.is_a? Faraday::Connection
         @connection  = service_url
         @service_url = connection.url_prefix
       else
         @service_url = service_url
-        @connection  = Faraday.new(service_url, options[:connection], &block)
+        @connection  = default_connection(&block)
       end
-      @options     = default_options.merge(options)
       FrOData::ServiceRegistry.add(self)
       register_custom_types
     end
@@ -151,6 +151,7 @@ module FrOData
     # @param options [Hash] additional request options
     # @return [FrOData::Service::Response]
     def execute(url_chunk, options = {})
+      options = (@options[:request] || {}).merge(options)
       Request.new(self, url_chunk, options).execute
     end
 
@@ -212,7 +213,7 @@ module FrOData
 
     def default_options
       {
-        connection: {
+        request: {
           timeout: DEFAULT_TIMEOUT
         },
         strict: true # strict property validation
@@ -222,6 +223,15 @@ module FrOData
     def default_logger
       Logger.new(STDOUT).tap do |logger|
         logger.level = options[:log_level] || Logger::WARN
+      end
+    end
+
+    def default_connection(&block)
+      Faraday.new(service_url, options[:connection]) do |conn|
+        conn.request :url_encoded
+        conn.response :logger, logger
+        yield conn if block_given?
+        conn.adapter Faraday.default_adapter unless conn.builder.send(:adapter_set?)
       end
     end
 
