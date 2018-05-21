@@ -8,6 +8,7 @@ module FrOData
     attr_reader :response
 
     def initialize(response, message = nil)
+      super(message)
       @message  = message
       @response = response
     end

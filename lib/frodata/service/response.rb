@@ -96,7 +96,7 @@ module FrOData
       # @return [self]
       def validate_response!
         if error = FrOData::Errors::ERROR_MAP[status]
-          raise error, response, error_message
+          raise error.new(response, error_message)
         end
       end
 
