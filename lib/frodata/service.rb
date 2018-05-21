@@ -34,7 +34,7 @@ module FrOData
       @options = default_options.merge(options)
       if service_url.is_a? Faraday::Connection
         @connection  = service_url
-        @service_url = connection.url_prefix
+        @service_url = connection.url_prefix.to_s
       else
         @service_url = service_url
         @connection  = default_connection(&block)

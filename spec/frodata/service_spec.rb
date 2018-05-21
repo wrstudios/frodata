@@ -27,6 +27,7 @@ describe FrOData::Service, vcr: {cassette_name: 'service_specs'} do
       connection = Faraday.new(service_url)
       service = FrOData::Service.new(connection)
       expect(service.connection).to eq(connection)
+      expect(service.service_url).to eq(service_url)
     end
 
     it 'allows connection to be customized via options hash' do
