@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.9.2b
+
+* Fix broken stack traces in response errors
+* Ensure that `Service#service_url` always returns a string
+
 ## 0.9.2
 
 * Ignore connection options when connection object is passed in
