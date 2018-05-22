@@ -1,9 +1,10 @@
 # CHANGELOG
 
-## 0.9.2b
+## 0.9.3
 
 * Fix broken stack traces in response errors
 * Ensure that `Service#service_url` always returns a string
+* Require Ruby 2.2 in gemspec
 
 ## 0.9.2
 
