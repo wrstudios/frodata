@@ -1,5 +1,10 @@
 # FrOData - Free OData V4.0 library for Ruby
 
+<figure style="float: right;">
+  <img src="images/bob-ross.jpg" alt="Bob Ross" width="128" height="128">
+  <figcaption>Happy little entities</figcaption>
+</figure>
+
 The FrOData gem provides a simple wrapper around the OData Version 4.0 API protocol.
 It has the ability to automatically inspect compliant APIs and expose the relevant Ruby objects dynamically.
 It also provides a set of code generation tools for quickly bootstrapping more custom service libraries.
