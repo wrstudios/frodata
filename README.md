@@ -1,5 +1,7 @@
 # FrOData - Free OData V4.0 library for Ruby
 
+### Happy Little Entities
+
 <img src="images/bob-ross.jpg" alt="Bob Ross" width="128" height="128" align="right">
 
 The FrOData gem provides a simple wrapper around the OData Version 4.0 API protocol.
