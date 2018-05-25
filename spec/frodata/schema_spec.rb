@@ -81,6 +81,7 @@ describe FrOData::Schema do
   end
 
   describe '#properties_for_entity' do
+    let(:metadata_file) { 'spec/fixtures/files/metadata_with_error.xml' }
     it { expect(subject).to respond_to(:properties_for_entity) }
     it { expect(subject.properties_for_entity('Product').keys).to eq(%w[
       ID
@@ -93,5 +94,10 @@ describe FrOData::Schema do
       ProductStatus
     ]) }
     it { expect(subject.properties_for_entity('Product').values).to all(be_a(FrOData::Property)) }
+    it 'has error message containing type name' do
+      expect {
+        subject.properties_for_entity('Error')
+      }.to raise_error(/Does.Not.Exist/)
+    end
   end
 end

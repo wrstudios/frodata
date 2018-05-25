@@ -143,7 +143,7 @@ module FrOData
       end
 
       if klass.nil?
-        raise RuntimeError, "Unknown property type: #{value_type}"
+        raise RuntimeError, "Unknown property type: #{property_type}"
       else
         property_options[:allows_nil] = false if property_xml.attributes['Nullable'] == 'false'
         property = klass.new(property_name, nil, property_options)
