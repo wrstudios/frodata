@@ -2,7 +2,7 @@
 
 ### Happy Little Entities
 
-<img src="images/bob-ross.jpg" alt="Bob Ross" width="128" height="128" align="right">
+<img src="images/bob-ross.jpg" alt="Bob Ross" width="192" height="192" align="right">
 
 The FrOData gem provides a simple wrapper around the OData Version 4.0 API protocol.
 It has the ability to automatically inspect compliant APIs and expose the relevant Ruby objects dynamically.
