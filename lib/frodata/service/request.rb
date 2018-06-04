@@ -27,7 +27,7 @@ module FrOData
       # Return the full request URL (including service base)
       # @return [String]
       def url
-        ::URI.join("#{service.service_url}/", ::URI.escape(url_chunk)).to_s
+        connection.build_url(url_chunk).to_s
       end
 
       # The content type for this request. Depends on format.
@@ -47,16 +47,18 @@ module FrOData
       # @param request_options [Hash] Request options to pass to Faraday
       # @return [FrOData::Service::Response]
       def execute(request_options = {})
-        Response.new(service, query) do
-          connection.run_request(method, url_chunk, nil, headers) do |conn|
-            conn.options.merge! request_options
-          end
-        end
+        Response.new(service, query) { make_request(request_options) }
       end
 
       private
 
       attr_reader :url_chunk
+
+      def make_request(request_options = {})
+        connection.run_request(method, url_chunk, nil, headers) do |req|
+          req.options.merge! request_options
+        end
+      end
 
       def default_headers
         {
