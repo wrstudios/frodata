@@ -164,6 +164,8 @@ module FrOData
       @entity_set
     end
 
+    # The parameter hash for this query.
+    # @return [Hash] Params hash
     def params
       assemble_criteria || {}
     end
@@ -177,9 +179,7 @@ module FrOData
 
     private
 
-    def criteria_set
-      @criteria_set
-    end
+    attr_reader :criteria_set
 
     def setup_empty_criteria_set
       @criteria_set = {
