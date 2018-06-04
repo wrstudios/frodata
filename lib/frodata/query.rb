@@ -132,20 +132,20 @@ module FrOData
     # Convert Query to string.
     # @return [String]
     def to_s
-      [entity_set.name, assemble_criteria].compact.join('?')
+      criteria = params.map { |k, v| "#{k}=#{v}" }.join('&')
+      [entity_set.name, params.any? ? criteria : nil].compact.join('?')
     end
 
     # Execute the query.
     # @return [FrOData::Service::Response]
-    def execute(url_chunk = self.to_s)
-      service.execute(url_chunk, options.merge(query: self))
+    def execute(url_chunk = entity_set.name, params = assemble_criteria)
+      service.execute(url_chunk, options.merge(query: self, params: params))
     end
 
     # Executes the query to get a count of entities.
     # @return [Integer]
     def count
-      url_chunk = ["#{entity_set.name}/$count", assemble_criteria].compact.join('?')
-      response = self.execute(url_chunk)
+      response = self.execute("#{entity_set.name}/$count")
       # Some servers (*cough* Microsoft *cough*) seem to
       # return extraneous characters in the response.
       response.body.scan(/\d+/).first.to_i
@@ -162,6 +162,10 @@ module FrOData
     # @api private
     def entity_set
       @entity_set
+    end
+
+    def params
+      assemble_criteria || {}
     end
 
     # The service for this query
@@ -191,7 +195,7 @@ module FrOData
     end
 
     def assemble_criteria
-      criteria = [
+      [
         filter_criteria,
         search_criteria,
         list_criteria(:orderby),
@@ -200,34 +204,33 @@ module FrOData
         inline_count_criteria,
         paging_criteria(:skip),
         paging_criteria(:top)
-      ].compact!
-
-      criteria.empty? ? nil : criteria.join('&')
+      ].compact.reduce(&:merge)
     end
 
     def filter_criteria
       return nil if criteria_set[:filter].empty?
       filters = criteria_set[:filter].collect(&:to_s)
-      "$filter=#{filters.join(' and ')}"
+      { '$filter' => filters.join(' and ') }
     end
 
     def search_criteria
       return nil if criteria_set[:search].empty?
       filters = criteria_set[:search].collect(&:to_s)
-      "$search=#{filters.join(' AND ')}"
+      { '$search' => filters.join(' AND ') }
     end
 
     def list_criteria(name)
-      criteria_set[name].empty? ? nil : "$#{name}=#{criteria_set[name].join(',')}"
+      return nil if criteria_set[name].empty?
+      { "$#{name}" => criteria_set[name].join(',') }
     end
 
     # inlinecount not supported by Microsoft CRM 2011
     def inline_count_criteria
-      criteria_set[:inline_count] ? '$count=true' : nil
+      criteria_set[:inline_count] ? { '$count' => 'true' } : nil
     end
 
     def paging_criteria(name)
-      criteria_set[name] == 0 ? nil : "$#{name}=#{criteria_set[name]}"
+      criteria_set[name] == 0 ? nil : { "$#{name}" => criteria_set[name] }
     end
   end
 end

@@ -10,6 +10,8 @@ module FrOData
       attr_accessor :method
       # The request format (`:atom`, `:json`, or `:auto`)
       attr_accessor :format
+      # Params hash
+      attr_accessor :params
 
       # Create a new request
       # @param service [FrOData::Service] Where the request will be sent
@@ -21,13 +23,14 @@ module FrOData
         @method = options.delete(:method) || :get
         @format = options.delete(:format) || :auto
         @query  = options.delete(:query)
+        @params = options.delete(:params)
         @options = options
       end
 
       # Return the full request URL (including service base)
       # @return [String]
       def url
-        connection.build_url(url_chunk).to_s
+        connection.build_url(url_chunk, params).to_s
       end
 
       # The content type for this request. Depends on format.
@@ -56,6 +59,7 @@ module FrOData
 
       def make_request(request_options = {})
         connection.run_request(method, url_chunk, nil, headers) do |req|
+          req.params.update(params) if params
           req.options.merge! request_options
         end
       end

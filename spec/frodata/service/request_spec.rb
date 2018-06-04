@@ -10,6 +10,12 @@ describe FrOData::Service::Request, vcr: {cassette_name: 'service/request_specs'
     it 'returns the full request URL' do
       expect(subject.url).to eq('http://services.odata.org/V4/OData/OData.svc/Products')
     end
+
+    it 'properly escapes control characters' do
+      params = { '$filter' => "contains(Name,'Proctor & Gamble')" }
+      subject = described_class.new(service, 'Suppliers', params: params)
+      expect(subject.url).to match(/Name%2C%27Proctor\+%26\+Gamble%27/)
+    end
   end
 
   describe '#method' do
