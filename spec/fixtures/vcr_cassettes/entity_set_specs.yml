@@ -1632,4 +1632,163 @@ http_interactions:
         Punch","Description":"Mango flavor, 8.3 Ounce Cans (Pack of 24)","ReleaseDate":"2003-01-05T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":22.99}]}'
     http_version: 
   recorded_at: Tue, 24 Apr 2018 01:58:50 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(1)?%24expand=Categories&%7B%22%24expand%22=%3E%22Categories%22%7D
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '339'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Mon, 04 Jun 2018 19:07:17 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":1,"Name":"Milk","Description":"Low
+        fat milk","ReleaseDate":"1995-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":3.5,"Categories":[{"ID":0,"Name":"Food"},{"ID":1,"Name":"Beverages"}]}'
+    http_version: 
+  recorded_at: Mon, 04 Jun 2018 19:07:17 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(1)?%24expand=Categories%2CSupplier%2CProductDetail&%7B%22%24expand%22=%3E%22Categories%2CSupplier%2CProductDetail%22%7D
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '589'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Mon, 04 Jun 2018 19:07:17 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":1,"Name":"Milk","Description":"Low
+        fat milk","ReleaseDate":"1995-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":3.5,"Categories":[{"ID":0,"Name":"Food"},{"ID":1,"Name":"Beverages"}],"Supplier":{"ID":0,"Name":"Exotic
+        Liquids","Address":{"Street":"NE 228th","City":"Sammamish","State":"WA","ZipCode":"98074","Country":"USA"},"Location":{"type":"Point","coordinates":[-122.03547668457,47.6316604614258],"crs":{"type":"name","properties":{"name":"EPSG:4326"}}},"Concurrency":0},"ProductDetail":{"ProductID":1,"Details":"Details
+        of product 1"}}'
+    http_version: 
+  recorded_at: Mon, 04 Jun 2018 19:07:17 GMT
+- request:
+    method: get
+    uri: http://services.odata.org/V4/OData/OData.svc/Products(1)?%24expand=Categories%2CSupplier&%7B%22%24expand%22=%3E%22Categories%2CSupplier%22%7D
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.0
+      OData-Version:
+      - '4.0'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '559'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      vary:
+      - Accept-Encoding
+      server:
+      - Microsoft-IIS/10.0
+      x-content-type-options:
+      - nosniff
+      odata-version:
+      - 4.0;
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-methods:
+      - GET
+      access-control-allow-headers:
+      - Accept, Origin, Content-Type, MaxDataServiceVersion
+      access-control-expose-headers:
+      - DataServiceVersion
+      date:
+      - Mon, 04 Jun 2018 19:07:17 GMT
+      connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@odata.context":"http://services.odata.org/V4/OData/OData.svc/$metadata#Products/$entity","ID":1,"Name":"Milk","Description":"Low
+        fat milk","ReleaseDate":"1995-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":3.5,"Categories":[{"ID":0,"Name":"Food"},{"ID":1,"Name":"Beverages"}],"Supplier":{"ID":0,"Name":"Exotic
+        Liquids","Address":{"Street":"NE 228th","City":"Sammamish","State":"WA","ZipCode":"98074","Country":"USA"},"Location":{"type":"Point","coordinates":[-122.03547668457,47.6316604614258],"crs":{"type":"name","properties":{"name":"EPSG:4326"}}},"Concurrency":0}}'
+    http_version: 
+  recorded_at: Mon, 04 Jun 2018 19:07:18 GMT
 recorded_with: VCR 4.0.0
