@@ -98,7 +98,6 @@ This allows you to e.g. set custom headers (such as `Authorization`) that may be
 
 ```ruby
   service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo',
     connection: {
       headers: {
         "Authorization" => "Bearer #{access_token}"
@@ -227,7 +226,11 @@ For example, to get an `FrOData::EntitySet` for the products in the ODataDemo se
 
 ```ruby
   service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc')
-  products = service['ProductsSet'] # => FrOData::EntitySet
+  products = service['Products'] # => FrOData::EntitySet
+  
+  products.each do |entity|
+    entity # => FrOData::Entity for type Product
+  end
 ```
 
 `FrOData::EntitySet` instances implement the `Enumerable` module, meaning you can work with them very naturally, like this:
