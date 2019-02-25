@@ -13,5 +13,5 @@ describe FrOData::Properties::Guid do
     subject.value
   }.call).to eq(guid2) }
 
-  it { expect(subject.url_value).to eq("guid'#{guid}'") }
+  it { expect(subject.url_value).to eq("#{guid}") }
 end

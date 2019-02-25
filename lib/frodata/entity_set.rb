@@ -89,6 +89,7 @@ module FrOData
     # @return [FrOData::Entity]
     def <<(entity)
       url_chunk, options = setup_entity_post_request(entity)
+
       result = execute_entity_post_request(options, url_chunk)
       if entity.is_new?
         doc = ::Nokogiri::XML(result.body).remove_namespaces!
@@ -96,7 +97,7 @@ module FrOData
         entity[entity.primary_key] = primary_key_node.content unless primary_key_node.nil?
       end
 
-      unless result.code.to_s =~ /^2[0-9][0-9]$/
+      unless result.status.to_s =~ /^2[0-9][0-9]$/
         entity.errors << ['could not commit entity']
       end
 
@@ -125,7 +126,7 @@ module FrOData
 
     def execute_entity_post_request(options, url_chunk)
       result = service.execute(url_chunk, options)
-      unless result.code.to_s =~ /^2[0-9][0-9]$/
+      unless result.status.to_s =~ /^2[0-9][0-9]$/
         service.logger.debug <<-EOS
           [ODATA: #{service_name}]
           An error was encountered committing your entity:
@@ -147,14 +148,26 @@ module FrOData
     def setup_entity_post_request(entity)
       primary_key = entity.get_property(entity.primary_key).url_value
       chunk = entity.is_new? ? name : "#{name}(#{primary_key})"
+
       options = {
-          method: :post,
-          body: entity.to_xml.gsub(/\n\s+/, ''),
+          method:  entity.is_new? ? :post : :patch,
+          body: entity.to_json,
           headers: {
-              'Accept' => 'application/atom+xml',
-              'Content-Type' => 'application/atom+xml'
+              'Accept' => '*/*',
+              'Content-Type' => 'application/json'
+
           }
       }
+
+      # options = {
+      #     method:  entity.is_new? ? :post : :patch,
+      #     body: entity.to_xml.gsub(/\n\s+/, ''),
+      #     headers: {
+      #         'Accept' => 'application/atom+xml',
+      #         'Content-Type' => 'application/atom+xml'
+
+      #     }
+      # }
       return chunk, options
     end
   end
