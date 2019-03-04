@@ -13,6 +13,8 @@ module FrOData
       # Params hash
       attr_accessor :params
 
+      attr_reader :body
+
       # Create a new request
       # @param service [FrOData::Service] Where the request will be sent
       # @param url_chunk [String] Request path, relative to the service URL, including query params
@@ -24,6 +26,7 @@ module FrOData
         @format = options.delete(:format) || :auto
         @query  = options.delete(:query)
         @params = options.delete(:params)
+        @body = options.delete(:body)
         @options = options
       end
 
@@ -58,7 +61,7 @@ module FrOData
       attr_reader :url_chunk
 
       def make_request(request_options = {})
-        connection.run_request(method, url_chunk, nil, headers) do |req|
+        connection.run_request(method, url_chunk, body, headers) do |req|
           req.params.update(params) if params
           req.options.merge! request_options
         end

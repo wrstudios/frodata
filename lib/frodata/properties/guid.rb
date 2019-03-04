@@ -10,7 +10,7 @@ module FrOData
       # Value to be used in URLs.
       # @return [String]
       def url_value
-        "guid'#{value}'"
+        "#{value}"
       end
     end
   end

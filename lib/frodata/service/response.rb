@@ -2,6 +2,7 @@ require 'frodata/service/response/atom'
 require 'frodata/service/response/json'
 require 'frodata/service/response/plain'
 require 'frodata/service/response/xml'
+require 'frodata/service/response/unknown_type'
 
 module FrOData
   class Service
@@ -130,6 +131,8 @@ module FrOData
           # Some services (*cough* Microsoft *cough*) return
           # an empty response with no `Content-Type` header set.
           # We catch that here and bypass content type detection.
+          extend FrOData::Service::Response::UnknownType
+
           @empty = true
         else
           raise RequestError, response, "Invalid response type '#{content_type}'"

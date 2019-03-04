@@ -42,7 +42,8 @@ module FrOData
       404 => "Not Found",
       405 => "Method Not Allowed",
       406 => "Not Acceptable",
-      413 => "Request Entity Too Large"
+      413 => "Request Entity Too Large",
+      415 => "Unsupported Media Type"
     }
 
     CLIENT_ERRORS.each do |code, message|
