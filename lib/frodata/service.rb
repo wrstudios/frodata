@@ -1,27 +1,13 @@
-require 'frodata/service/request'
-require 'frodata/service/response'
 
 module FrOData
   # Encapsulates the basic details and functionality needed to interact with an
   # FrOData service.
   class Service
-    # The Faraday connection object used by the service to make requests
-    attr_reader :connection
     # The FrOData Service's URL
     attr_reader :service_url
     # Service options
     attr_reader :options
 
-    DEFAULT_TIMEOUT = 20
-
-    METADATA_TIMEOUTS = [20, 60]
-
-    MIME_TYPES = {
-      atom:  'application/atom+xml',
-      json:  'application/json',
-      xml:   'application/xml',
-      plain: 'text/plain'
-    }
 
     # Opens the service based on the requested URL and adds the service to
     # {FrOData::Registry}
@@ -32,26 +18,10 @@ module FrOData
     # @return [FrOData::Service] an instance of the service
     def initialize(service_url, options = {}, &block)
       @options = default_options.merge(options)
-      if service_url.is_a? Faraday::Connection
-        @connection  = service_url
-        @service_url = connection.url_prefix.to_s
-      else
-        @service_url = service_url
-        @connection  = default_connection(&block)
-      end
+      @service_url = service_url
+
       FrOData::ServiceRegistry.add(self)
       register_custom_types
-    end
-
-    # Opens the service based on the requested URL and adds the service to
-    # {FrOData::Registry}
-    # @deprecated Use {Service.new} instead.
-    #
-    # @param service_url [String] the URL to the desired FrOData service
-    # @param options [Hash] options to pass to the service
-    # @return [FrOData::Service] an instance of the service
-    def self.open(service_url, options = {}, &block)
-      Service.new(service_url, options, &block)
     end
 
     # Returns user supplied name for service, or its URL
@@ -145,16 +115,6 @@ module FrOData
       "#<#{self.class.name}:#{self.object_id} name='#{name}' service_url='#{self.service_url}'>"
     end
 
-    # Execute a request against the service
-    #
-    # @param url_chunk [to_s] string to append to service URL
-    # @param options [Hash] additional request options
-    # @return [FrOData::Service::Response]
-    def execute(url_chunk, options = {})
-      options = (@options[:request] || {}).merge(options)
-      Request.new(self, url_chunk, options).execute
-    end
-
     # Get the property type for an entity from metadata.
     #
     # @param entity_name [to_s] the fully qualified entity name
@@ -203,36 +163,16 @@ module FrOData
       end
     end
 
-    # Allows the logger to be set to a custom `Logger` instance.
-    # @param custom_logger [Logger]
-    def logger=(custom_logger)
-      @logger = custom_logger
-    end
-
     private
 
     def default_options
       {
-        request: {
-          timeout: DEFAULT_TIMEOUT
-        },
         strict: true # strict property validation
       }
     end
 
     def default_logger
-      Logger.new(STDOUT).tap do |logger|
-        logger.level = options[:log_level] || Logger::WARN
-      end
-    end
-
-    def default_connection(&block)
-      Faraday.new(service_url, options[:connection]) do |conn|
-        conn.request :url_encoded
-        conn.response :logger, logger
-        yield conn if block_given?
-        conn.adapter Faraday.default_adapter unless conn.builder.send(:adapter_set?)
-      end
+        FrOData.configuration.logger if FrOData.log?
     end
 
     def read_metadata
@@ -240,14 +180,9 @@ module FrOData
       if options[:metadata_file]
         data = File.read(options[:metadata_file])
         ::Nokogiri::XML(data).remove_namespaces!
-      else # From a URL
-        response = nil
-        METADATA_TIMEOUTS.each do |timeout|
-          response = execute(metadata_url, timeout: timeout)
-          break unless response.timed_out?
-        end
-        raise "Metadata Timeout" if response.timed_out?
-        ::Nokogiri::XML(response.body).remove_namespaces!
+      elsif options[:metadata_document]
+        data = options[:metadata_document]
+        ::Nokogiri::XML(data).remove_namespaces!
       end
     end
 

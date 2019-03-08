@@ -28,17 +28,20 @@ module FrOData
       FrOData::Query::Criteria.new(property: property_instance)
     end
 
-    # Find the Entity with the supplied key value.
+    # Build a query to find an entity with the supplied key value.
     # @param key [to_s] primary key to lookup
-    # @return [FrOData::Entity,nil]
+    # @return the path and querystring [String]
     def find(key)
       entity = @entity_set.new_entity
       key_property = entity.get_property(entity.primary_key)
       key_property.value = key
 
       pathname = "#{entity_set.name}(#{key_property.url_value})"
-      query = [pathname, assemble_criteria].compact.join('?')
-      execute(query).first
+
+      select_criteria = if list_criteria(:select)
+                          list_criteria(:select).map { |k, v| "#{k}=#{v}" }.join('&')
+                        end
+      [pathname, select_criteria].compact.join('?')
     end
 
     # Adds a filter criteria to the query.
@@ -136,25 +139,10 @@ module FrOData
       [entity_set.name, params.any? ? criteria : nil].compact.join('?')
     end
 
-    # Execute the query.
-    # @return [FrOData::Service::Response]
-    def execute(url_chunk = entity_set.name, params = assemble_criteria)
-      service.execute(url_chunk, options.merge(query: self, params: params))
-    end
-
-    # Executes the query to get a count of entities.
+    # Build a query to count of an entity set
     # @return [Integer]
     def count
-      response = self.execute("#{entity_set.name}/$count")
-      # Some servers (*cough* Microsoft *cough*) seem to
-      # return extraneous characters in the response.
-      response.body.scan(/\d+/).first.to_i
-    end
-
-    # Checks whether a query will return any results by calling #count
-    # @return [Boolean]
-    def empty?
-      self.count == 0
+      "#{entity_set.name}/$count"
     end
 
     # The EntitySet for this query.
@@ -224,7 +212,6 @@ module FrOData
       { "$#{name}" => criteria_set[name].join(',') }
     end
 
-    # inlinecount not supported by Microsoft CRM 2011
     def inline_count_criteria
       criteria_set[:inline_count] ? { '$count' => 'true' } : nil
     end
