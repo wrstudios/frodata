@@ -1,0 +1,19 @@
+module MiddlewareExampleGroup
+    def self.included(base)
+      base.class_eval do
+        let(:app)            { double('@app', call: nil) }
+        let(:env)            { { request_headers: {}, response_headers: {} } }
+        let(:retries)        { 3 }
+        let(:options)        { {} }
+        let(:client)         { double(FrOData::AbstractClient) }
+        let(:auth_callback)  { double(Proc) }
+
+        subject(:middleware) { described_class.new app, client, options }
+      end
+    end
+
+    RSpec.configure do |config|
+      config.include self,
+                     example_group: { file_path: %r{spec/frodata/middleware} }
+    end
+  end
