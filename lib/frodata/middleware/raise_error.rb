@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module FrOData
   class Middleware::RaiseError < Faraday::Response::Middleware
     def on_complete(env)
@@ -23,7 +22,7 @@ module FrOData
     end
 
     def message
-      "#{body['error']}: #{body['message']}"
+      "#{body['error']['code']}: #{body['error']['message']}"
     end
 
     def body
@@ -33,7 +32,7 @@ module FrOData
       when Hash
         @body
       else
-        { 'error' => '(error code missing)', 'message' => @body }
+        { 'error' => {'code' => '(error code missing)', 'message' => @body}}
       end
     end
 

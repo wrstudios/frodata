@@ -1,0 +1,11 @@
+{
+  "error": {
+    "code": "0x8006088a",
+    "message": "Resource not found for the segment 'leadsss'.",
+    "innererror": {
+      "message": "Resource not found for the segment 'leadsss'.",
+      "type": "Microsoft.OData.UriParser.ODataUnrecognizedPathException",
+      "stacktrace": "   at Microsoft.OData.UriParser.ODataPathParser.CreateDynamicPathSegment(ODataPathSegment previous, String identifier, String parenthesisExpression)rn   at Microsoft.OData.UriParser.ODataPathParser.CreateFirstSegment(String segmentText)rn   at Microsoft.OData.UriParser.ODataPathParser.ParsePath(ICollection`1 segments)rn   at Microsoft.OData.UriParser.ODataPathFactory.BindPath(ICollection`1 segments, ODataUriParserConfiguration configuration)rn   at Microsoft.OData.UriParser.ODataUriParser.Initialize()rn   at System.Web.OData.Routing.DefaultODataPathHandler.Parse(String serviceRoot, String odataPath, IServiceProvider requestContainer, Boolean template)rn   at System.Web.OData.Routing.DefaultODataPathHandler.Parse(String serviceRoot, String odataPath, IServiceProvider requestContainer)rn   at Microsoft.Crm.Extensibility.ODataV4.Routing.CrmODataPathHandler.Parse(String serviceRoot, String odataPath, IServiceProvider requestContainer)"
+    }
+  }
+}
