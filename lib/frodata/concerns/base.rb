@@ -55,6 +55,10 @@ module FrOData
       def initialize(opts = {})
         raise ArgumentError, 'Please specify a hash of options' unless opts.is_a?(Hash)
 
+        # allow injecting the service for performance purpose such as
+        # when you have already a local schema
+        @service = opts.delete(:service)
+
         @options = Hash[FrOData.configuration.options.map do |option|
           [option, FrOData.configuration.send(option)]
         end]

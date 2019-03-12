@@ -3,9 +3,12 @@ require 'rspec/matchers' # required for 'equivalent-xml'
 require 'equivalent-xml'
 require 'securerandom'
 require 'timecop'
+require 'webmock/rspec'
 
 # Load all files from `spec/support`
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f }
+
+WebMock.disable_net_connect!
 
 RSpec.configure do |config|
   if config.files_to_run.one?
