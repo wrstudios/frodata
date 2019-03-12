@@ -12,8 +12,8 @@ module FrOData
     # Opens the service based on the requested URL and adds the service to
     # {FrOData::Registry}
     #
-    # @param service_url [String|Faraday::Connection]
-    #   The URL to the desired FrOData service, or a Faraday connection object
+    # @param service_url [String]
+    #   The URL to the FrOData service
     # @param options [Hash] options to pass to the service
     # @return [FrOData::Service] an instance of the service
     def initialize(service_url, options = {}, &block)

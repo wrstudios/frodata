@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FrOData::Service, vcr: {cassette_name: 'service_specs'} do
+describe FrOData::Service do
   let(:service_url) { 'http://services.odata.org/V4/OData/OData.svc' }
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
   let(:subject) { FrOData::Service.new(service_url, name: 'ODataDemo', metadata_file: metadata_file) }
@@ -10,68 +10,26 @@ describe FrOData::Service, vcr: {cassette_name: 'service_specs'} do
       expect(FrOData::ServiceRegistry['ODataDemo']).to be_nil
       expect(FrOData::ServiceRegistry[service_url]).to be_nil
 
-      service = FrOData::Service.new(service_url, name: 'ODataDemo')
+      subject
 
-      expect(FrOData::ServiceRegistry['ODataDemo']).to eq(service)
-      expect(FrOData::ServiceRegistry[service_url]).to eq(service)
+      expect(FrOData::ServiceRegistry['ODataDemo']).to eq(subject)
+      expect(FrOData::ServiceRegistry[service_url]).to eq(subject)
     end
 
     it 'registers custom types on creation' do
-      service = FrOData::Service.new(service_url, name: 'ODataDemo')
-
       expect(FrOData::PropertyRegistry['ODataDemo.Address']).to be_a(Class)
       expect(FrOData::PropertyRegistry['ODataDemo.ProductStatus']).to be_a(Class)
     end
 
-    it 'allows connection to be set by passing it instead of service_url' do
-      connection = Faraday.new(service_url)
-      service = FrOData::Service.new(connection)
-      expect(service.connection).to eq(connection)
-      expect(service.service_url).to eq(service_url)
-    end
-
-    it 'allows connection to be customized via options hash' do
-      service = FrOData::Service.new(service_url, connection: {
-        headers: { 'X-Custom-Header' => 'foo' }
-      })
-      expect(service.connection.headers).to include('X-Custom-Header' => 'foo')
-    end
-
-    it 'ignores connection options when connetion is passed in' do
-      connection = Faraday.new(service_url, {
-        headers: { 'X-Custom-Header' => 'foo' }
-      })
-      service = FrOData::Service.new(connection, connection: {
-        headers: { 'X-Custom-Header' => 'bar' }
-      })
-      expect(service.connection.headers).to include('X-Custom-Header' => 'foo')
-    end
-
-    it 'allows connection to be customized via block argument' do
-      service = FrOData::Service.new(service_url) do |conn|
-        conn.headers['X-Custom-Header'] = 'foo'
-      end
-      expect(service.connection.headers).to include('X-Custom-Header' => 'foo')
-    end
-
     it 'allows logger to be set via option' do
       logger = Logger.new(STDERR).tap { |l| l.level = Logger::ERROR }
-      service = FrOData::Service.new(service_url, logger: logger)
+      service = FrOData::Service.new(service_url,  metadata_file: metadata_file, logger: logger)
       expect(service.logger).to eq(logger)
     end
   end
 
-  describe '#connection' do
-    it 'returns the connection object used by the service' do
-      expect(subject.connection).to be_a(Faraday::Connection)
-    end
-
-    it 'uses the service URL as URL prefix' do
-      expect(subject.connection.url_prefix.to_s).to eq(subject.service_url)
-    end
-  end
-
   describe '#logger' do
+    let(:subject) { FrOData::Service.new(service_url, name: 'ODataDemo', logger: logger, metadata_file: metadata_file) }
     let(:logger) { Logger.new(STDERR).tap { |l| l.level = Logger::ERROR } }
 
     it 'returns the logger used by the service' do
@@ -79,18 +37,12 @@ describe FrOData::Service, vcr: {cassette_name: 'service_specs'} do
     end
 
     it 'returns the default logger if none was set' do
-      expect(subject.logger.level).to eq(Logger::WARN)
+      expect(subject.logger.level).to eq(Logger::ERROR)
     end
 
     it 'uses Rails logger if available' do
       stub_const 'Rails', Class.new { def self.logger; end }
       allow(Rails).to receive(:logger).and_return(logger)
-      expect(subject.logger).to eq(logger)
-    end
-
-    it 'allows logger to be set via attribute writer' do
-      expect(subject.logger).not_to eq(logger)
-      subject.logger = logger
       expect(subject.logger).to eq(logger)
     end
   end
