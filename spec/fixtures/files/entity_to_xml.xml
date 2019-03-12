@@ -12,6 +12,7 @@
       <data:DiscontinuedDate metadata:type="Edm.DateTimeOffset" metadata:null="true"/>
       <data:Rating metadata:type="Edm.Int16">4</data:Rating>
       <data:Price metadata:type="Edm.Double">2.5</data:Price>
+      <data:ProductStatus metadata:type="ODataDemo.ProductStatus" metadata:null="true"/>
     </metadata:properties>
   </content>
 </entry>

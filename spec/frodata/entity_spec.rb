@@ -3,9 +3,10 @@ require_relative 'entity/shared_examples'
 
 describe FrOData::Entity, vcr: {cassette_name: 'entity_specs'} do
   before(:example) do
-    FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+    FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo',  metadata_file: metadata_file)
   end
 
+  let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
   let(:subject) { FrOData::Entity.new(options) }
   let(:options) { {
       type:         'ODataDemo.Product',
@@ -138,7 +139,8 @@ describe FrOData::Entity, vcr: {cassette_name: 'entity_specs'} do
       "ReleaseDate"      => "1992-01-01T00:00:00Z",
       "DiscontinuedDate" => nil,
       "Rating"           => 4,
-      "Price"            => 2.5
+      "Price"            => 2.5,
+      "ProductStatus"    => nil
     } }
     let(:options) { {
         type:         'ODataDemo.Product',
