@@ -37,24 +37,24 @@ module FrOData
     #
     # @param block [block] a block to evaluate
     # @return [FrOData::Entity] each entity in turn from this set
-    def each(&block)
-      query.execute.each(&block)
-    end
+    # def each(&block)
+    #   query.execute.each(&block)
+    # end
 
-    # Return the first `n` Entities for the set.
-    # If count is 1 it returns the single entity, otherwise its an array of entities
-    # @return [FrOData::EntitySet]
-    def first(count = 1)
-      result = query.limit(count).execute
-      count == 1 ? result.first : result.to_a
-    end
+    # # Return the first `n` Entities for the set.
+    # # If count is 1 it returns the single entity, otherwise its an array of entities
+    # # @return [FrOData::EntitySet]
+    # def first(count = 1)
+    #   result = query.limit(count).execute
+    #   count == 1 ? result.first : result.to_a
+    # end
 
-    # Returns the number of entities within the set.
-    # Not supported in Microsoft CRM2011
-    # @return [Integer]
-    def count
-      query.count
-    end
+    # # Returns the number of entities within the set.
+    # # Not supported in Microsoft CRM2011
+    # # @return [Integer]
+    # def count
+    #   query.count
+    # end
 
     # Create a new Entity for this set with the given properties.
     # @param properties [Hash] property name as key and it's initial value
@@ -73,36 +73,36 @@ module FrOData
     # Find the Entity with the supplied key value.
     # @param key [to_s] primary key to lookup
     # @return [FrOData::Entity,nil]
-    def [](key, options={})
-      properties_to_expand = if options[:expand] == :all
-        new_entity.navigation_property_names
-      else
-        [ options[:expand] ].compact.flatten
-      end
+    # def [](key, options={})
+    #   properties_to_expand = if options[:expand] == :all
+    #     new_entity.navigation_property_names
+    #   else
+    #     [ options[:expand] ].compact.flatten
+    #   end
 
-      query.expand(*properties_to_expand).find(key)
-    end
+    #   query.expand(*properties_to_expand).find(key)
+    # end
 
     # Write supplied entity back to the service.
     # TODO Test this more with CRM2011
     # @param entity [FrOData::Entity] entity to save or update in the service
     # @return [FrOData::Entity]
-    def <<(entity)
-      url_chunk, options = setup_entity_post_request(entity)
+    # def <<(entity)
+    #   url_chunk, options = setup_entity_post_request(entity)
 
-      result = execute_entity_post_request(options, url_chunk)
-      if entity.is_new?
-        doc = ::Nokogiri::XML(result.body).remove_namespaces!
-        primary_key_node = doc.xpath("//content/properties/#{entity.primary_key}").first
-        entity[entity.primary_key] = primary_key_node.content unless primary_key_node.nil?
-      end
+    #   result = execute_entity_post_request(options, url_chunk)
+    #   if entity.is_new?
+    #     doc = ::Nokogiri::XML(result.body).remove_namespaces!
+    #     primary_key_node = doc.xpath("//content/properties/#{entity.primary_key}").first
+    #     entity[entity.primary_key] = primary_key_node.content unless primary_key_node.nil?
+    #   end
 
-      unless result.status.to_s =~ /^2[0-9][0-9]$/
-        entity.errors << ['could not commit entity']
-      end
+    #   unless result.status.to_s =~ /^2[0-9][0-9]$/
+    #     entity.errors << ['could not commit entity']
+    #   end
 
-      entity
-    end
+    #   entity
+    # end
 
     # The FrOData::Service this EntitySet is associated with.
     # @return [FrOData::Service]
@@ -122,53 +122,5 @@ module FrOData
       }
     end
 
-    private
-
-    def execute_entity_post_request(options, url_chunk)
-      result = service.execute(url_chunk, options)
-      unless result.status.to_s =~ /^2[0-9][0-9]$/
-        service.logger.debug <<-EOS
-          [ODATA: #{service_name}]
-          An error was encountered committing your entity:
-
-            POSTed URL:
-            #{url_chunk}
-
-            POSTed Entity:
-            #{options[:body]}
-
-            Result Body:
-            #{result.body}
-        EOS
-        service.logger.info "[ODATA: #{service_name}] Unable to commit data to #{url_chunk}"
-      end
-      result
-    end
-
-    def setup_entity_post_request(entity)
-      primary_key = entity.get_property(entity.primary_key).url_value
-      chunk = entity.is_new? ? name : "#{name}(#{primary_key})"
-
-      options = {
-          method:  entity.is_new? ? :post : :patch,
-          body: entity.to_json,
-          headers: {
-              'Accept' => '*/*',
-              'Content-Type' => 'application/json'
-
-          }
-      }
-
-      # options = {
-      #     method:  entity.is_new? ? :post : :patch,
-      #     body: entity.to_xml.gsub(/\n\s+/, ''),
-      #     headers: {
-      #         'Accept' => 'application/atom+xml',
-      #         'Content-Type' => 'application/atom+xml'
-
-      #     }
-      # }
-      return chunk, options
-    end
   end
 end
