@@ -9,8 +9,6 @@ module FrOData
   class Query
     attr_reader :options
 
-    include InBatches
-
     # Create a new Query for the provided EntitySet
     # @param entity_set [FrOData::EntitySet]
     # @param options [Hash] Query options

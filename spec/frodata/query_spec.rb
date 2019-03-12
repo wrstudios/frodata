@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe FrOData::Query, vcr: {cassette_name: 'query_specs'} do
   before(:example) do
-    FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+    FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo', metadata_file: metadata_file)
   end
-
+  let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
   let(:subject) { FrOData::Query.new(entity_set) }
   let(:entity_set) { FrOData::EntitySet.new(options) }
   let(:options) { {
@@ -31,16 +31,13 @@ describe FrOData::Query, vcr: {cassette_name: 'query_specs'} do
 
     it { expect(subject).to respond_to(:find) }
 
-    it 'finds an entity by its ID' do
-      expect(product).to be_a(FrOData::Entity)
-      expect(product['ID']).to eq(0)
+    it 'generate the query string to find an entity by its ID' do
+      expect(product).to eq("Products(0)")
     end
 
-    it 'allows expanding navigational properties' do
-      product_with_categories = subject.expand('Categories').find(0)
-      expect(product_with_categories['Categories']).to eq([
-        { "ID" => 0, "Name" => "Food" }
-      ])
+    it 'allows selecting specific fields only' do
+      product_with_name_only = subject.select('Name').find(0)
+      expect(product_with_name_only).to eq("Products(0)?$select=Name")
     end
   end
 
@@ -144,70 +141,16 @@ describe FrOData::Query, vcr: {cassette_name: 'query_specs'} do
     end
   end
 
-  describe '#execute' do
-    it { expect(subject).to respond_to(:execute) }
-    it { expect(subject.execute).to be_a(FrOData::Service::Response) }
-  end
-
   describe '#count' do
     it { expect(subject).to respond_to(:count) }
-    it { expect(subject.count).to be_a(Integer) }
-    it { expect(subject.count).to eq(11) }
+    it { expect(subject.count).to eq("Products/$count") }
 
-    context 'with filters' do
-      let(:criteria) { subject[:Name].eq('Bread') }
+    # FIXME: Should we support that?
+    # context 'with filters' do
+    #   let(:criteria) { subject[:Name].eq('Bread') }
 
-      it { expect(subject.where(criteria).count).to eq(1) }
-    end
+    #   it { expect(subject.where(criteria).count).to eq(1) }
+    # end
   end
 
-  describe '#empty?' do
-    it { expect(subject).to respond_to(:empty?) }
-    it { expect(subject.empty?).to eq(false) }
-
-    context 'with filters' do
-      let(:non_empty_criteria) { subject[:Name].eq('Bread') }
-      let(:empty_criteria) { subject[:Name].eq('NonExistent') }
-
-      it { expect(subject.where(non_empty_criteria).empty?).to eq(false) }
-      it { expect(subject.where(empty_criteria).empty?).to eq(true) }
-    end
-  end
-
-  describe '#in_batches' do
-    it { expect(subject).to respond_to(:in_batches) }
-    it 'returns FrOData::Entities in batches of specified size' do
-      batch_count = entity_count = 0
-
-      subject.in_batches(of: 5) do |batch|
-        expect(batch).to be_a(FrOData::Service::Response)
-        expect(batch.count).to eq(5) unless batch_count == 2
-
-        batch.each do |entity|
-          expect(entity).to be_a(FrOData::Entity)
-          expect(entity.type).to eq('ODataDemo.Product')
-          entity_count += 1
-        end
-
-        batch_count += 1
-      end
-
-      expect(batch_count).to eq(3)
-      expect(entity_count).to eq(11)
-    end
-
-    describe '#each' do
-      it 'returns FrOData::Entities' do
-        entity_count = 0
-
-        subject.in_batches(of: 5).each do |entity|
-          expect(entity).to be_a(FrOData::Entity)
-          expect(entity.type).to eq('ODataDemo.Product')
-          entity_count += 1
-        end
-
-        expect(entity_count).to eq(11)
-      end
-    end
-  end
 end
