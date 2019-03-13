@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 0'
   spec.add_development_dependency 'simplecov', '~> 0.15'
   spec.add_development_dependency 'rspec', '~> 3.7'
-  spec.add_development_dependency 'rspec-its'
+  spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'rspec-autotest', '~> 1.0'
   spec.add_development_dependency 'autotest', '~> 4.4'
   spec.add_development_dependency 'vcr', '~> 4.0'

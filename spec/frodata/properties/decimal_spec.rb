@@ -29,8 +29,7 @@ describe FrOData::Properties::Decimal do
     end
 
     it 'inteprets anything that is not a number as 0' do
-      subject.value = 'foobar'
-      expect(subject.value).to eq(BigDecimal(0))
+      expect{ subject.value = 'foobar' }. to raise_error ArgumentError
     end
 
     it 'does not allow values outside a certain range' do

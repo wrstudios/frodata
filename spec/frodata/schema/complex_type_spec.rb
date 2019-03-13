@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe FrOData::Schema::ComplexType, vcr: {cassette_name: 'schema/complex_type_specs'} do
   before(:example) do
-    FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+    FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo', metadata_file: metadata_file)
   end
 
+  let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
   let(:service) { FrOData::ServiceRegistry['ODataDemo'] }
 
   let(:address) { {

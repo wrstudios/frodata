@@ -1,5 +1,7 @@
 # FrOData - Free OData V4.0 library for Ruby
 
+[![CircleCI](https://circleci.com/gh/getoutreach/frodata.svg?style=svg)](https://circleci.com/gh/getoutreach/frodata)
+
 ### Happy Little Entities
 
 <img src="images/bob-ross.jpg" alt="Bob Ross" width="192" height="192" align="right">
