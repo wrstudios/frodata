@@ -1,0 +1,11 @@
+{
+  "token_type": "Bearer",
+  "scope": "user_impersonation",
+  "expires_in": "3599",
+  "ext_expires_in": "3599",
+  "expires_on": "1552430212",
+  "not_before": "1552426312",
+  "resource": "https://emmanueltest.crm.dynamics.com",
+  "access_token": "gfEzf4azkWZMTjlay7usiSWhc0eOLNkKMw",
+  "refresh_token": "QswqIkdHSdbyvbDFuLwHNAoU1QgAA"
+}

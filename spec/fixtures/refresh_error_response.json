@@ -1,0 +1,8 @@
+{
+  "error": "invalid_grant",
+  "error_description": "AADSTS9002313: Invalid request. Request is malformed or invalid.rnTrace ID: 48716257-6e4f-46fe-b7ec-f98d2f7d0e00rnCorrelation ID: 0127cc73-f029-44b2-a7e2-816525df2229rnTimestamp: 2019-03-12 21:40:14Z",
+  "error_codes": [9002313],
+  "timestamp": "2019-03-12 21:40:14Z",
+  "trace_id": "48716257-6e4f-46fe-b7ec-f98d2f7d0e00",
+  "correlation_id": "0127cc73-f029-44b2-a7e2-816525df2229"
+}

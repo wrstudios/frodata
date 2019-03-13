@@ -29,9 +29,8 @@ module FrOData
         raise FrOData::AuthenticationError, error_message(response)
       end
 
-      @options[:instance_url] = response.body['instance_url']
       @options[:oauth_token]  = response.body['access_token']
-
+      @options[:refresh_token]  = response.body['refresh_token']
       @options[:authentication_callback]&.call(response.body)
 
       response.body
