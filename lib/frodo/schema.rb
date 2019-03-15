@@ -121,11 +121,19 @@ module Frodo
 
       raise ArgumentError, "Unknown EntityType: #{entity_name}" if type_definition.nil?
       properties_to_return = {}
+
+      parent_properties = if base_type = type_definition.attributes['BaseType']
+                            parent_type = base_type.value.split('.').last
+                            properties_for_entity(parent_type)
+                          else
+                            {}
+                          end
+
       type_definition.xpath('./Property').each do |property_xml|
         property_name, property = process_property_from_xml(property_xml)
         properties_to_return[property_name] = property
       end
-      properties_to_return
+      parent_properties.merge!(properties_to_return)
     end
 
     private

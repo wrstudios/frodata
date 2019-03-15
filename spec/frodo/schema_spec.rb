@@ -94,6 +94,16 @@ describe Frodo::Schema do
       ProductStatus
     ]) }
     it { expect(subject.properties_for_entity('Product').values).to all(be_a(Frodo::Property)) }
+    it { expect(subject.properties_for_entity('FeaturedProduct').keys).to eq(%w[
+      ID
+      Name
+      Description
+      ReleaseDate
+      DiscontinuedDate
+      Rating
+      Price
+      ProductStatus
+    ]) }
     it 'has error message containing type name' do
       expect {
         subject.properties_for_entity('Error')
