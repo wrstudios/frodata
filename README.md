@@ -1,12 +1,13 @@
-# FrOData - Free OData V4.0 library for Ruby
+# Frodo - Free OData V4.0 library for Ruby
 
-[![CircleCI](https://circleci.com/gh/getoutreach/frodata.svg?style=svg)](https://circleci.com/gh/getoutreach/frodata)
+[![CircleCI](https://circleci.com/gh/getoutreach/frodo.svg?style=svg)](https://circleci.com/gh/getoutreach/frodo)
 
-### Happy Little Entities
+### One API to rule them all
 
-<img src="images/bob-ross.jpg" alt="Bob Ross" width="192" height="192" align="right">
+<img src="images/frodo.jpg" alt="Frodo" width="192" height="192" align="right">
 
-The FrOData gem provides a simple wrapper around the OData Version 4.0 API protocol.
+Frodo is the little gem that access your precious OData Version 4.0 from the land of Microsoft Dynamics or other OData compliant API.
+
 It has the ability to automatically inspect compliant APIs and expose the relevant Ruby objects dynamically.
 
 Features include:
@@ -21,18 +22,18 @@ A clean and modular architecture using Faraday middleware responses.
 
 **This gem supports [OData Version 4.0](http://www.odata.org/documentation/). Support for older versions is not a goal.**
 
-If you need a gem to integration with OData Version 3, you can use James Thompson's [original OData gem][ruby-odata], upon which this gem is based. It is also is based on a Fork from (https://github.com/wrstudios/frodata) who was an attempt to OData Version 4 but seemed unfinished. Finally
+If you need a gem to integration with OData Version 3, you can use James Thompson's [original OData gem][ruby-odata], upon which this gem is based. It is also is based on a Fork from (https://github.com/wrstudios/frodo) who was an attempt to OData Version 4 but seemed unfinished. Finally
 it uses code taken from Restforce for the client [Restforce gem](https://github.com/restforce/restforce)
 
-[![Gem Version](https://badge.fury.io/rb/frodata.svg)](https://badge.fury.io/rb/frodata)
+[![Gem Version](https://badge.fury.io/rb/frodo.svg)](https://badge.fury.io/rb/frodo)
 [![Build Status](https://app.codeship.com/projects/da1eb540-ce3f-0135-2ddc-161d5c3cc5fd/status?branch=master)](https://app.codeship.com/projects/262148)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/2425311d859408ef8798/test_coverage)](https://codeclimate.com/github/wrstudios/frodata/test_coverage)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/2425311d859408ef8798/test_coverage)](https://codeclimate.com/github/wrstudios/frodo/test_coverage)
 
 ## Installation
 
 Add this line to your application's `Gemfile`:
 
-    gem 'frodata'
+    gem 'frodo'
 
 And then execute:
 
@@ -40,7 +41,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install frodata
+    $ gem install frodo
 
 This gem is versioned using [Semantic Versioning](http://semver.org/), so you can be confident when updating that there will not be breaking changes outside of a major version (following format MAJOR.MINOR.PATCH, so for instance moving from 3.1.0 to 4.0.0 would be allowed to include incompatible API changes). See the [changelog](https://github.com/restforce/restforce/tree/master/CHANGELOG.md) for details on what has changed in each version.
 
@@ -58,7 +59,7 @@ It is also important to note that the client object should not be reused across 
 #### OAuth token authentication
 
 ```ruby
-client = FrOData.new(oauth_token: 'access_token',
+client = Frodo.new(oauth_token: 'access_token',
                      instance_url: 'instance url',
                      base_path: '/path/to/service')
 ```
@@ -66,7 +67,7 @@ client = FrOData.new(oauth_token: 'access_token',
 Although the above will work, you'll probably want to take advantage of the (re)authentication middleware by specifying `refresh_token`, `client_id`, `client_secret`, and `authentication_callback`:
 
 ```ruby
-client = FrOData.new(oauth_token: 'access_token',
+client = Frodo.new(oauth_token: 'access_token',
                      refresh_token: 'refresh token',
                      instance_url: 'instance url',
                      client_id: 'client_id',
@@ -102,7 +103,7 @@ The `id` field can be used to [uniquely identify](https://docs.microsoft.com/en-
 You can specify a HTTP proxy using the `proxy_uri` option, as follows, or by setting the `FRODATA_PROXY_URI` environment variable:
 
 ```ruby
-client = FrOData.new(username: 'foo',
+client = Frodo.new(username: 'foo',
                        password: 'bar',
                        security_token: 'security token',
                        client_id: 'client_id',
@@ -115,10 +116,10 @@ You may specify a username and password for the proxy with a URL along the lines
 
 #### Global configuration
 
-You can set any of the options passed into `FrOData.new` globally:
+You can set any of the options passed into `Frodo.new` globally:
 
 ```ruby
-FrOData.configure do |config|
+Frodo.configure do |config|
   config.client_id     = 'foo'
   config.client_secret = 'bar'
 end
@@ -134,13 +135,13 @@ works similarly to ActiveRecord.
 
 ### Custom Headers
 
-You service may need custom headers. FrOData allows the addition of
+You service may need custom headers. Frodo allows the addition of
 custom headers in REST API requests to trigger specific logic. In order to pass any custom headers along with API requests,
 you can specify a hash of `:request_headers` upon client initialization. The example below demonstrates how
 to include the `myheader` header in all client HTTP requests:
 
 ```ruby
-client = FrOData.new(oauth_token: 'access_token',
+client = Frodo.new(oauth_token: 'access_token',
                        instance_url: 'instance url',
                        request_headers: { 'myheader' => 'FALSE' })
 
@@ -163,7 +164,7 @@ client.metadata
 
 Queries in general can be speficied directly as a string as such
 
-or you can use the `FrOData::Query`. `FrOData::Query` instances form the base for finding specific entities within an `FrOData::EntitySet`.
+or you can use the `Frodo::Query`. `Frodo::Query` instances form the base for finding specific entities within an `Frodo::EntitySet`.
 A query object exposes a number of capabilities based on
 the [System Query Options](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Toc453752288) provided for in the OData V4.0 specification.
 Below is just a partial example of what is possible:
@@ -182,24 +183,24 @@ Below is just a partial example of what is possible:
 ```
 
 The process of querying is kept purposely verbose to allow for lazy behavior to be implemented at higher layers.
-Internally, `FrOData::Query` relies on the `FrOData::Query::Criteria` for the way the `where` method works.
+Internally, `Frodo::Query` relies on the `Frodo::Query::Criteria` for the way the `where` method works.
 You should refer to the published RubyDocs for full details on the various capabilities:
 
-- [FrOData::Query](http://rubydoc.info/github/wrstudios/frodata/master/FrOData/Query)
-- [FrOData::Query::Criteria](http://rubydoc.info/github/wrstudios/frodata/master/FrOData/Query/Criteria)
+- [Frodo::Query](http://rubydoc.info/github/wrstudios/frodo/master/Frodo/Query)
+- [Frodo::Query::Criteria](http://rubydoc.info/github/wrstudios/frodo/master/Frodo/Query/Criteria)
 
 [odata-facets]: http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part3-csdl/odata-v4.0-errata03-os-part3-csdl-complete.html#_Toc453752528
 [odata-ops]: http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Toc453752307
 
 ```ruby
 products = client.query("Products?$filter=name eq 'somename'")
-# => [#<FrOData::Entity>]
+# => [#<Frodo::Entity>]
 
 # or the equivalent using a query object
 query_object = client.service['Products'].query
 query_object.where("name eq 'yo'")
 products = client.query(query_object)
-# => [#<FrOData::Entity>]
+# => [#<Frodo::Entity>]
 ```
 
 ### Find
@@ -208,7 +209,7 @@ products = client.query(query_object)
 # Select an account from an Accounts set with primary key set to '001D000000INjVe'
 
 client.find('Accounts', '001D000000INjVe')
-# => #<FrOData::Entity accountid="001D000000INjVe" name="Test" ... >
+# => #<Frodo::Entity accountid="001D000000INjVe" name="Test" ... >
 ```
 
 ### select
@@ -219,7 +220,7 @@ client.find('Accounts', '001D000000INjVe')
 # Select the `name` column from an Account entity in the Accounts set with primary key set to '001D000000INjVe'
 
 client.select('Accounts', '001D000000INjVe', ["name"])
-# => # => #<FrOData::Entity accountid="001D000000INjVe" name="Name" other_field="nil" ... >
+# => # => #<Frodo::Entity accountid="001D000000INjVe" name="Name" other_field="nil" ... >
 
 ```
 
@@ -256,39 +257,39 @@ client.destroy('Accounts', '0016000000MRatd')
 
 ### Services & the Service Registry
 
-The FrOData gem provides a number of core classes, the two most basic ones are the `FrOData::Service` and the `FrOData::ServiceRegistry`.
-The only time you will need to worry about the `FrOData::ServiceRegistry` is when you have multiple FrOData
+The Frodo gem provides a number of core classes, the two most basic ones are the `Frodo::Service` and the `Frodo::ServiceRegistry`.
+The only time you will need to worry about the `Frodo::ServiceRegistry` is when you have multiple Frodo
 services you are interacting with that you want to keep straight easily.
-The nice thing about `FrOData::Service` is that it automatically registers with the registry on creation, so there is no manual interaction with the registry necessary.
+The nice thing about `Frodo::Service` is that it automatically registers with the registry on creation, so there is no manual interaction with the registry necessary.
 
-To create an `FrOData::Service` simply provide the location of a service endpoint to it like this:
+To create an `Frodo::Service` simply provide the location of a service endpoint to it like this:
 
 ```ruby
-  FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc')
+  Frodo::Service.new('http://services.odata.org/V4/OData/OData.svc')
 ```
 
 You may also provide an options hash after the URL.
 It is suggested that you supply a name for the service via this hash like so:
 
 ```ruby
-  FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
+  Frodo::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo')
 ```
 
 For more information regarding available options and how to configure a service instance, refer to [Service Configuration](#service-configuration) below.
 
-This one call will setup the service and allow for the discovery of everything the other parts of the FrOData gem need to function.
-The two methods you will want to remember from `FrOData::Service` are `#service_url` and `#name`.
-Both of these methods are available on instances and will allow for lookup in the `FrOData::ServiceRegistry`, should you need it.
+This one call will setup the service and allow for the discovery of everything the other parts of the Frodo gem need to function.
+The two methods you will want to remember from `Frodo::Service` are `#service_url` and `#name`.
+Both of these methods are available on instances and will allow for lookup in the `Frodo::ServiceRegistry`, should you need it.
 
-Using either the service URL or the name provided as an option when creating an `FrOData::Service` will allow for quick lookup in the `FrOData::ServiceRegistry` like such:
+Using either the service URL or the name provided as an option when creating an `Frodo::Service` will allow for quick lookup in the `Frodo::ServiceRegistry` like such:
 
 ```ruby
-  FrOData::ServiceRegistry['http://services.odata.org/V4/OData/OData.svc']
-  FrOData::ServiceRegistry['ODataDemo']
+  Frodo::ServiceRegistry['http://services.odata.org/V4/OData/OData.svc']
+  Frodo::ServiceRegistry['ODataDemo']
 ```
 
 Both of the above calls would retrieve the same service from the registry.
-At the moment there is no protection against name collisions provided in `FrOData::ServiceRegistry`.
+At the moment there is no protection against name collisions provided in `Frodo::ServiceRegistry`.
 So, looking up services by their service URL is the most exact method, but lookup by name is provided for convenience.
 
 ### Service Configuration
@@ -300,7 +301,7 @@ You can speed your load time by forcing the service to load the metadata from a 
 This is only recommended for testing purposes, as the metadata file can change.
 
 ```ruby
-  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
+  service = Frodo::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
     metadata_file: "metadata.xml",
   })
@@ -313,7 +314,7 @@ You can speed your load time by forcing the service to load the metadata from a 
 This is only recommended for testing purposes, as the metadata file can change.
 
 ```ruby
-  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
+  service = Frodo::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo',
     metadata_data: "metadata.xml",
   })
@@ -372,17 +373,17 @@ Get a list of enum types
   # => ["ODataDemo.ProductStatus"]
 ```
 
-For more examples, refer to [usage_example_specs.rb](spec/frodata/usage_example_specs.rb).
+For more examples, refer to [usage_example_specs.rb](spec/frodo/usage_example_specs.rb).
 
 ### Entity Sets
 
-When it comes to reading data from an OData service the most typical way will be via `FrOData::EntitySet` instances.
-Under normal circumstances you should never need to worry about an `FrOData::EntitySet` directly.
-For example, to get an `FrOData::EntitySet` for the products in the ODataDemo service simply access the entity set through the service like this:
+When it comes to reading data from an OData service the most typical way will be via `Frodo::EntitySet` instances.
+Under normal circumstances you should never need to worry about an `Frodo::EntitySet` directly.
+For example, to get an `Frodo::EntitySet` for the products in the ODataDemo service simply access the entity set through the service like this:
 
 ```ruby
-  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc')
-  products = service['ProductsSet'] # => FrOData::EntitySet
+  service = Frodo::Service.new('http://services.odata.org/V4/OData/OData.svc')
+  products = service['ProductsSet'] # => Frodo::EntitySet
 ```
 
 You can get a list of all your entity sets like this:
@@ -393,17 +394,17 @@ You can get a list of all your entity sets like this:
 
 ### Entities
 
-`FrOData::Entity` instances represent individual entities, or records, in a given service.
-They are returned primarily through interaction with instances of `FrOData::EntitySet`.
-You can access individual properties on an `FrOData::Entity` like so:
+`Frodo::Entity` instances represent individual entities, or records, in a given service.
+They are returned primarily through interaction with instances of `Frodo::EntitySet`.
+You can access individual properties on an `Frodo::Entity` like so:
 
 ```ruby
-  product = products.first # => FrOData::Entity
+  product = products.first # => Frodo::Entity
   product['Name']  # => 'Bread'
   product['Price'] # => 2.5 (Float)
 ```
 
-Individual properties on an `FrOData::Entity` are automatically typecast by the gem, so you don't have to worry about too much when working with entities.
+Individual properties on an `Frodo::Entity` are automatically typecast by the gem, so you don't have to worry about too much when working with entities.
 
 You can get a list of all your entities like this:
 
@@ -447,14 +448,14 @@ Simply add `strict: false` to the service constructor options.
 In this mode, any property validation error will log a warning instead of raising an exception. The corresponding property value will be `nil` (even if the property is declared as not allowing NULL values).
 
 ```ruby
-  service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', strict: false)
+  service = Frodo::Service.new('http://services.odata.org/V4/OData/OData.svc', strict: false)
   # -- alternatively, for an existing service instance --
   service.options[:strict] = false
 ```
 
 ## Contributing
 
-1. Fork it (`https://github.com/[my-github-username]/frodata/fork`)
+1. Fork it (`https://github.com/[my-github-username]/frodo/fork`)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -467,10 +468,10 @@ Many thanks go to [James Thompson][@plainprogrammer], who wrote the [original OD
 [@plainprogrammer]: https://github.com/plainprogrammer
 [ruby-odata]: https://github.com/ruby-odata/odata
 
-Many thanks go to [James Thompson][@pandawhisperer], who started the work on the [OData (Version 4.0) gem][frodata].
+Many thanks go to [James Thompson][@pandawhisperer], who started the work on the [OData (Version 4.0) gem][frodo].
 
 [@plainprogrammer]: https://github.com/PandaWhisperer
-[frodata]: https://github.com/wrstudios/frodata
+[frodo]: https://github.com/wrstudios/frodo
 
 Also, I would like to thank [Outreach][outreach] for generously allowing me to work on Open Source software like this. If you want to work on interesting challenges with an awesome team, check out our [open positions][outreachcareers].
 

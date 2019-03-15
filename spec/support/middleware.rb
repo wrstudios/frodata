@@ -5,7 +5,7 @@ module MiddlewareExampleGroup
         let(:env)            { { request_headers: {}, response_headers: {} } }
         let(:retries)        { 3 }
         let(:options)        { {} }
-        let(:client)         { double(FrOData::AbstractClient) }
+        let(:client)         { double(Frodo::AbstractClient) }
         let(:auth_callback)  { double(Proc) }
 
         subject(:middleware) { described_class.new app, client, options }
@@ -14,6 +14,6 @@ module MiddlewareExampleGroup
 
     RSpec.configure do |config|
       config.include self,
-                     example_group: { file_path: %r{spec/frodata/middleware} }
+                     example_group: { file_path: %r{spec/frodo/middleware} }
     end
   end

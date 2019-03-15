@@ -1,4 +1,4 @@
-require 'frodata'
+require 'frodo'
 require 'rspec/matchers' # required for 'equivalent-xml'
 require 'equivalent-xml'
 require 'securerandom'
@@ -30,6 +30,6 @@ RSpec.configure do |config|
   config.after(:example) do
     # We're calling this as a private method because there should not be any
     # reasons to have to flush the service registry except in testing.
-    FrOData::ServiceRegistry.instance.send(:flush)
+    Frodo::ServiceRegistry.instance.send(:flush)
   end
 end
