@@ -34,7 +34,6 @@ require 'frodo/client'
 require 'frodo/config'
 
 require 'frodo/version'
-require 'frodo/errors'
 require 'frodo/property_registry'
 require 'frodo/property'
 require 'frodo/properties'
