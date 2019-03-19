@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 0.10.1
+
+[Fixed] Warning on Error definitions
+
+## 0.10.0
+
+[Breaking] New client was introduce. Uses Faraday and middlewares
+	   Query.first and Query.count do not execute either. Return the query as a string to execute
+	   Removed interface on EntitySet and Entity to make those more structural object for now
+[New Feature] Support Query.find with selecting specific fields
+	      Support Oauth token flow and refresh token callback
+	      Support for passing a service definition in memory
+	      New Primitive API for the client
+[Fixes] guid properly serializing in a query
+
 ## 0.9.3
 
 * Fix broken stack traces in response errors
