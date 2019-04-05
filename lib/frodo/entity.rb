@@ -146,8 +146,7 @@ module Frodo
       json = JSON.parse(json.to_s) unless json.is_a?(Hash)
       metadata = extract_metadata(json)
       options.merge!(context: metadata['@odata.context'])
-      p json
-      p options
+
       entity = with_properties(json, options)
       process_metadata(entity, metadata)
       entity
