@@ -110,20 +110,21 @@ describe Frodo::Concerns::API do
   end
 
   describe '.create!' do
-    let(:id) { '(an-id)' }
-    let(:url) { "blah/#{id}/foo" }
+    let(:id) { 'an-id' }
+    let(:url) { "blah/(#{id})/foo" }
     let(:verb) { :post }
     let(:attributes) { {} }
     let(:options) { attributes }
     let(:headers) { { 'odata-entityid' => url } }
+    let(:entity_set_name) { 'things' }
 
     subject { client.create!(entity_type, attributes) }
 
     before do
       allow(client).to receive(:service).and_return(service)
       allow(service).to receive(:[]).with(entity_type).and_return(entity_set)
-      allow(entity_set).to receive(:new_entity).with(attributes).and_return(entity)
-      allow(client).to receive(:to_url_chunk).with(entity).and_return(path)
+      allow(entity_set).to receive(:name).and_return(entity_set_name)
+      allow(client).to receive(:entity_set_to_url_chunk).with(entity_set).and_return(path)
     end
 
     it 'posts entity_set info and returns resulting id' do
@@ -133,7 +134,7 @@ describe Frodo::Concerns::API do
     it 'raises errors that occur' do
       allow(client).to receive(:service).and_raise(StandardError)
 
-      expect{ subject }.to raise_error
+      expect{ subject }.to raise_error(StandardError)
     end
 
     context 'alias .insert!' do

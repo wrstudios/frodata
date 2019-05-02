@@ -1,9 +1,9 @@
 require 'spec_helper'
 require_relative 'entity/shared_examples'
 
-describe Frodo::Entity, vcr: {cassette_name: 'entity_specs'} do
+describe Frodo::Entity, vcr: false do
   before(:example) do
-    Frodo::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo',  metadata_file: metadata_file)
+    Frodo::Service.new('http://services.odata.org/V4/OData/OData.svc', name: 'ODataDemo', metadata_file: metadata_file)
   end
 
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
@@ -48,6 +48,51 @@ describe Frodo::Entity, vcr: {cassette_name: 'entity_specs'} do
     } }
 
     it_behaves_like 'a valid product'
+  end
+
+  describe '.with_properties with bind properties' do
+    before do
+      Frodo::Service.new('http://dynamics.com', name: 'DynamicsTestService', metadata_file: metadata_file)
+    end
+    let(:metadata_file) { 'spec/fixtures/files/metadata_dynamics.xml' }
+    let(:subject) { Frodo::Entity.with_properties(properties, options) }
+    let(:properties) { {
+      "firstname"                => "Christoph",
+      "lastname"                 => "Wagner",
+      "ownerid"                  => "odata.bind@/systemusers(95B9F1A8-3D5A-E911-A956-000D3A3B9CD8)",
+      "parentcustomerid_account" => "odata.bind@/accounts(60fb3f1c-b766-e911-a955-000d3a3b9316)",
+    } }
+    let(:entity_set) {
+      Frodo::EntitySet.new(
+        container: 'System',
+        namespace: 'Microsoft.Dynamics.CRM',
+        name: 'contacts',
+        type: 'contact',
+        service_name: 'DynamicsTestService')
+    }
+    let(:options) { {
+        type:         'Microsoft.Dynamics.CRM.contact',
+        namespace:    'Microsoft.Dynamics.CRM',
+        service_name: 'DynamicsTestService',
+        entity_set:   entity_set
+    } }
+
+    it do
+      aggregate_failures do
+        expect(subject).to be_a(Frodo::Entity)
+
+        expect(subject.name).to eq(entity_set.type)
+        expect(subject.type).to eq(options[:type])
+        expect(subject.namespace).to eq(options[:namespace])
+        expect(subject.service_name).to eq('DynamicsTestService')
+        expect(subject.context).to eq('http://dynamics.com/$metadata#contacts/$entity')
+        expect(subject.id).to eq('contacts()')
+        expect(subject['firstname']).to eq('Christoph')
+        expect(subject['lastname']).to eq('Wagner')
+        expect(subject['ownerid']).to eq('odata.bind@/systemusers(95B9F1A8-3D5A-E911-A956-000D3A3B9CD8)')
+        expect(subject['parentcustomerid_account']).to eq('odata.bind@/accounts(60fb3f1c-b766-e911-a955-000d3a3b9316)')
+      end
+    end
   end
 
   describe '.from_xml' do

@@ -93,7 +93,7 @@ module Frodo
 
       # Public: Insert a new record.
       #
-      # entity_set - The set the entity belongs to
+      # entity_set_name - The set the entity belongs to
       # attrs   - Hash of attributes to set on the new record.
       #
       # Examples
@@ -104,11 +104,15 @@ module Frodo
       #
       # Returns the primary key value of the newly created entity.
       # Raises exceptions if an error is returned from Dynamics.
-      def create!(entity_set, attrs)
-        entity = service[entity_set].new_entity(attrs)
-        url_chunk = to_url_chunk(entity)
+      def create!(entity_set_name, attrs)
+        entity_set = service[entity_set_name]
+        url_chunk = entity_set_to_url_chunk(entity_set)
         url = api_post(url_chunk, attrs).headers['odata-entityid']
-        id = url.match(/\(.+\)/)[0]
+        id_match = url.match(/\((.+)\)/)
+        if id_match.nil?
+          raise Frodo::Error.new "entity url not in expected format: #{url.inspect}"
+        end
+        return id_match[1]
       end
       alias insert! create!
 
@@ -281,6 +285,10 @@ module Frodo
         primary_key = entity.get_property(entity.primary_key).url_value
         set = entity.entity_set.name
         entity.is_new? ? set : "#{set}(#{primary_key})"
+      end
+
+      def entity_set_to_url_chunk(entity_set)
+        return entity_set.name
       end
 
       # Internal: Errors that should be rescued from in non-bang methods

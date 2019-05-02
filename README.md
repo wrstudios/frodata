@@ -307,19 +307,6 @@ This is only recommended for testing purposes, as the metadata file can change.
   })
 ```
 
-#### Metadata Data
-
-Typically the metadata file of a service can be quite large.
-You can speed your load time by forcing the service to load the metadata from a file rather than a URL.
-This is only recommended for testing purposes, as the metadata file can change.
-
-```ruby
-  service = Frodo::Service.new('http://services.odata.org/V4/OData/OData.svc', {
-    name: 'ODataDemo',
-    metadata_data: "metadata.xml",
-  })
-```
-
 ### Exploring a Service
 
 Once instantiated, you can request various information about the service, such as the names and types of entity sets it exposes, or the names of the entity types (and custom datatypes) it defines.
@@ -468,10 +455,10 @@ Many thanks go to [James Thompson][@plainprogrammer], who wrote the [original OD
 [@plainprogrammer]: https://github.com/plainprogrammer
 [ruby-odata]: https://github.com/ruby-odata/odata
 
-Many thanks go to [James Thompson][@pandawhisperer], who started the work on the [OData (Version 4.0) gem][frodo].
+Many thanks go to [Christoph Wagner][@pandawhisperer], who started the work on the [OData (Version 4.0) gem][frodata].
 
-[@plainprogrammer]: https://github.com/PandaWhisperer
-[frodo]: https://github.com/wrstudios/frodo
+[@pandawhisperer]: https://github.com/PandaWhisperer
+[frodata]: https://github.com/wrstudios/frodata
 
 Also, I would like to thank [Outreach][outreach] for generously allowing me to work on Open Source software like this. If you want to work on interesting challenges with an awesome team, check out our [open positions][outreachcareers].
 
