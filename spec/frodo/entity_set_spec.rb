@@ -90,6 +90,17 @@ describe Frodo::EntitySet, vcr: {cassette_name: 'entity_set_specs'} do
     it { expect(new_entity['DiscontinuedDate']).to be_nil }
     it { expect(new_entity['Rating']).to eq(4) }
     it { expect(new_entity['Price']).to eq(3.5) }
+
+    context 'with @odata.bind properties' do
+      let(:properties) { super().merge({
+          'Supplier@odata.bind': '/systemusers(12345)'
+      })}
+      it 'creates entity without annotations' do
+        expect(new_entity.entity_set).to eq(subject)
+        expect(new_entity['Supplier']).to eq('/systemusers(12345)')
+      end
+    end
+
   end
 
   # describe '#[]' do

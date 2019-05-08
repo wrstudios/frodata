@@ -201,6 +201,16 @@ describe Frodo::Concerns::API do
         expect{ subject }.to raise_error(ArgumentError)
       end
     end
+
+    context 'with @odata.bind properties' do
+      let(:attributes) {{
+          'ownerid@odata.bind': '/systemusers(12345)'
+      }}
+      it 'calls .update! with unmodified attributes' do
+        expect(client).to receive(:update!).with(entity_type, attributes).and_return(true)
+        expect(subject).to be(true)
+      end
+    end
   end
 
   describe '.destroy' do

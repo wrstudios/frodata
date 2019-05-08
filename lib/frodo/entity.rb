@@ -88,6 +88,12 @@ module Frodo
       end
     end
 
+    # strip inline annotations from property names and return separately
+    def parse_annotations_from_property_name(property_name)
+      prop_name, annotation = property_name.to_s.split('@', 2)
+      return prop_name, annotation
+    end
+
     def property_names
       [
         @properties_xml_value.andand.keys,
@@ -131,7 +137,9 @@ module Frodo
         end
 
         new_properties.each do |property_name, property_value|
-          self[property_name] = property_value
+          prop_name, annotation = parse_annotations_from_property_name(property_name)
+          # TODO: Do something with the annotation?
+          self[prop_name] = property_value
         end
       end
       entity
