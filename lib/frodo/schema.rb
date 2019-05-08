@@ -94,6 +94,23 @@ module Frodo
       end.to_h
     end
 
+    # Returns a hash for finding the associated read-only value property for a given
+    # navigation property
+    # @return [Hash<String, Hash<String, String>>]
+    def referential_constraints
+      @referential_constraints ||= metadata.xpath('//EntityType').map do |entity_type_def|
+        [
+          entity_type_def.attributes['Name'].value,
+          entity_type_def.xpath('./NavigationProperty[ReferentialConstraint]').map do |nav_property_def|
+            [
+              nav_property_def.attributes['Name'].value,
+              nav_property_def.xpath('./ReferentialConstraint').first.attributes['Property'].value
+            ]
+          end.to_h
+        ]
+      end.to_h
+    end
+
     # Get the property type for an entity from metadata.
     #
     # @param entity_name [to_s] the name of the relevant entity

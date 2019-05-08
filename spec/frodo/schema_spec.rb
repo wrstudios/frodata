@@ -69,6 +69,14 @@ describe Frodo::Schema do
     it { expect(subject.navigation_properties['Product'].values).to all(be_a(Frodo::NavigationProperty)) }
   end
 
+  describe '#referential_constraints' do
+    let(:metadata_file) { 'spec/fixtures/files/metadata_dynamics.xml' }
+    it { expect(subject).to respond_to(:referential_constraints) }
+    it { expect(subject.referential_constraints['contact'].size).to eq(20) }
+    it { expect(subject.referential_constraints['contact'].values).to all(be_a(String)) }
+    it { expect(subject.referential_constraints['contact']['parentcustomerid_account']).to eq('_parentcustomerid_value') }
+  end
+
   describe '#get_property_type' do
     it { expect(subject).to respond_to(:get_property_type) }
     it { expect(subject.get_property_type('Product', 'ID')).to eq('Edm.Int32') }
