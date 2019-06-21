@@ -26,6 +26,14 @@ describe Frodo::Service do
       service = Frodo::Service.new(service_url,  metadata_file: metadata_file, logger: logger)
       expect(service.logger).to eq(logger)
     end
+
+    context "with complex type referenced by namespace alias" do
+      let(:metadata_file) { 'spec/fixtures/files/metadata_dynamics.xml' }
+      it 'registers custom types on creation' do
+        subject
+        expect(Frodo::PropertyRegistry['mscrm.BooleanManagedProperty']).to be_a(Class)
+      end
+    end
   end
 
   describe '#logger' do

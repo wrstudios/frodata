@@ -339,6 +339,78 @@
         <NavigationProperty Name="contact_activity_parties" Type="Collection(mscrm.activityparty)" Partner="partyid_contact"/>
         <NavigationProperty Name="Contact_Letters" Type="Collection(mscrm.letter)" Partner="regardingobjectid_contact_letter"/>
       </EntityType>
+      <EntityType Name="role" BaseType="mscrm.crmbaseentity">
+        <Key>
+          <PropertyRef Name="roleid"/>
+        </Key>
+        <Property Name="importsequencenumber" Type="Edm.Int32"/>
+        <Property Name="componentstate" Type="Edm.Int32"/>
+        <Property Name="solutionid" Type="Edm.Guid"/>
+        <Property Name="_roletemplateid_value" Type="Edm.Guid"/>
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset"/>
+        <Property Name="_modifiedby_value" Type="Edm.Guid"/>
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid"/>
+        <Property Name="organizationid" Type="Edm.Guid"/>
+        <Property Name="name" Type="Edm.String" Unicode="false"/>
+        <Property Name="canbedeleted" Type="mscrm.BooleanManagedProperty"/>
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid"/>
+        <Property Name="_createdby_value" Type="Edm.Guid"/>
+        <Property Name="_businessunitid_value" Type="Edm.Guid"/>
+        <Property Name="roleid" Type="Edm.Guid"/>
+        <Property Name="overwritetime" Type="Edm.DateTimeOffset"/>
+        <Property Name="ismanaged" Type="Edm.Boolean"/>
+        <Property Name="iscustomizable" Type="mscrm.BooleanManagedProperty"/>
+        <Property Name="_parentrootroleid_value" Type="Edm.Guid"/>
+        <Property Name="roleidunique" Type="Edm.Guid"/>
+        <Property Name="_parentroleid_value" Type="Edm.Guid"/>
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset"/>
+        <Property Name="createdon" Type="Edm.DateTimeOffset"/>
+        <Property Name="versionnumber" Type="Edm.Int64"/>
+        <NavigationProperty Name="systemuserroles_association" Type="Collection(mscrm.systemuser)" Partner="systemuserroles_association"/>
+        <NavigationProperty Name="roleprivileges_association" Type="Collection(mscrm.privilege)" Partner="roleprivileges_association"/>
+        <NavigationProperty Name="appmoduleroles_association" Type="Collection(mscrm.appmodule)" Partner="appmoduleroles_association"/>
+        <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_role_createdonbehalfby">
+          <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_rolebase_modifiedby">
+          <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_role_modifiedonbehalfby">
+          <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="parentroleid" Type="mscrm.role" Nullable="false" Partner="role_parent_role">
+          <ReferentialConstraint Property="_parentroleid_value" ReferencedProperty="roleid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="role_parent_role" Type="Collection(mscrm.role)" Partner="parentroleid"/>
+        <NavigationProperty Name="businessunitid" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_roles">
+          <ReferentialConstraint Property="_businessunitid_value" ReferencedProperty="businessunitid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="roletemplateid" Type="mscrm.roletemplate" Nullable="false" Partner="role_template_roles">
+          <ReferentialConstraint Property="_roletemplateid_value" ReferencedProperty="roletemplateid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="Role_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_role"/>
+        <NavigationProperty Name="Role_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_role"/>
+        <NavigationProperty Name="organizationid_organization" Type="mscrm.organization" Nullable="false" Partner="organization_roles">
+          <ReferentialConstraint Property="organizationid" ReferencedProperty="organizationid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_rolebase_createdby">
+          <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="solution_role" Type="mscrm.solution" Nullable="false" Partner="solution_role">
+          <ReferentialConstraint Property="solutionid" ReferencedProperty="solutionid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="teamroles_association" Type="Collection(mscrm.team)" Partner="teamroles_association"/>
+        <NavigationProperty Name="parentrootroleid" Type="mscrm.role" Nullable="false" Partner="role_parent_root_role">
+          <ReferentialConstraint Property="_parentrootroleid_value" ReferencedProperty="roleid"/>
+        </NavigationProperty>
+        <NavigationProperty Name="role_parent_root_role" Type="Collection(mscrm.role)" Partner="parentrootroleid"/>
+        <NavigationProperty Name="Role_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_role_syncerror"/>
+      </EntityType>
+      <ComplexType Name="BooleanManagedProperty">
+        <Property Name="Value" Type="Edm.Boolean"/>
+        <Property Name="CanBeChanged" Type="Edm.Boolean"/>
+        <Property Name="ManagedPropertyLogicalName" Type="Edm.String" Unicode="false"/>
+      </ComplexType>
       <EntityContainer Name="System">
         <EntitySet Name="contacts" EntityType="Microsoft.Dynamics.CRM.contact">
           <NavigationPropertyBinding Path="lead_customer_contacts" Target="leads"/>

@@ -117,5 +117,34 @@ describe Frodo::Schema do
         subject.properties_for_entity('Error')
       }.to raise_error(/Does.Not.Exist/)
     end
+
+    context "with namespace-aliased complex types" do
+      let(:metadata_file) { 'spec/fixtures/files/metadata_dynamics.xml' }
+      it { expect(subject.properties_for_entity('role').keys).to eq(%w[
+        importsequencenumber
+        componentstate
+        solutionid
+        _roletemplateid_value
+        modifiedon
+        _modifiedby_value
+        _modifiedonbehalfby_value
+        organizationid
+        name
+        canbedeleted
+        _createdonbehalfby_value
+        _createdby_value
+        _businessunitid_value
+        roleid
+        overwritetime
+        ismanaged
+        iscustomizable
+        _parentrootroleid_value
+        roleidunique
+        _parentroleid_value
+        overriddencreatedon
+        createdon
+        versionnumber
+      ]) }
+      end
   end
 end

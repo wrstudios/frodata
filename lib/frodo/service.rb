@@ -94,9 +94,14 @@ module Frodo
     # @return [Hash<String, Frodo::Schema::ComplexType>]
     def complex_types
       @complex_types ||= schemas.map do |namespace, schema|
+        schema_hash = {}
         schema.complex_types.map do |name, complex_type|
-          [ "#{namespace}.#{name}", complex_type ]
-        end.to_h
+          schema_hash["#{namespace}.#{name}"] = complex_type
+          if schema.alias
+            schema_hash["#{schema.alias}.#{name}"] = complex_type
+          end
+        end
+        schema_hash
       end.reduce({}, :merge)
     end
 

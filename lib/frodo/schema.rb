@@ -23,6 +23,12 @@ module Frodo
       @namespace ||= metadata.attributes['Namespace'].value
     end
 
+    # Returns the schema's `Alias` attribute.
+    # @return [String]
+    def alias
+      @alias ||= metadata.attributes['Alias']&.value
+    end
+
     # Returns a list of actions defined by the schema.
     # @return [Array<String>]
     def actions
