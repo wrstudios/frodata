@@ -73,7 +73,7 @@ module Frodo
       end
 
       def service
-        @service ||= Frodo::Service.new(instance_url, strict: false, metadata_document: metadata)
+        @service ||= Frodo::Service.new(instance_url, strict: false, metadata_document: metadata_on_init)
       end
 
       def inspect
