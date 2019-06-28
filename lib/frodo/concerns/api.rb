@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'erb'
 require 'uri'
 require 'frodo/concerns/verbs'
@@ -151,13 +150,16 @@ module Frodo
       #
       # Returns true if the entity was successfully updated.
       # Raises an exception if an error is returned from Dynamics.
-      def update!(entity_set, attrs)
+      def update!(entity_set, attrs, additional_headers={})
         entity = service[entity_set].new_entity(attrs)
         url_chunk = to_url_chunk(entity)
 
         raise ArgumentError, 'ID field missing from provided attributes' if entity.is_new?
 
-        api_patch url_chunk, attrs
+        api_patch url_chunk, attrs do |req|
+          puts "#{req.class.name}"
+          req.headers.merge!(additional_headers)
+        end
         true
       end
 
