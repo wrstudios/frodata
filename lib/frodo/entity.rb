@@ -303,7 +303,6 @@ module Frodo
       entity.instance_eval do
         new_links = instance_variable_get(:@links) || {}
         schema.navigation_properties[name].each do |nav_name, details|
-          p nav_name
           xml_doc.xpath("./link[@title='#{nav_name}']").each do |node|
             next if node.attributes['type'].nil?
             next unless node.attributes['type'].value =~ /^application\/atom\+xml;type=(feed|entry)$/i

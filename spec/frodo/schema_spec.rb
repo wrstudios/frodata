@@ -67,14 +67,26 @@ describe Frodo::Schema do
     it { expect(subject).to respond_to(:navigation_properties) }
     it { expect(subject.navigation_properties['Product'].size).to eq(3) }
     it { expect(subject.navigation_properties['Product'].values).to all(be_a(Frodo::NavigationProperty)) }
+
+    context "with navigation property inherited from parent type" do
+      let(:metadata_file) { 'spec/fixtures/files/metadata_dynamics.xml' }
+      it { expect(subject.navigation_properties['email'].size).to eq(132) }
+      it { expect(subject.navigation_properties['email']['activitypointer_activity_parties']).to be_a(Frodo::NavigationProperty) }
+    end
+
   end
 
-  describe '#referential_constraints' do
+  describe '#referential_constraints_for_entity' do
     let(:metadata_file) { 'spec/fixtures/files/metadata_dynamics.xml' }
-    it { expect(subject).to respond_to(:referential_constraints) }
-    it { expect(subject.referential_constraints['contact'].size).to eq(20) }
-    it { expect(subject.referential_constraints['contact'].values).to all(be_a(String)) }
-    it { expect(subject.referential_constraints['contact']['parentcustomerid_account']).to eq('_parentcustomerid_value') }
+    it { expect(subject).to respond_to(:referential_constraints_for_entity) }
+    it { expect(subject.referential_constraints_for_entity('contact').size).to eq(20) }
+    it { expect(subject.referential_constraints_for_entity('contact').values).to all(be_a(String)) }
+    it { expect(subject.referential_constraints_for_entity('contact')['parentcustomerid_account']).to eq('_parentcustomerid_value') }
+
+    context "with navigation property inherited from parent type" do
+      it { expect(subject.referential_constraints_for_entity('email').size).to eq(41) }
+      it { expect(subject.referential_constraints_for_entity('email')['regardingobjectid_opportunity']).to eq('_regardingobjectid_value') }
+    end
   end
 
   describe '#get_property_type' do

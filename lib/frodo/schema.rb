@@ -88,33 +88,48 @@ module Frodo
     # @return [Hash<Hash<Frodo::NavigationProperty>>]
     def navigation_properties
       @navigation_properties ||= metadata.xpath('//EntityType').map do |entity_type_def|
+        entity_name = entity_type_def.attributes['Name'].value
         [
-          entity_type_def.attributes['Name'].value,
-          entity_type_def.xpath('./NavigationProperty').map do |nav_property_def|
-            [
-              nav_property_def.attributes['Name'].value,
-              ::Frodo::NavigationProperty.build(nav_property_def)
-            ]
-          end.to_h
+          entity_name,
+          navigation_properties_for_entity(entity_name)
         ]
       end.to_h
     end
 
-    # Returns a hash for finding the associated read-only value property for a given
-    # navigation property
-    # @return [Hash<String, Hash<String, String>>]
-    def referential_constraints
-      @referential_constraints ||= metadata.xpath('//EntityType').map do |entity_type_def|
+    # Get the list of navigation properties and their various options for the supplied
+    # Entity name.
+    # @param entity_name [to_s]
+    # @return [Hash]
+    # @api private
+    def navigation_properties_for_entity(entity_name)
+      type_definition = get_type_definition_for_entity_name(entity_name)
+
+      parent_properties = recurse_on_parent_type(type_definition)
+
+      properties_to_return = type_definition.xpath('./NavigationProperty').map do |nav_property_def|
         [
-          entity_type_def.attributes['Name'].value,
-          entity_type_def.xpath('./NavigationProperty[ReferentialConstraint]').map do |nav_property_def|
-            [
-              nav_property_def.attributes['Name'].value,
-              nav_property_def.xpath('./ReferentialConstraint').first.attributes['Property'].value
-            ]
-          end.to_h
+          nav_property_def.attributes['Name'].value,
+          ::Frodo::NavigationProperty.build(nav_property_def)
         ]
       end.to_h
+      parent_properties.merge!(properties_to_return)
+    end
+
+    # Returns a hash for finding the associated read-only value property for a given
+    # navigation property
+    # @return Hash<String, String>
+    def referential_constraints_for_entity(entity_name)
+      type_definition = get_type_definition_for_entity_name(entity_name)
+
+      parent_refcons = recurse_on_parent_type(type_definition)
+
+      refcons_to_return = type_definition.xpath('./NavigationProperty[ReferentialConstraint]').map do |nav_property_def|
+        [
+          nav_property_def.attributes['Name'].value,
+          nav_property_def.xpath('./ReferentialConstraint').first.attributes['Property'].value
+        ]
+      end.to_h
+      parent_refcons.merge!(refcons_to_return)
     end
 
     # Get the property type for an entity from metadata.
@@ -140,17 +155,10 @@ module Frodo
     # @return [Hash]
     # @api private
     def properties_for_entity(entity_name)
-      type_definition = metadata.xpath("//EntityType[@Name='#{entity_name}']").first
-
-      raise ArgumentError, "Unknown EntityType: #{entity_name}" if type_definition.nil?
+      type_definition = get_type_definition_for_entity_name(entity_name)
       properties_to_return = {}
 
-      parent_properties = if base_type = type_definition.attributes['BaseType']
-                            parent_type = base_type.value.split('.').last
-                            properties_for_entity(parent_type)
-                          else
-                            {}
-                          end
+      parent_properties = recurse_on_parent_type(type_definition)
 
       type_definition.xpath('./Property').each do |property_xml|
         property_name, property = process_property_from_xml(property_xml)
@@ -183,5 +191,21 @@ module Frodo
 
       return [property_name, property]
     end
+
+    def get_type_definition_for_entity_name(entity_name)
+      type_definition = metadata.xpath("//EntityType[@Name='#{entity_name}']").first
+      raise ArgumentError, "Unknown EntityType: #{entity_name}" if type_definition.nil?
+      return type_definition
+    end
+
+    def recurse_on_parent_type(type_definition)
+      meth = caller_locations(1,1)[0].label
+      if base_type = type_definition.attributes['BaseType']
+        parent_type = base_type.value.split('.').last
+        return method(meth).call(parent_type)
+      end
+      return {}
+    end
+
   end
 end

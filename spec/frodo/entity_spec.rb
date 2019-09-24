@@ -48,6 +48,39 @@ describe Frodo::Entity, vcr: false do
     } }
 
     it_behaves_like 'a valid product'
+
+    context "with navigation properties inherited from supertype" do
+      before do
+        Frodo::Service.new('http://dynamics.com', name: 'DynamicsTestService', metadata_file: metadata_file)
+      end
+      let(:metadata_file) { 'spec/fixtures/files/metadata_dynamics.xml' }
+      let(:entity_set) {
+        Frodo::EntitySet.new(
+          container: 'System',
+          namespace: 'Microsoft.Dynamics.CRM',
+          name: 'emails',
+          type: 'email',
+          service_name: 'DynamicsTestService')
+      }
+      let(:options) { {
+          type:         'Microsoft.Dynamics.CRM.email',
+          namespace:    'Microsoft.Dynamics.CRM',
+          service_name: 'DynamicsTestService',
+          entity_set:   entity_set
+      } }
+      let(:properties) {{
+        "activitypointer_activity_parties" => [ # This is inherited from the parent type `activitypointer`
+          {"partyid_systemuser@odata.bind"=>"/systemusers(cef21737-4714-e911-a957-000d3a3b959b)", "participationtypemask"=>1},
+          {"partyid_lead@odata.bind"=>"/leads(0474694b-199d-e911-a95d-000d3a3b9a2b)", "participationtypemask"=>2}
+        ],
+        "activityid"=>"708bff0f-ebdb-e911-a960-000d3a3b9b3d"
+      }}
+      it 'returns navigation property from parent' do
+        expect(subject.get_property('activitypointer_activity_parties')).to be_a(Frodo::NavigationProperty::Proxy)
+        expect(subject['activitypointer_activity_parties']).to eq(properties['activitypointer_activity_parties'])
+      end
+    end
+
   end
 
   describe '.with_properties with bind properties' do
@@ -195,4 +228,5 @@ describe Frodo::Entity, vcr: false do
 
     it { expect(subject.to_json).to eq(properties.to_json) }
   end
+
 end
