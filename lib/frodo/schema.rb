@@ -12,9 +12,10 @@ module Frodo
     #
     # @param schema_definition [Nokogiri::XML] The schema's XML definition
     # @param service [Frodo::Service] The schema's parent service
-    def initialize(schema_definition, service)
+    def initialize(schema_definition, service, navigation_properties=nil)
       @metadata = schema_definition
       @service = service
+      @navigation_properties = navigation_properties
     end
 
     # Returns the schema's `Namespace` attribute (mandatory).

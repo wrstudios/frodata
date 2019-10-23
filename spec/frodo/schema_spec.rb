@@ -74,6 +74,12 @@ describe Frodo::Schema do
       it { expect(subject.navigation_properties['email']['activitypointer_activity_parties']).to be_a(Frodo::NavigationProperty) }
     end
 
+    context "with navigation properties provided during initialization" do
+      let(:navigation_properties) { { key: "value" } }
+      let(:subject) { Frodo::Schema.new(schema_xml, service, navigation_properties) }
+
+      it { expect(subject.navigation_properties).to eq(navigation_properties) }
+    end
   end
 
   describe '#referential_constraints_for_entity' do

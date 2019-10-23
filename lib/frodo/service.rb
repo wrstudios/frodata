@@ -48,7 +48,7 @@ module Frodo
       @schemas ||= metadata.xpath('//Schema').map do |schema_xml|
         [
           schema_xml.attributes['Namespace'].value,
-          Schema.new(schema_xml, self)
+          Schema.new(schema_xml, self, options[:navigation_properties])
         ]
       end.to_h
     end

@@ -136,6 +136,9 @@ module Frodo
     # Set a log level for logging when Frodo.log is set to true, defaulting to :debug
     option :log_level, default: :debug
 
+    # Optionally set the navigation properties to improve performance of the client
+    option :navigation_properties
+
     def options
       self.class.options
     end
