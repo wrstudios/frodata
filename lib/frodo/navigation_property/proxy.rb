@@ -22,6 +22,10 @@ module Frodo
         end
       end
 
+      def json_value
+        value
+      end
+
       private
 
       attr_reader :entity, :nav_name
