@@ -18,7 +18,11 @@ module Frodo
       # @params new_value [to_i]
       def value=(new_value)
         validate(new_value.to_i)
-        @value = new_value.to_i.to_s
+        @value = if new_value.nil? && allows_nil?
+                   nil
+                 else
+                   new_value.to_i.to_s
+                 end
       end
 
       # The Frodo type name

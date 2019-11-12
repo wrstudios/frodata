@@ -7,11 +7,14 @@ describe Frodo::Properties::Integer do
   let(:subject64) { Frodo::Properties::Int64.new('Int64', '32') }
   let(:subjectbyte) { Frodo::Properties::Byte.new('Byte', '32') }
   let(:subjectsbyte) { Frodo::Properties::SByte.new('SByte', '32') }
+  let(:subjectnullable) { Frodo::Properties::Integer.new('Integer', '32', 'allows_nil'=>true) }
 
   it { expect(subject.type).to eq('Edm.Int64') }
   it { expect(subject.value).to eq(32) }
   it { expect {subject.value = (2**63)}.to raise_error(ArgumentError) }
   it { expect {subject.value = (-(2**63) - 1)}.to raise_error(ArgumentError) }
+
+  
 
   it { expect(subject16.type).to eq('Edm.Int16') }
   it { expect(subject16.value).to eq(32) }
@@ -46,6 +49,7 @@ describe Frodo::Properties::Integer do
       subject64.value = 128
       subjectbyte.value = 12
       subjectsbyte.value = 12
+      subjectnullable.value = nil
     end
 
     it { expect(subject.value).to eq(128) }
@@ -54,5 +58,6 @@ describe Frodo::Properties::Integer do
     it { expect(subject64.value).to eq(128) }
     it { expect(subjectbyte.value).to eq(12) }
     it { expect(subjectsbyte.value).to eq(12) }
+    it { expect(subjectnullable.value).to eq(nil) }
   end
 end
