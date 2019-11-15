@@ -1,3 +1,3 @@
 module Frodo
-  VERSION = '0.12.2'
+  VERSION = '0.12.4'
 end

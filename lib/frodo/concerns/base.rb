@@ -24,7 +24,12 @@ module Frodo
       #
       #        :client_id               - The oauth client id to use. Needed for both
       #                                   password and oauth authentication
-      #        :client_secret           - The oauth client secret to use.
+      #        :client_secret           - The oauth client secret to use. Required for
+      #                                   client_credentials auth flow
+      #        :tenant_id               - The Azure AD tenant id. Required for
+      #                                   client_credentials and password auth flows
+      #        :username                - User's dynamics username for password auth flow
+      #        :password                - User's dynamics password for password auth flow
       #
       #        :host                    - The String hostname to use during
       #                                   authentication requests

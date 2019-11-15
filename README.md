@@ -52,7 +52,7 @@ building an application where many users from different orgs are authenticated
 through oauth and you need to interact with data in their org on their behalf,
 you should use the OAuth token authentication method.
 
-This is currently the only supported method. This may change overtime
+The "client credentials", and "password" flows are also supported.
 
 It is also important to note that the client object should not be reused across different threads, otherwise you may encounter [thread-safety issues](https://www.youtube.com/watch?v=p5zQOkyCACc).
 
@@ -97,6 +97,37 @@ The proc is passed one argument, a `Hash` of the response, similar than the one 
 ```
 
 The `id` field can be used to [uniquely identify](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#refreshing-the-access-tokens) the user that the `access_token` and `refresh_token` belong to.
+
+#### Client credentials authentication
+
+This should be considered experimental. At the time of this writing, it was possible to obtain an access token using this method, but it was not possible to use the access token without receiving 401 from Dynamics. Configuration is as above, but you specify `client_id`, `client_secret`, and `tenant_id`:
+
+```ruby
+client = Frodo.new({
+  instance_url: 'instance url',
+  client_id: 'client_id',
+  client_secret: 'client_secret',
+  tenant_id: 'tenant_id',
+  authentication_callback: Proc.new { |x| Rails.logger.debug x.to_s },
+  base_path: '/path/to/service'
+})
+```
+
+#### User password authentication
+
+As above, but you specify `client_id`, `tenant_id`, `username`, and `password`:
+
+```ruby
+client = Frodo.new({
+  instance_url: 'instance url',
+  client_id: 'client_id',
+  tenant_id: 'tenant_id',
+  username: 'username',
+  password: 'password',
+  authentication_callback: Proc.new { |x| Rails.logger.debug x.to_s },
+  base_path: '/path/to/service'
+})
+```
 
 ### Proxy Support
 

@@ -16,8 +16,31 @@ module Frodo
       # Internal: Determines what middleware will be used based on the options provided
       def authentication_middleware
         if oauth_refresh?
-          Frodo::Middleware::Authentication::Token
+          return Frodo::Middleware::Authentication::Token
         end
+        if password?
+          return Frodo::Middleware::Authentication::Password
+        end
+        if client_credentials?
+          return Frodo::Middleware::Authentication::ClientCredentials
+        end
+      end
+
+      # Internal: Returns true if oauth password grant
+      # should be used for authentication.
+      def password?
+        options[:username] &&
+          options[:password] &&
+          options[:client_id] &&
+          options[:tenant_id]
+      end
+
+      # Internal: Returns true if oauth client_credentials flow should be used for
+      # authentication.
+      def client_credentials?
+        options[:tenant_id] &&
+          options[:client_id] &&
+          options[:client_secret]
       end
 
       # Internal: Returns true if oauth token refresh flow should be used for

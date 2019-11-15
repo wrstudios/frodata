@@ -6,7 +6,9 @@ module Frodo
   # will attempt to either reauthenticate (username and password) or refresh
   # the oauth access token (if a refresh token is present).
   class Middleware::Authentication < Frodo::Middleware
-    autoload :Token,    'frodo/middleware/authentication/token'
+    autoload :Token, 'frodo/middleware/authentication/token'
+    autoload :ClientCredentials, 'frodo/middleware/authentication/client_credentials'
+    autoload :Password, 'frodo/middleware/authentication/password'
 
     # Rescue from 401's, authenticate then raise the error again so the client
     # can reissue the request.
@@ -19,7 +21,7 @@ module Frodo
 
     # Internal: Performs the authentication and returns the response body.
     def authenticate!
-      response = connection.post '/common/oauth2/token' do |req|
+      response = connection.post token_endpoint do |req|
         req.body = encode_www_form(params)
       end
 
@@ -29,8 +31,8 @@ module Frodo
         raise Frodo::AuthenticationError, error_message(response)
       end
 
-      @options[:oauth_token]  = response.body['access_token']
-      @options[:refresh_token]  = response.body['refresh_token']
+      @options[:oauth_token] = response.body['access_token']
+      @options[:refresh_token] = response.body['refresh_token']
       @options[:authentication_callback]&.call(response.body)
 
       response.body
@@ -82,6 +84,10 @@ module Frodo
       { url: "https://#{@options[:host]}",
         proxy: @options[:proxy_uri],
         ssl: @options[:ssl] }
+    end
+
+    def token_endpoint
+      "/#{@options[:tenant_id] || 'common'}/oauth2/token"
     end
   end
 end

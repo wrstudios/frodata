@@ -3,31 +3,37 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
-describe Frodo::Middleware::Authentication::Token do
+describe Frodo::Middleware::Authentication::Password do
   include WebMock::API
 
   describe 'authentication middleware' do
     let(:options) do
-      { refresh_token: 'refresh_token',
-        client_id: 'client_id',
-        client_secret: 'client_secret',
+      { client_id: 'client_id',
+        tenant_id: 'tenant_foo_id',
+        username: 'username',
+        password: 'password',
         adapter: :net_http,
-        host: 'login.window.net'
+        host: 'login.window.net',
+        instance_url: "https://endpoint.example.com",
       }
     end
 
       let(:success_request) do
-        stub_request(:post, "https://login.window.net/common/oauth2/token").with(
-          body: "grant_type=refresh_token&refresh_token=refresh_token&" \
-                   "client_id=client_id&client_secret=client_secret"
-        ).to_return(status: 200, body: fixture("auth_success_response"))
+        stub_request(:post, "https://login.window.net/#{options[:tenant_id]}/oauth2/token").with(
+          body: {
+            "client_id"=>options[:client_id], "grant_type"=>"password", "password"=>options[:password],
+            "resource"=>options[:instance_url], "username"=>options[:username]
+          },
+        ).to_return(status: 200, body: fixture("password_auth_success_response"))
       end
 
       let(:fail_request) do
-        stub_request(:post, "https://login.window.net/common/oauth2/token").with(
-          body: "grant_type=refresh_token&refresh_token=refresh_token&" \
-                   "client_id=client_id&client_secret=client_secret"
-        ).to_return(status: 400, body: fixture("refresh_error_response"))
+        stub_request(:post, "https://login.window.net/#{options[:tenant_id]}/oauth2/token").with(
+          body: {
+            "client_id"=>options[:client_id], "grant_type"=>"password", "password"=>options[:password],
+            "resource"=>options[:instance_url], "username"=>options[:username]
+          },
+        ).to_return(status: 400, body: fixture("password_auth_failure_response"))
       end
 
     describe '.authenticate!' do
@@ -43,9 +49,9 @@ describe Frodo::Middleware::Authentication::Token do
 
           it { expect(subject[:host]).to eq 'login.window.net' }
 
-          it { expect(subject[:oauth_token]).to eq "gfEzf4azkWZMTjlay7usiSWhc0eOLNkKMw" }
+          it { expect(subject[:oauth_token]).to eq "eyJ0eXAiOiJKV1QiLCJhbGciOi" }
 
-          it { expect(subject[:refresh_token]).to eq "QswqIkdHSdbyvbDFuLwHNAoU1QgAA" }
+          it { expect(subject[:refresh_token]).to eq 'AQABAAAAAACQN9QBRU3jT6bcBQLZ' }
         end
 
         context 'when an authentication_callback is specified' do

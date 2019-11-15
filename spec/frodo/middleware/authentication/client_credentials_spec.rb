@@ -3,31 +3,31 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
-describe Frodo::Middleware::Authentication::Token do
+describe Frodo::Middleware::Authentication::ClientCredentials do
   include WebMock::API
 
   describe 'authentication middleware' do
     let(:options) do
-      { refresh_token: 'refresh_token',
-        client_id: 'client_id',
+      { client_id: 'client_id',
         client_secret: 'client_secret',
+        tenant_id: 'tenant_id',
         adapter: :net_http,
         host: 'login.window.net'
       }
     end
 
       let(:success_request) do
-        stub_request(:post, "https://login.window.net/common/oauth2/token").with(
-          body: "grant_type=refresh_token&refresh_token=refresh_token&" \
+        stub_request(:post, "https://login.window.net/tenant_id/oauth2/token").with(
+          body: "grant_type=client_credentials&" \
                    "client_id=client_id&client_secret=client_secret"
-        ).to_return(status: 200, body: fixture("auth_success_response"))
+        ).to_return(status: 200, body: fixture("client_credentials_auth_success_response"))
       end
 
       let(:fail_request) do
-        stub_request(:post, "https://login.window.net/common/oauth2/token").with(
-          body: "grant_type=refresh_token&refresh_token=refresh_token&" \
+        stub_request(:post, "https://login.window.net/tenant_id/oauth2/token").with(
+          body: "grant_type=client_credentials&" \
                    "client_id=client_id&client_secret=client_secret"
-        ).to_return(status: 400, body: fixture("refresh_error_response"))
+        ).to_return(status: 400, body: fixture("client_credentials_refresh_error_response"))
       end
 
     describe '.authenticate!' do
@@ -43,9 +43,9 @@ describe Frodo::Middleware::Authentication::Token do
 
           it { expect(subject[:host]).to eq 'login.window.net' }
 
-          it { expect(subject[:oauth_token]).to eq "gfEzf4azkWZMTjlay7usiSWhc0eOLNkKMw" }
+          it { expect(subject[:oauth_token]).to eq "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsI" }
 
-          it { expect(subject[:refresh_token]).to eq "QswqIkdHSdbyvbDFuLwHNAoU1QgAA" }
+          it { expect(subject[:refresh_token]).to be_nil }
         end
 
         context 'when an authentication_callback is specified' do
