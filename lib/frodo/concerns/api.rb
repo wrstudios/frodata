@@ -69,9 +69,9 @@ module Frodo
                     end
 
         body = api_get(url_chunk).body
-
         # if manual query as a string we detect the set on the response
         entity_set = body['@odata.context'].split('#')[-1] if entity_set.nil?
+
         build_entity(entity_set, body)
       end
 
@@ -109,13 +109,12 @@ module Frodo
       # Returns the primary key value of the newly created entity.
       # Raises exceptions if an error is returned from Dynamics.
       def create!(entity_set_name, attrs)
-        entity_set = service[entity_set_name]
-        url_chunk = entity_set_to_url_chunk(entity_set)
-        url = api_post(url_chunk, attrs).headers['odata-entityid']
+        url = api_post(entity_set_name, attrs).headers['odata-entityid']
         id_match = url.match(/\((.+)\)/)
         if id_match.nil?
           raise Frodo::Error.new "entity url not in expected format: #{url.inspect}"
         end
+
         return id_match[1]
       end
       alias insert! create!
@@ -150,12 +149,10 @@ module Frodo
       #
       # Returns true if the entity was successfully updated.
       # Raises an exception if an error is returned from Dynamics.
-      def update!(entity_set, attrs, additional_headers={})
-        entity = service[entity_set].new_entity(attrs)
-        url_chunk = to_url_chunk(entity)
+      def update!(entity_set_name, primary_key, attrs, additional_headers={})
+        raise ArgumentError, 'ID field missing from provided attributes' unless attrs.has_key?(primary_key)
 
-        raise ArgumentError, 'ID field missing from provided attributes' if entity.is_new?
-
+        url_chunk = "#{entity_set_name}(#{attrs[primary_key]})"
         api_patch url_chunk, attrs do |req|
           req.headers.merge!(additional_headers)
         end
@@ -208,7 +205,7 @@ module Frodo
       # Returns the Entity record.
       def find(entity_set, id)
         query = service[entity_set].query
-        url_chunk = query.find(id)
+        url_chunk = query.find(id, entity_set)
 
         body = api_get(url_chunk).body
         build_entity(entity_set, body)
@@ -225,7 +222,7 @@ module Frodo
         query = service[entity_set].query
 
         fields.each{|field| query.select(field)}
-        url_chunk = query.find(id)
+        url_chunk = query.find(id, entity_set)
 
         body = api_get(url_chunk).body
         build_entity(entity_set, body)
@@ -269,8 +266,7 @@ module Frodo
       end
 
       def build_entity(entity_set, data)
-        entity_options = service[entity_set].entity_options
-        single_entity?(data) ? parse_entity(data, entity_options) : parse_entities(data, entity_options)
+        single_entity?(data) ? data : data['value']
       end
 
       def single_entity?(body)
@@ -293,9 +289,7 @@ module Frodo
         entity.is_new? ? set : "#{set}(#{primary_key})"
       end
 
-      def entity_set_to_url_chunk(entity_set)
-        return entity_set.name
-      end
+
 
       # Internal: Errors that should be rescued from in non-bang methods
       def exceptions

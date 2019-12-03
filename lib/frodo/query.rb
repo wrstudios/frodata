@@ -29,13 +29,8 @@ module Frodo
     # Build a query to find an entity with the supplied key value.
     # @param key [to_s] primary key to lookup
     # @return the path and querystring [String]
-    def find(key)
-      entity = @entity_set.new_entity
-      key_property = entity.get_property(entity.primary_key)
-      key_property.value = key
-
-      pathname = "#{entity_set.name}(#{key_property.url_value})"
-
+    def find(key, entity_set_name)
+      pathname = "#{entity_set_name}(#{key})"
       select_criteria = if list_criteria(:select)
                           list_criteria(:select).map { |k, v| "#{k}=#{v}" }.join('&')
                         end

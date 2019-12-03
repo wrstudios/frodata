@@ -15,8 +15,9 @@ describe Frodo::Concerns::API do
   end
 
   let(:client) { klass.new }
+  let(:connection_uri){'http://frodo.com'}
   let(:connection) {
-    Faraday.new('http://frodo.com', {}) do |conn|
+    Faraday.new(connection_uri, {}) do |conn|
       conn.request :json
       conn.response :json
       conn.adapter Faraday.default_adapter
@@ -116,28 +117,16 @@ describe Frodo::Concerns::API do
     let(:attributes) { {} }
     let(:options) { attributes }
     let(:headers) { { 'odata-entityid' => url } }
-    let(:entity_set_name) { 'things' }
 
+    before{stub_request(verb, "#{connection_uri}/#{entity_type}").to_return(body: body.to_json, headers: headers)}
     subject { client.create!(entity_type, attributes) }
-
-    before do
-      allow(client).to receive(:service).and_return(service)
-      allow(service).to receive(:[]).with(entity_type).and_return(entity_set)
-      allow(entity_set).to receive(:name).and_return(entity_set_name)
-      allow(client).to receive(:entity_set_to_url_chunk).with(entity_set).and_return(path)
-    end
 
     it 'posts entity_set info and returns resulting id' do
       expect(subject).to eq(id)
     end
 
-    it 'raises errors that occur' do
-      allow(client).to receive(:service).and_raise(StandardError)
-
-      expect{ subject }.to raise_error(StandardError)
-    end
-
     context 'alias .insert!' do
+
       subject { client.insert!(entity_type, attributes) }
 
       it { should eq(id) }
@@ -145,24 +134,26 @@ describe Frodo::Concerns::API do
   end
 
   describe '.update' do
-    let(:attributes) { {} }
+    let(:attributes) { {'typeid' => 'some_id'} }
+    let(:primary_key) { 'typeid' }
 
-    subject { client.update(entity_type, attributes) }
+    before { stub_request(verb, "#{connection_uri}/#{entity_type}(some_id)").to_return(body: body.to_json, headers: headers) }
+    subject { client.update(entity_type, primary_key, attributes) }
 
     it 'calls .create! and returns the result' do
-      allow(client).to receive(:update!).with(entity_type, attributes).and_return(true)
+      expect(client).to receive(:update!).with(entity_type, primary_key, attributes).and_return(true)
 
       expect(subject).to be(true)
     end
 
     it 'returns false for expected exceptions' do
-      allow(client).to receive(:update!).with(entity_type, attributes).and_raise(client_error)
+      allow(client).to receive(:update!).with(entity_type, primary_key, attributes).and_raise(client_error)
 
       expect(subject).to eq(false)
     end
 
     it 'raises other errors' do
-      allow(client).to receive(:update!).with(entity_type, attributes).and_raise(StandardError)
+      allow(client).to receive(:update!).with(entity_type, primary_key, attributes).and_raise(StandardError)
 
       expect{ subject }.to raise_error(StandardError)
     end
@@ -170,13 +161,15 @@ describe Frodo::Concerns::API do
 
   describe '.update!' do
     let(:verb) { :patch }
-    let(:attributes) { {} }
+    let(:attributes) { {'typeid' => 'some_id'} }
     let(:options) { attributes }
     let(:is_new) { false }
+    let(:primary_key) { 'typeid' }
 
-    subject { client.update!(entity_type, attributes) }
+    subject { client.update!(entity_type, primary_key, attributes) }
 
     before do
+      stub_request(verb, "#{connection_uri}/#{entity_type}(some_id)").to_return(body: body.to_json, headers: headers)
       allow(client).to receive(:service).and_return(service)
       allow(service).to receive(:[]).with(entity_type).and_return(entity_set)
       allow(entity_set).to receive(:new_entity).with(attributes).and_return(entity)
@@ -189,13 +182,14 @@ describe Frodo::Concerns::API do
     end
 
     it 'raises errors that occur' do
-      allow(client).to receive(:service).and_raise(StandardError)
+      allow(client).to receive(:api_patch).and_raise(StandardError)
 
       expect{ subject }.to raise_error(StandardError)
     end
 
     context 'new entity (ie. has no id)' do
       let(:is_new) { true }
+      let(:attributes) { {} }
 
       it 'raises ArgumentError' do
         expect{ subject }.to raise_error(ArgumentError)
@@ -207,7 +201,7 @@ describe Frodo::Concerns::API do
           'ownerid@odata.bind': '/systemusers(12345)'
       }}
       it 'calls .update! with unmodified attributes' do
-        expect(client).to receive(:update!).with(entity_type, attributes).and_return(true)
+        expect(client).to receive(:update!).with(entity_type, primary_key, attributes).and_return(true)
         expect(subject).to be(true)
       end
     end
@@ -219,7 +213,7 @@ describe Frodo::Concerns::API do
         stub_request(verb, uri).to_return(body: body.to_json, headers: headers.merge!(additional_header))
       end
 
-      subject { client.update!(entity_type, attributes, additional_header) }
+      subject { client.update!(entity_type, primary_key, attributes, additional_header) }
 
       it 'should update' do
         expect(subject).to be(true)
@@ -279,14 +273,13 @@ describe Frodo::Concerns::API do
   end
 
   describe '.find' do
-
     subject { client.find(entity_type, id)}
 
     it 'returns found entity_set' do
       allow(client).to receive(:service).and_return(service)
       allow(service).to receive(:[]).with(entity_type).and_return(entity_set)
       allow(entity_set).to receive(:query).and_return(query)
-      allow(query).to receive(:find).with(id).and_return(path)
+      allow(query).to receive(:find).with(id,entity_type ).and_return(path)
       allow(client).to receive(:build_entity).with(entity_type, body).and_return(entity)
 
       expect(subject).to eq(entity)
@@ -399,17 +392,15 @@ describe Frodo::Concerns::API do
 
     it 'parses single entity' do
       allow(client).to receive(:single_entity?).with(data).and_return(true)
-
-      expect(client).to receive(:parse_entity).with(data, options)
-      subject
+      expect(subject).to eq(data)
     end
 
     context 'multiple entities' do
+      let(:data) { {'odata'=>'test', 'value'=>'data!!!'} }
       it 'parses multiple entities' do
         allow(client).to receive(:single_entity?).with(data).and_return(false)
 
-        expect(client).to receive(:parse_entities).with(data, options)
-        subject
+        expect(subject).to eq(data['value'])
       end
     end
   end

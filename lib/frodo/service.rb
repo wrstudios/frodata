@@ -70,7 +70,11 @@ module Frodo
     # @param entity_set_name [to_s] the name of the EntitySet desired
     # @return [Frodo::EntitySet] an Frodo::EntitySet to query
     def [](entity_set_name)
-      entity_container[entity_set_name]
+      if !options[:no_metadata]
+        entity_container[entity_set_name]
+      else
+        EntitySet.new(name: entity_set_name)
+      end
     end
 
     # Returns the default namespace, that is, the namespace of the schema

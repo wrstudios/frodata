@@ -27,7 +27,7 @@ describe Frodo::Query, vcr: {cassette_name: 'query_specs'} do
   end
 
   describe '#find' do
-    let(:product) { subject.find(0) }
+    let(:product) { subject.find(0, 'Products') }
 
     it { expect(subject).to respond_to(:find) }
 
@@ -36,7 +36,7 @@ describe Frodo::Query, vcr: {cassette_name: 'query_specs'} do
     end
 
     it 'allows selecting specific fields only' do
-      product_with_name_only = subject.select('Name').find(0)
+      product_with_name_only = subject.select('Name').find(0, 'Products')
       expect(product_with_name_only).to eq("Products(0)?$select=Name")
     end
   end
