@@ -266,6 +266,10 @@ module Frodo
       end
 
       def build_entity(entity_set, data)
+        if service.options[:with_metadata]
+          entity_options = service[entity_set].entity_options
+          return single_entity?(data) ? parse_entity(data, entity_options) : parse_entities(data, entity_options)
+        end
         single_entity?(data) ? data : data['value']
       end
 

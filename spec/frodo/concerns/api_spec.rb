@@ -387,6 +387,7 @@ describe Frodo::Concerns::API do
     before do
       allow(client).to receive(:service).and_return(service)
       allow(service).to receive(:[]).with(entity_type).and_return(entity_set)
+      allow(service).to receive(:options).and_return({})
       allow(entity_set).to receive(:entity_options).and_return(options)
     end
 
