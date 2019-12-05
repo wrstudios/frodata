@@ -26,6 +26,7 @@ describe Frodo::Client do
         to_return(body: File.new('spec/fixtures/files/metadata.xml'), status: 200)
 
     service = client.service
+    allow(service).to receive(:with_metadata?).and_return(true)
 
     expect(service['Products']).to_not be_nil
     expect(service['Products'].name).to eql('Products')

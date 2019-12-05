@@ -70,7 +70,11 @@ module Frodo
     # @param entity_set_name [to_s] the name of the EntitySet desired
     # @return [Frodo::EntitySet] an Frodo::EntitySet to query
     def [](entity_set_name)
-      entity_container[entity_set_name]
+      if with_metadata?
+        entity_container[entity_set_name]
+      else
+        EntitySet.new(name: entity_set_name)
+      end
     end
 
     # Returns the default namespace, that is, the namespace of the schema
@@ -168,6 +172,10 @@ module Frodo
       end
     end
 
+    def with_metadata?
+      !options.key?(:with_metadata) || options[:with_metadata]
+    end
+
     private
 
     def default_options
@@ -177,7 +185,7 @@ module Frodo
     end
 
     def default_logger
-        Frodo.configuration.logger if Frodo.log?
+      Frodo.configuration.logger if Frodo.log?
     end
 
     def read_metadata
