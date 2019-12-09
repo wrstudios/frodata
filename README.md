@@ -471,6 +471,9 @@ In this mode, any property validation error will log a warning instead of raisin
   service.options[:strict] = false
 ```
 
+## Release on rubygems.org
+There is a rake task `rake release`, which will  do everything for you.
+
 ## Contributing
 
 1. Fork it (`https://github.com/[my-github-username]/frodo/fork`)

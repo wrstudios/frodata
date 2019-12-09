@@ -205,7 +205,7 @@ module Frodo
       # Returns the Entity record.
       def find(entity_set, id)
         query = service[entity_set].query
-        url_chunk = query.find(id, entity_set)
+        url_chunk = query.find(id)
 
         body = api_get(url_chunk).body
         build_entity(entity_set, body)
@@ -222,7 +222,7 @@ module Frodo
         query = service[entity_set].query
 
         fields.each{|field| query.select(field)}
-        url_chunk = query.find(id, entity_set)
+        url_chunk = query.find(id)
 
         body = api_get(url_chunk).body
         build_entity(entity_set, body)

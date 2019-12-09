@@ -257,11 +257,10 @@ describe Frodo::Concerns::API do
     subject { client.destroy!(entity_type, id) }
 
     it 'deletes entity_set and returns true' do
-      allow(client).to receive(:service).and_return(service)
-      allow(service).to receive(:[]).with(entity_type).and_return(entity_set)
-      allow(entity_set).to receive(:query).and_return(query)
-      allow(query).to receive(:find).with(id).and_return(path)
-
+      expect(client).to receive(:service).and_return(service)
+      expect(service).to receive(:[]).with(entity_type).and_return(entity_set)
+      expect(entity_set).to receive(:query).and_return(query)
+      expect(query).to receive(:find).with(id).and_return(path)
       expect(subject).to eq(true)
     end
 
@@ -276,11 +275,11 @@ describe Frodo::Concerns::API do
     subject { client.find(entity_type, id) }
 
     it 'returns found entity_set' do
-      allow(client).to receive(:service).and_return(service)
-      allow(service).to receive(:[]).with(entity_type).and_return(entity_set)
-      allow(entity_set).to receive(:query).and_return(query)
-      allow(query).to receive(:find).with(id, entity_type).and_return(path)
-      allow(client).to receive(:build_entity).with(entity_type, body).and_return(entity)
+      expect(client).to receive(:service).and_return(service)
+      expect(entity_set).to receive(:query).and_return(query)
+      expect(service).to receive(:[]).with(entity_type).and_return(entity_set)
+      expect(query).to receive(:find).with(id).and_return(path)
+      expect(client).to receive(:build_entity).with(entity_type, body).and_return(entity)
 
       expect(subject).to eq(entity)
     end
@@ -298,11 +297,11 @@ describe Frodo::Concerns::API do
     subject { client.select(entity_type, id, fields) }
 
     it 'returns selected entity and fields' do
-      allow(client).to receive(:service).and_return(service)
-      allow(service).to receive(:[]).with(entity_type).and_return(entity_set)
-      allow(entity_set).to receive(:query).and_return(query)
-      allow(query).to receive(:find).and_return(path)
-      allow(client).to receive(:build_entity).with(entity_type, body).and_return(entity)
+      expect(client).to receive(:service).and_return(service)
+      expect(service).to receive(:[]).with(entity_type).and_return(entity_set)
+      expect(entity_set).to receive(:query).and_return(query)
+      expect(query).to receive(:find).with(id).and_return(path)
+      expect(client).to receive(:build_entity).with(entity_type, body).and_return(entity)
 
       expect(query).to receive(:select).exactly(fields.count).times
       expect(subject).to eq(entity)
