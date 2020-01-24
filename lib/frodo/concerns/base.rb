@@ -56,6 +56,8 @@ module Frodo
       #
       #        :request_headers         - A hash containing custom headers that will be
       #                                   appended to each request
+      #
+      #        :with_metadata           - Flag to specify if we need to use metadata
 
       def initialize(opts = {})
         raise ArgumentError, 'Please specify a hash of options' unless opts.is_a?(Hash)
@@ -78,7 +80,7 @@ module Frodo
       end
 
       def service
-        @service ||= Frodo::Service.new(instance_url, strict: false, metadata_document: metadata_on_init)
+        @service ||= Frodo::Service.new(instance_url, strict: false, metadata_document: metadata_on_init, with_metadata: options[:with_metadata] )
       end
 
       def inspect
