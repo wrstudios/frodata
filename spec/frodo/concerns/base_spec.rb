@@ -8,6 +8,7 @@ describe Frodo::Concerns::Base do
     context = self
     Class.new {
       include Frodo::Concerns::Connection
+      include Frodo::Concerns::API
       include context.described_class
     }
   end
@@ -42,6 +43,41 @@ describe Frodo::Concerns::Base do
   describe '.options' do
     subject { lambda { client.options } }
     it { should_not raise_error }
+  end
+
+  describe '.service' do
+    subject { client.service }
+    before do
+      allow(client).to receive(:instance_url).and_return("some_url")
+      allow(client).to receive(:metadata_on_init).and_return("")
+    end
+
+    context 'when with_metadata is true' do
+      before { allow(client).to receive(:options).and_return({ with_metadata: true }) }
+
+      it 'service options contains :with_metadata' do
+        expect(subject.options.has_key?(:with_metadata)).to be_truthy
+        expect(subject.options[:with_metadata]).to be_truthy
+      end
+    end
+
+    context 'when with_metadata is false' do
+      before { allow(client).to receive(:options).and_return({ with_metadata: false }) }
+
+      it 'service options contains :with_metadata' do
+        expect(subject.options.has_key?(:with_metadata)).to be_truthy
+        expect(subject.options[:with_metadata]).to be_falsey
+      end
+    end
+
+    context 'when with_metadata not presented in options' do
+      before { allow(client).to receive(:options).and_return({}) }
+
+      it 'service options contains :with_metadata' do
+        expect(subject.options.has_key?(:with_metadata)).to be_truthy
+        expect(subject.options[:with_metadata]).to be_falsey
+      end
+    end
   end
 
   describe '.instance_url' do

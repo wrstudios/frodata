@@ -21,7 +21,7 @@ module Frodo
       @service_url = service_url
 
       Frodo::ServiceRegistry.add(self)
-      register_custom_types
+      register_custom_types unless options[:with_metadata]
     end
 
     # Returns user supplied name for service, or its URL
