@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Frodo::Service do
   let(:service_url) { 'http://services.odata.org/V4/OData/OData.svc' }
   let(:metadata_file) { 'spec/fixtures/files/metadata.xml' }
-  let(:subject) { Frodo::Service.new(service_url, name: 'ODataDemo', metadata_file: metadata_file) }
+  let(:options){{name: 'ODataDemo', metadata_file: metadata_file }}
+  let(:subject) { Frodo::Service.new(service_url, options) }
 
   describe '.new' do
     it 'adds itself to Frodo::ServiceRegistry on creation' do
@@ -32,6 +33,21 @@ describe Frodo::Service do
       it 'registers custom types on creation' do
         subject
         expect(Frodo::PropertyRegistry['mscrm.BooleanManagedProperty']).to be_a(Class)
+      end
+    end
+
+    context "with 'with_metadata' option" do
+      it "call 'register_custom_types'" do
+        expect_any_instance_of(Frodo::Service).to receive(:register_custom_types)
+        subject
+      end
+    end
+
+    context "without 'with_metadata' option" do
+      let(:options){{name: 'ODataDemo', with_metadata:false, metadata_file: metadata_file }}
+      it "call 'register_custom_types'" do
+        expect_any_instance_of(Frodo::Service).to_not receive(:register_custom_types)
+        subject
       end
     end
   end

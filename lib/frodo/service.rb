@@ -1,4 +1,3 @@
-
 module Frodo
   # Encapsulates the basic details and functionality needed to interact with an
   # Frodo service.
@@ -21,7 +20,7 @@ module Frodo
       @service_url = service_url
 
       Frodo::ServiceRegistry.add(self)
-      register_custom_types unless options[:with_metadata]
+      register_custom_types if @options[:with_metadata]
     end
 
     # Returns user supplied name for service, or its URL
@@ -173,14 +172,15 @@ module Frodo
     end
 
     def with_metadata?
-      !options.key?(:with_metadata) || options[:with_metadata]
+      !@options.key?(:with_metadata) || @options[:with_metadata]
     end
 
     private
 
     def default_options
       {
-        strict: true # strict property validation
+        strict: true, # strict property validation
+        with_metadata: true
       }
     end
 

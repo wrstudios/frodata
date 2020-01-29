@@ -41,7 +41,7 @@ module Frodo
 
       def metadata_on_init
         # Creating Metadata using a different client than the one that is stored
-        Frodo::Client.new(@options).api_get("$metadata").body unless @options[:with_metadata]
+        Frodo::Client.new(@options).api_get("$metadata").body if @options[:with_metadata]
       end
 
       # Public: Execute a query and returns the result.
