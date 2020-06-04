@@ -21,10 +21,11 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.2.0'
 
   spec.add_dependency 'nokogiri', '~> 1.8'
-  spec.add_dependency 'faraday',  '~> 0.15'
+  spec.add_dependency 'faraday',  '~> 1.0.1'
   spec.add_dependency 'andand',   '~> 1.3'
 
-  spec.add_development_dependency 'bundler', '~> 1.6'
+  spec.add_development_dependency 'byebug',   '~> 11'
+  spec.add_development_dependency 'bundler', '~> 2'
   spec.add_development_dependency 'rake', '~> 0'
   spec.add_development_dependency 'simplecov', '~> 0.15'
   spec.add_development_dependency 'rspec', '~> 3.7'

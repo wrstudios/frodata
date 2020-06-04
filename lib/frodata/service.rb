@@ -227,7 +227,7 @@ module FrOData
     end
 
     def default_connection(&block)
-      Faraday.new(service_url, options[:connection]) do |conn|
+      Faraday.new(service_url, options[:connection] || {}) do |conn|
         conn.request :url_encoded
         conn.response :logger, logger
         yield conn if block_given?
