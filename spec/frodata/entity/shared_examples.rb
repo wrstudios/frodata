@@ -15,7 +15,7 @@ shared_examples 'a valid product' do
   it { expect(subject.get_property('ReleaseDate')).to be_a(FrOData::Properties::DateTimeOffset) }
   it { expect(subject.get_property('DiscontinuedDate')).to be_a(FrOData::Properties::DateTimeOffset) }
   it { expect(subject.get_property('Rating')).to be_a(FrOData::Properties::Integer) }
-  it { expect(subject.get_property('Price')).to be_a(FrOData::Properties::Double) }
+  it { expect(subject.get_property('Price')).to be_a(FrOData::Properties::Float) }
 
   # Navigation property proxies
   it { expect(subject.get_property('Categories')).to be_a(FrOData::NavigationProperty::Proxy)}
