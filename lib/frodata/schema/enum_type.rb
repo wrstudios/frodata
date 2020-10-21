@@ -46,18 +46,23 @@ module FrOData
       # @return [Hash]
       def members
         @members ||= collect_members
+        end
+
+      def annotated_members
+        @annotated_members ||= collect_annotated_members
       end
 
       # Returns the property class that implements this `EnumType`.
       # @return [Class < FrOData::Properties::Enum]
       def property_class
-        @property_class ||= lambda { |type, members, is_flags|
+        @property_class ||= lambda { |type, members, annotated_members, is_flags|
           klass = Class.new ::FrOData::Properties::Enum
           klass.send(:define_method, :type) { type }
           klass.send(:define_method, :members) { members }
+          klass.send(:define_method, :annotated_members) { annotated_members }
           klass.send(:define_method, :is_flags?) { is_flags }
           klass
-        }.call(type, members, is_flags?)
+        }.call(type, members, annotated_members, is_flags?)
       end
 
       # Returns the value of the requested member.
@@ -88,6 +93,18 @@ module FrOData
           member_name  = member_xml.attributes['Name'].value
           member_value = member_xml.attributes['Value'].andand.value.andand.to_i
           [member_value || index, member_name]
+        end]
+        end
+
+      def collect_annotated_members
+        Hash[type_definition.xpath('./Member').map.with_index do |member_xml, index|
+          member_name  = member_xml.attributes['Name'].value
+          member_value = member_xml.attributes['Value'].andand.value.andand.to_i
+          annotation = nil
+          if member_xml.element_children.count > 0
+            annotation = member_xml.element_children.last.attribute('String').value
+          end
+          [member_value || index, {name: member_name, annotation: annotation}]
         end]
       end
     end
