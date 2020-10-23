@@ -10,6 +10,7 @@
         <Property Name="Name" Type="Edm.String" />
         <Property Name="Description" Type="Edm.String" />
         <Property Name="Vertical" Type="ODataDemo.Vertical" />
+        <Property Name="EthicalAttributes" Type="Collection(ODataDemo.EthicalAttribute)" />
         <Property Name="ReleaseDate" Type="Edm.DateTimeOffset" Nullable="false" />
         <Property Name="DiscontinuedDate" Type="Edm.DateTimeOffset" />
         <Property Name="Rating" Type="Edm.Int16" Nullable="false" />
@@ -25,6 +26,14 @@
         </Member>
         <Member Name="HomeAndOffice" Value="2">
           <Annotation Term="Dontcare.SomeTerm2" String="Home and Office Products"/>
+        </Member>
+      </EnumType>
+      <EnumType Name="EthicalAttribute" UnderlyingType="Edm.Int64">
+        <Member Name="CarbonNeutral" Value="1">
+          <Annotation Term="Dontcare.SomeTerm" String="Carbon Neutral"/>
+        </Member>
+        <Member Name="FairTrade" Value="2">
+          <Annotation Term="Dontcare.SomeTerm2" String="Fair Trade"/>
         </Member>
       </EnumType>
       <EnumType Name="ProductStatus" UnderlyingType="Edm.Byte">

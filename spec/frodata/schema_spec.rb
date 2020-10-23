@@ -10,7 +10,7 @@ describe FrOData::Schema do
 
   let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
   let(:complex_types) { %w{Address} }
-  let(:enum_types) { %w{Vertical ProductStatus} }
+  let(:enum_types) { %w{Vertical EthicalAttribute ProductStatus} }
 
   describe '#namespace' do
     it { expect(subject).to respond_to(:namespace) }
@@ -43,7 +43,7 @@ describe FrOData::Schema do
 
   describe '#enum_types' do
     it { expect(subject).to respond_to(:enum_types) }
-    it { expect(subject.enum_types.size).to eq(2) }
+    it { expect(subject.enum_types.size).to eq(3) }
     it { expect(subject.enum_types.keys).to eq(enum_types)}
   end
 

@@ -159,8 +159,8 @@ describe FrOData::Service, vcr: {cassette_name: 'service_specs'} do
 
   describe '#enum_types' do
     it { expect(subject).to respond_to(:enum_types) }
-    it { expect(subject.enum_types.size).to eq(2) }
-    it { expect(subject.enum_types.keys).to eq(['ODataDemo.Vertical', 'ODataDemo.ProductStatus'])}
+    it { expect(subject.enum_types.size).to eq(3) }
+    it { expect(subject.enum_types.keys).to eq(['ODataDemo.Vertical', 'ODataDemo.EthicalAttribute', 'ODataDemo.ProductStatus'])}
   end
 
   describe '#namespace' do
@@ -191,6 +191,7 @@ describe FrOData::Service, vcr: {cassette_name: 'service_specs'} do
       Name
       Description
       Vertical
+      EthicalAttributes
       ReleaseDate
       DiscontinuedDate
       Rating
