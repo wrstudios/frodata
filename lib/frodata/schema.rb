@@ -137,7 +137,7 @@ module FrOData
       property_type, value_type = property_type.split(/\(|\)/)
       if property_type == 'Collection'
         klass = ::FrOData::Properties::Collection
-        property_options.merge(value_type: value_type)
+        property_options.merge!(value_type: value_type)
       else
         klass = ::FrOData::PropertyRegistry[property_type]
       end
