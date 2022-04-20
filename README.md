@@ -118,13 +118,13 @@ For instance, if your service requires HTTP basic authentication:
   service = FrOData::Service.new('http://services.odata.org/V4/OData/OData.svc', {
     name: 'ODataDemo'
   }) do |conn|
-    conn.basic_auth('username', 'password')
+    conn.request(:authorization, :basic, 'username', 'password')
   end
 ```
 
 [http-auth]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
 [faraday]: https://github.com/lostisland/faraday
-[faraday-auth]: https://github.com/lostisland/faraday#authentication
+[faraday-auth]: https://github.com/lostisland/faraday/blob/main/docs/middleware/request/authentication.md
 
 #### Advanced Connection Customization
 
